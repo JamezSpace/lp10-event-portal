@@ -1,0 +1,77 @@
+<div class="grid-container grid grid-cols-[30vw_1fr] gap-[15px] ps-5 pe-5">
+    <section class="ps-[10px] pe-[10px]">
+        <div class="image-container h-[30svh]">
+            <img src="" alt="Flier of event registering for" class="h-full object-contain">
+        </div>
+        <section class="textual-information flex flex-col gap-5">
+            <div class="row my-flex justify-between">
+                <article class="date-metadata">
+                    <h4 class="capitalize">date</h4>
+                    <p>{{ date_of_event }}</p>
+                </article>
+                <article class="time-metadata">
+                    <h4 class="capitalize">time</h4>
+                    <p>{{ time_of_event }}</p>
+                </article>
+            </div>
+            <div class="row">
+                <article class="venue-metadata">
+                    <h4 class="capitalize">venue</h4>
+                    <p>{{ venue }}</p>
+                </article>
+            </div>
+            <div class="row">
+                <article class="address-metadata">
+                    <h4 class="capitalize">address</h4>
+                    <p>{{ address }}</p>
+                </article>
+            </div>
+        </section>
+    </section>
+    <section class="w-3/5">
+        <div class="origin-group-container mb-[10px]">
+            <article class="origin-container w-full my-flex justify-between ps-[5px]">
+                <label for="non-lp10" class="my-flex cursor-pointer">
+                    <input type="radio" name="origin" id="non-lp10" class="custom-radio-button">
+                    Non-LP10
+                </label>
+                <label for="others" class="my-flex cursor-pointer">
+                    <input type="radio" name="origin" id="others" class="custom-radio-button">
+                    Non-RCCG
+                </label>
+            </article>
+            <article class="origin-specifics w-full">
+                <form action="" name="non-lp10" class="my-flex gap-[10px] justify-between">
+                    <label for="region">
+                        region
+                        <input type="number" name="region" id="region" placeholder="Your region" class="my-input">
+                    </label>
+                    <label for="province">
+                        province
+                        <input type="number" name="province" id="province" placeholder="Your province" class="my-input">
+                    </label>
+                </form>
+                <form action="" name="others" class="my-flex gap-[10px] justify-between">
+                    <label for="denomination" class="">
+                        denomination
+                        <input type="text" id="denomination" placeholder="Type here"
+                            class="my-input bg-form-field-background-color">
+                    </label>
+                    <label for="details" class="">
+                        important details?
+                        <input type="text" id="details" placeholder="Type here"
+                            class="my-input bg-form-field-background-color">
+                    </label>
+                </form>
+            </article>
+        </div>
+        <div class="registration-breakdown-group-container">
+            <h3 class="capitalize">registering</h3>
+            <section class="registration-breakdown-group my-flex">
+                <section class="number-gui">
+                    <age-category />
+                </section>
+            </section>
+        </div>
+    </section>
+</div>

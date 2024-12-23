@@ -1,0 +1,34 @@
+.custom-radio-button {
+    @apply outline-[1.5px] outline outline-orange-1 outline-offset-[3.5px];
+
+    margin-right: 13.5px;
+    height: calc(1rem - 6.5px);
+    aspect-ratio: 1;
+    appearance: none;
+    background-color: transparent;
+    border-radius: 50%;
+    transition: outline-color 200ms, background-color 200ms;
+}
+
+.custom-radio-button:checked {
+    @apply outline-orange-1 bg-orange-1;
+}
+
+.my-input {
+    @apply bg-form-field-background-color;
+
+    display: block;
+    border-radius: calc(1rem - 5px);
+    padding: 5px 1rem;
+}
+
+.origin-specifics form label {
+    @apply text-form-label-color;
+    
+    line-height: 1.875rem;
+    text-transform: capitalize;
+
+    & input[type="text"]::placeholder {
+        @apply text-form-field-placeholder-color;
+    }
+}

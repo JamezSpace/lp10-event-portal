@@ -1,0 +1,12 @@
+.operation {
+    @apply border-orange-1 text-orange-1;
+
+    padding: 5px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1.5px solid;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(0.7);
+}
