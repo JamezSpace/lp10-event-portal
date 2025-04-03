@@ -6,10 +6,28 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --white: #fff;
+    --orange-1: #FF7B00;
+    --orange-2: #FF9533;
+    --orange-3: #FFAA00;
+    --orange-4: #FFEECC;
+    --orange-5: #F5F3EFCC;
+    --black-4: rgb(84, 88, 99, 0.6);
+    --black-3: rgb(62, 63, 75, 0.7);
+    --black-2: rgb(52, 55, 62, 0.9);
+    --form-label-color: rgb(51, 54, 63, 0.8);
+    --form-field-background-color: rgba(229, 229, 229, 0.3);
+    --form-field-placeholder-color: rgb(84, 88, 99, .6);
+    --weird-blue: rgb(7, 42, 200);
+    --success: #5FC381;
+    --error: #DD524D
+}
+
 :host {
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-      "Segoe UI Symbol";
+        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -32,7 +50,7 @@ input,
 button,
 dialog {
     outline: none;
-    border: none;
+    /* border: none; */
 }
 
 button {

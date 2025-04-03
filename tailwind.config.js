@@ -36,6 +36,14 @@ module.exports = {
             lineHeight: {
                 'lh-normal': '30px',
                 'lh-heading': '36px'
+            },
+            screens: {
+                'non-laptop-screen': {
+                    max: '768px'
+                },
+                'phone-screen': {
+                    max: '465px'
+                }
             }
         },
     },

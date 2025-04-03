@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, computed, EventEmitter, Input, Output, Signal } from '@angular/core';
+import { RegistrationDataService } from '../../services/registration-data.service';
+import { BulkRegistrationData } from '../../models/registration-data.model';
 
 @Component({
   selector: 'age-category',
@@ -7,6 +9,27 @@ import { Component } from '@angular/core';
   styleUrl: './age-category.component.css'
 })
 export class AgeCategoryComponent {
-    category: String = 'teenager';
-    categoryNum: Number = 0;
+
+    constructor(private registration_data_service: RegistrationDataService){ }
+
+
+    @Input({required: true}) 
+    category: keyof BulkRegistrationData = 'teenager';
+
+    category_number: Signal<number> = computed(() => {
+        return this.registration_data_service.view_registration_data()[this.category];
+    });
+
+
+    addOne(): void {
+        this.registration_data_service.update_registration_data(this.category, this.category_number() + 1);
+        // this.category_number++;
+    }
+
+    subtractOne(): void {
+        if(this.category_number() === 0) return
+        
+        // this.category_number--;
+        this.registration_data_service.update_registration_data(this.category, this.category_number() - 1);
+    }
 }

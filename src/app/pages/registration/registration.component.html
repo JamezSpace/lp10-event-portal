@@ -1,7 +1,7 @@
-<div class="grid-container grid grid-cols-[30vw_1fr] gap-[15px] ps-5 pe-5">
-    <section class="ps-[10px] pe-[10px]">
+<div class="grid-container grid grid-cols-[25vw_1fr] gap-5 ps-5 pe-5 non-laptop-screen:grid-cols-1">
+    <section class="ps-[10px] pe-[10px] non-laptop-screen:hidden">
         <div class="image-container h-[30svh]">
-            <img src="" alt="Flier of event registering for" class="h-full object-contain">
+            <img src="flier.png" alt="Flier of event registering for" class="h-full object-contain">
         </div>
         <section class="textual-information flex flex-col gap-5">
             <div class="row my-flex justify-between">
@@ -28,50 +28,141 @@
             </div>
         </section>
     </section>
-    <section class="w-3/5">
-        <div class="origin-group-container mb-[10px]">
-            <article class="origin-container w-full my-flex justify-between ps-[5px]">
+    <section class="w-full">
+        <div class="origin-group-container">
+            <h3 class="capitalize subtitle-heading">Origin</h3>
+            <article
+                class="origin-container w-full my-flex justify-between px-[10px] phone-screen:flex-col phone-screen:items-start phone-screen:gap-2 mb-2">
+                <label for="lp10" class="my-flex cursor-pointer">
+                    <input type="radio" name="origin" id="lp10" class="custom-radio-button" (change)="onLp10Selection()"
+                        checked>
+                    Lagos Province 10
+                </label>
                 <label for="non-lp10" class="my-flex cursor-pointer">
-                    <input type="radio" name="origin" id="non-lp10" class="custom-radio-button">
-                    Non-LP10
+                    <input type="radio" name="origin" id="non-lp10" class="custom-radio-button"
+                        (change)="onNonLp10Selection()">
+                    Other Provinces
                 </label>
                 <label for="others" class="my-flex cursor-pointer">
-                    <input type="radio" name="origin" id="others" class="custom-radio-button">
+                    <input type="radio" name="origin" id="others" class="custom-radio-button" (change)="onNonRccg()">
                     Non-RCCG
                 </label>
             </article>
             <article class="origin-specifics w-full">
-                <form action="" name="non-lp10" class="my-flex gap-[10px] justify-between">
-                    <label for="region">
-                        region
-                        <input type="number" name="region" id="region" placeholder="Your region" class="my-input">
-                    </label>
-                    <label for="province">
-                        province
-                        <input type="number" name="province" id="province" placeholder="Your province" class="my-input">
-                    </label>
+                <form name="lp10"
+                 [className]="origin === 'lp10' ? '' : 'hidden'"
+                  [formGroup]="lp10_origin_data">
+                    <section class="row">
+                        <label for="zone">
+                            Zone
+                            <select id="zone" formControlName="zone">
+                                <option value="">Select your zone</option>
+                                <option value="sunshin">Sunshine</option>
+                                @for (zone of zones(); track $index) {
+                                <option value="">{{ zone }}</option>
+                                }
+                            </select>
+                        </label>
+                        <label for="parish">
+                            Parish
+                            <input type="text" placeholder="e.g. New Life Parish" id="parish" class="my-input" formControlName="parish">
+                        </label>
+                    </section>
                 </form>
-                <form action="" name="others" class="my-flex gap-[10px] justify-between">
-                    <label for="denomination" class="">
-                        denomination
-                        <input type="text" id="denomination" placeholder="Type here"
-                            class="my-input bg-form-field-background-color">
-                    </label>
-                    <label for="details" class="">
-                        important details?
-                        <input type="text" id="details" placeholder="Type here"
-                            class="my-input bg-form-field-background-color">
-                    </label>
+                <form name="non-lp10"
+                 [formGroup]="nonlp10_origin_data"
+                  [className]="origin === 'non-lp10' ? 'w-full' : 'hidden'">
+                    <section class="row">
+                        <label for="region">
+                            region
+                            <input type="number" name="region" id="region" placeholder="Your region" class="my-input" formControlName="region">
+                        </label>
+                        <label for="province">
+                            province
+                            <input type="text" name="province" id="province" placeholder="Your province"
+                                class="my-input" formControlName="province">
+                        </label>
+                    </section>
+                </form>
+                <form name="others" 
+                [className]="origin === 'non-rccg' ? 'w-full' : 'hidden'"
+                [formGroup]="nonrccg_origin_data">
+                    <section class="row">
+                        <label for="denomination">
+                            denomination
+                            <input type="text" id="denomination" placeholder="Type here"
+                                class="my-input bg-form-field-background-color" formControlName="denomination">
+                        </label>
+                        <label for="details">
+                            important details?
+                            <input type="text" id="details" placeholder="Type here"
+                                class="my-input bg-form-field-background-color" formControlName="details">
+                        </label>
+                    </section>
                 </form>
             </article>
         </div>
         <div class="registration-breakdown-group-container">
-            <h3 class="capitalize">registering</h3>
-            <section class="registration-breakdown-group my-flex">
+            <h3 class="capitalize subtitle-heading">registering</h3>
+            <section [className]="(deactivate_registration_breakdown ? 'opacity-50 pointer-events-none' : '') + 'registration-breakdown-group my-flex justify-between'">
                 <section class="number-gui">
-                    <age-category />
+                    <age-category [category]="'teenager'" />
+                    <age-category [category]="'children'" />
                 </section>
+                <span class="block w-6 h-[2px] bg-form-label-color" aria-label="little-horizantal-rule"></span>
+                <article class="text-form-label-color text-size-normal" label="fee display">
+                    <span class="symbol">N</span>
+                    <span id="amount"
+                        aria-label="this is the amount it costs based on your selection of age categories for registration">
+                        {{ total_fee().toFixed(2) }}
+                    </span>
+                    <span class="currency"></span>
+                </article>
             </section>
         </div>
+        <form [formGroup]="registration_data" (ngSubmit)="saveData()"
+            [className]="current_registration() ? '' : 'opacity-50 pointer-events-none'">
+            <h3 class="capitalize subtitle-heading">
+                personal information
+                <span class="dot relative text-form-field-placeholder-color">{{ current_registration() }}</span>
+            </h3>
+            <section class="row">
+                <div class="field">
+                    <label for="first-name">first name</label>
+                    <input type="text" placeholder="e.g. John" id="first-name" formControlName="first_name">
+                </div>
+                <div class="field">
+                    <label for="last-name">last name</label>
+                    <input type="text" placeholder="e.g. Doe" id="last-name" formControlName="last_name">
+                </div>
+            </section>
+            <section class="row">
+                <div class="field">
+                    <label for="gender">gender</label>
+                    <div class="my-flex gap-8">
+                        <label for="male" class="my-flex cursor-pointer">
+                            <input type="radio" name="gender" class="custom-radio-button" id="male"
+                                (blur)="setGender($event)" #gender>male
+                        </label>
+                        <label for="female" class="my-flex cursor-pointer">
+                            <input type="radio" name="gender" class="custom-radio-button" id="female"
+                                (blur)="setGender($event)" #gender>female
+                        </label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="age">age</label>
+                    <input type="number" placeholder="e.g. 19" id="age" min="5" formControlName="age">
+                </div>
+            </section>
+            <section class="row">
+                <div class="field">
+                    <label for="email">email</label>
+                    <input type="email" placeholder="e.g. test@gmail.com" id="email" formControlName="email">
+                </div>
+            </section>
+            <button type="submit" class="block w-full py-3 border-[2px] border-orange-1 bg-orange-4  rounded-md">{{
+                total_number_registering() > 1 ? 'Save Data' : 'Submit' }}</button>
+        </form>
     </section>
 </div>

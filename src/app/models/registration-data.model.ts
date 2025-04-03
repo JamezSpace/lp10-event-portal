@@ -1,3 +1,5 @@
-export interface RegData {
-    
+export interface BulkRegistrationData {
+    teenager: number,
+    children: number,
+    teacher: number
 }

@@ -14,21 +14,95 @@
     @apply outline-orange-1 bg-orange-1;
 }
 
+.origin-specifics {
+    margin-top: 8px;
+}
+
 .my-input {
     @apply bg-form-field-background-color;
 
     display: block;
-    border-radius: calc(1rem - 5px);
+    border-radius: 5px;
     padding: 5px 1rem;
 }
 
 .origin-specifics form label {
     @apply text-form-label-color;
     
+    flex: 1 0 40%;
     line-height: 1.875rem;
     text-transform: capitalize;
+
+    & * {
+        width: 100%;
+    }
 
     & input[type="text"]::placeholder {
         @apply text-form-field-placeholder-color;
     }
+}
+
+.dot {
+    margin-left: 30px;
+}
+.dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -15px;
+    transform: translateY(-50%);
+    aspect-ratio: 1;
+    width: 6px;
+    border-radius: 50%;
+    background-color: var(--form-field-placeholder-color);
+}
+
+form .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding-inline: 10px;
+}
+form .row .field {
+    flex: 1 0 40%;
+
+    & > * {
+        width: 100%;
+    }
+
+    & label {
+        display: block;
+        text-transform: capitalize;
+        margin-block: 2.5px 8px;
+    }
+
+    & input:not([type="radio"]) {
+        padding: 8px;
+        border-radius: 5px;
+        background-color: var(--form-field-background-color);
+    }
+
+    & input::placeholder {
+        color: var(--black-4);
+    }
+}
+.subtitle-heading {
+    margin-bottom: 8px;
+}
+section > div,
+section > form {
+    margin-bottom: 32px;
+}
+
+/* Phone Screen Value from tailwind config */
+@media screen and (max-width: 465px) {
+    form .row {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    form .row .field {
+        margin-bottom: 0;
+    }
+    
 }
