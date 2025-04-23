@@ -1,5 +1,11 @@
 import { AfterViewInit, Component, computed, ElementRef, inject, QueryList, signal, Signal, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators, FormsModule, FormBuilder } from '@angular/forms';
 import { AgeCategoryComponent } from "../../components/age-category/age-category.component";
 import { RegistrationService } from '../../services/registration.service';
 import { RegistrationDataService } from '../../services/registration-data.service';
@@ -7,7 +13,7 @@ import { Person } from '../../models/person.model';
 
 @Component({
     selector: 'app-registration',
-    imports: [AgeCategoryComponent, ReactiveFormsModule],
+    imports: [MatProgressBarModule, MatInputModule, MatSelectModule, MatButtonModule, MatStepperModule, MatFormFieldModule, FormsModule, AgeCategoryComponent, ReactiveFormsModule],
     templateUrl: './registration.component.html',
     styleUrl: './registration.component.css'
 })
@@ -20,6 +26,9 @@ export class RegistrationComponent implements AfterViewInit {
         this.zones.set(await this.regService.fetchZones())
     }
 
+    next: Signal<boolean> = false;
+    progress_value_step_1: number = 20;
+    progress_value_step_2: number = 0;
     date_of_event: String = "Friday 24th November, 2024";
     time_of_event: String = "8am";
     venue: String = "LP10 Provincial HQ";
@@ -110,16 +119,16 @@ export class RegistrationComponent implements AfterViewInit {
     }
 
     deactivate_registration_breakdown: boolean = false
-    async saveData() {
+    async saveData() {        
         if (!this.registration_data.errors === null || this.user_gender === '') return
 
-        let invalids = []
+        let invalids: FormControl<string | null>[] = []
 
         if (this.origin === 'lp10' && this.lp10_origin_data.invalid) {
             if (this.lp10_origin_data.controls.parish.invalid) invalids.push(this.lp10_origin_data.controls.parish)
 
             if (this.lp10_origin_data.controls.zone.invalid) invalids.push(this.lp10_origin_data.controls.zone)
-
+                
             return
         }
         else if (this.origin === 'non-lp10' && this.nonlp10_origin_data.invalid) {
@@ -134,8 +143,9 @@ export class RegistrationComponent implements AfterViewInit {
 
             return
         }
-
+        
         const person: Person = {
+            id: 0,
             first_name: new String(this.registration_data.value.first_name).toString(),
             last_name: new String(this.registration_data.value.last_name).toString(),
             email: new String(this.registration_data.value.email).toString(),
@@ -170,8 +180,12 @@ export class RegistrationComponent implements AfterViewInit {
         this.previewData()
     }
 
+    @ViewChildren("btn")
+    stepper_btn !: ElementRef<MatStepper>;
+
     previewData() {
         console.log("data registration preview");
-        
+        this.stepper_btn.nativeElement.next()
+
     }
 }

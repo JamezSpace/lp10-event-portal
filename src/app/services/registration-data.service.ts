@@ -25,7 +25,7 @@ export class RegistrationDataService {
         return this.registration_data()
     }
 
-    get_total_number_registering: Signal<number> = computed(() => {        
+    get_total_number_registering: Signal<number> = computed(() => {
         return this.registration_data().children + this.registration_data().teenager + this.registration_data().teacher;
     })
 
@@ -41,7 +41,7 @@ export class RegistrationDataService {
         let teens_fee = this.registration_data().teenager * this.registration_pricing().teenager
 
         let teachers_fee = this.registration_data().teacher * this.registration_pricing().teacher
-        
+
         return children_fee + teachers_fee + teens_fee;
     })
 
@@ -49,11 +49,11 @@ export class RegistrationDataService {
         category: string,
         num: number
     ): void {
-        if (category === 'children')
-            {this.registration_data.set({
+        if (category === 'children') {
+            this.registration_data.set({
                 ...this.registration_data(),
                 children: num
-            })            
+            })
         }
         else if (category === 'teenager')
             this.registration_data.set({
@@ -73,7 +73,16 @@ export class RegistrationDataService {
         return this.registered_persons();
     }
 
+    editedPersonId(person: Person) {
+        if (person.id !== 0) {
+            // find the id of the last person in the array and add one to it
+            person.id = this.registered_persons()[this.registered_persons().length - 1].id + 1
+        }
+
+        return person
+    }
+
     add_persons_record(person: Person) {
-        this.registered_persons().push(person)
+        this.registered_persons().push(this.editedPersonId(person))
     }
 }
