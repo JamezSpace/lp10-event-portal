@@ -29,7 +29,7 @@
     --mat-option-label-text-color: #000;
     --mat-select-enabled-trigger-text-color: #000;
     --mat-option-selected-state-layer-color: var(--black-tint-1);
-    --mat-option-hover-state-layer-color: var(--black-tint-1;
+    --mat-option-hover-state-layer-color: var(--black-tint-1);
 }
 
 :host {
