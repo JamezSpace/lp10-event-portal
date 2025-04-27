@@ -5,10 +5,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@use '@angular/material' as mat;
 
 :root {
-    --white: #fff;
-    --orange-1: #FF7B00;
+    --primary: #804e49;
+    --black: #0a122a;
+    --black-tint: #b6b8bf;
+    --white: #fbfaf8;
+
     --orange-4: #FFEECC;
     --orange-5: #F5F3EFCC;
     --black-4: rgb(84, 88, 99, 0.6);
@@ -18,6 +22,14 @@
     --form-field-placeholder-color: rgb(84, 88, 99, .6);
     --success: #5FC381;
     --error: #DD524D;
+
+    --black-tint-1: #ced0d4;
+
+    --mat-sys-surface-container: var(--white);
+    --mat-option-label-text-color: #000;
+    --mat-select-enabled-trigger-text-color: #000;
+    --mat-option-selected-state-layer-color: var(--black-tint-1);
+    --mat-option-hover-state-layer-color: var(--black-tint-1;
 }
 
 :host {
@@ -40,6 +52,12 @@
 html {
     scroll-behavior: smooth;
     overscroll-behavior-inline: contain;
+}
+
+body {
+    width: 100vw;
+    overflow-x: hidden;
+    background-color: rgb(from var(--white) r g b /0.6);
 }
 
 a {

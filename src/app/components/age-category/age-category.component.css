@@ -1,5 +1,5 @@
 .operation {
-    @apply border-orange-1 text-orange-1;
+    @apply border-primary text-primary;
 
     padding: 5px;
     aspect-ratio: 1;

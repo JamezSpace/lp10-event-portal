@@ -1,6 +1,22 @@
+.nav-bar {
+    padding-inline: 20px 40px;
+    padding-block: 5px;
+    backdrop-filter: blur(1px);
+    background-color: rgb(255, 255, 255, 0.6);
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    & a.logo img {
+        object-fit: cover;
+        object-position: center;
+    }
+}
+
 .opened-nav-bar {
     display: block;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     padding: 30px 1.25rem;
     position: fixed;

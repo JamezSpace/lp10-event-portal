@@ -5,8 +5,9 @@ module.exports = {
     ],
     theme: {
         colors: {
-            'white': '#fff',
-            'orange-1': '#FF7B00',
+            'white': '#fbfaf8',
+            'primary': '#804e49',
+            'black': '#0a122a',
             'orange-4': '#FFEECC',
             'orange-5': '#F5F3EFCC',
             'black-4': 'rgb(84, 88, 99, 0.6)',

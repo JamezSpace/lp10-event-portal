@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, computed, ElementRef, inject, QueryList, signal, Signal, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, inject, QueryList, signal, Signal, ViewChildren, ViewChild } from '@angular/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MatStepper, MatStepperModule } from '@angular/material/stepper';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators, FormsModule, FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { AgeCategoryComponent } from "../../components/age-category/age-category.component";
 import { RegistrationService } from '../../services/registration.service';
 import { RegistrationDataService } from '../../services/registration-data.service';
@@ -13,7 +12,7 @@ import { Person } from '../../models/person.model';
 
 @Component({
     selector: 'app-registration',
-    imports: [MatProgressBarModule, MatInputModule, MatSelectModule, MatButtonModule, MatStepperModule, MatFormFieldModule, FormsModule, AgeCategoryComponent, ReactiveFormsModule],
+    imports: [MatProgressBarModule, MatInputModule, MatSelectModule, MatButtonModule, MatFormFieldModule, FormsModule, AgeCategoryComponent, ReactiveFormsModule],
     templateUrl: './registration.component.html',
     styleUrl: './registration.component.css'
 })
@@ -26,7 +25,7 @@ export class RegistrationComponent implements AfterViewInit {
         this.zones.set(await this.regService.fetchZones())
     }
 
-    next: Signal<boolean> = false;
+    current_step = signal(1);
     progress_value_step_1: number = 20;
     progress_value_step_2: number = 0;
     date_of_event: String = "Friday 24th November, 2024";
@@ -176,16 +175,32 @@ export class RegistrationComponent implements AfterViewInit {
         }
 
         await this.regService.sendToDatabase()
-        this.resetAllFormData(true)
+        // this.resetAllFormData(true)
         this.previewData()
     }
 
-    @ViewChildren("btn")
-    stepper_btn !: ElementRef<MatStepper>;
+    @ViewChild('pagesContainer')
+    pagesContainer!: ElementRef<HTMLElement>;
+
+    nextStep() {
+        this.current_step.update(num => ++num)
+
+        this.pagesContainer.nativeElement.style.transform = `translateX(calc(-100% + 20px))`
+    }
+
+    previousStep() {
+        if(this.current_step() === 1) return
+
+        this.current_step.update(num => --num)
+
+        this.pagesContainer.nativeElement.style.transform = `translateX(calc(0%))`
+    }
 
     previewData() {
+        this.nextStep();
+        
+        console.log(this.current_step());
+        
         console.log("data registration preview");
-        this.stepper_btn.nativeElement.next()
-
     }
 }

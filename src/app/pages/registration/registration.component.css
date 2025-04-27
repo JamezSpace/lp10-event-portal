@@ -1,13 +1,22 @@
 .progress-bar-container {
     max-width: 60%;
     margin-inline: auto;
-    margin-bottom: 24px;
+    margin-bottom: 3rem;
 
     .step {
         display: flex;
         flex-direction: column;
         align-items: center;
         position: relative;
+    }
+
+    .step.active,
+    .step.completed {
+        /* opacity: 1; */
+
+        .num {
+            background-color: var(--black);
+        }
     }
 
     .step::after {
@@ -36,16 +45,17 @@
     .step .num {
         padding: 5px;
         border-radius: 50%;
-        background: #000;
+        background: var(--black-tint);
         color: #fff;
         aspect-ratio: 1;
         display: flex;
         justify-content: center;
         align-items: center;
+        background-blend-mode: color;
     }
 
     mat-progress-bar {
-        background-color: #0005;
+        background-color: var(--black-tint);
     }
 }
 
@@ -54,8 +64,20 @@
     background-color: #fff;
 }
 
+.multi-page {
+    display: flex;
+    /* this is the padding-inline size */
+    gap: 20px;
+    transition: transform 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.page {
+    width: 100%;
+    flex: 1 0 100%;
+}
+
 .custom-radio-button {
-    @apply outline-[1.5px] outline outline-orange-1 outline-offset-[3.5px];
+    @apply outline-[1.5px] outline outline-primary outline-offset-[3.5px];
 
     margin-right: 13.5px;
     height: calc(1rem - 6.5px);
@@ -67,7 +89,7 @@
 }
 
 .custom-radio-button:checked {
-    @apply outline-orange-1 bg-orange-1;
+    @apply outline-primary bg-primary;
 }
 
 .origin-specifics {
@@ -145,6 +167,20 @@ form .row .field {
     }
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    -webkit-text-fill-color: #000 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+input:not(:-webkit-autofill, [type="radio"]) {
+    background-color: transparent !important;
+}
+
 .subtitle-heading {
     margin-bottom: 8px;
 }
@@ -152,6 +188,30 @@ form .row .field {
 section.form>div,
 section.form>form {
     margin-bottom: 32px;
+}
+
+.btn {
+    background-color: rgb(from var(--primary) r g b /0.85);
+    color: var(--white);
+    border: 1px solid transparent;
+    text-transform: uppercase;
+    font-size: 90%;
+    letter-spacing: -0.2px;
+
+    &:hover,
+    &:active {
+        background-color: var(--primary);
+    }
+
+    &:focus {
+        outline: 2px solid rgb(from var(--black) r g b /0.85);
+    }
+}
+
+.btn-secondary {
+    border-color: var(--primary);
+    background-color: transparent;
+    color: var(--primary);
 }
 
 .preview-registered-persons-table {
