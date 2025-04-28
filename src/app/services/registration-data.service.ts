@@ -73,16 +73,31 @@ export class RegistrationDataService {
         return this.registered_persons();
     }
 
-    editedPersonId(person: Person) {
-        if (person.id !== 0) {
-            // find the id of the last person in the array and add one to it
-            person.id = this.registered_persons()[this.registered_persons().length - 1].id + 1
+    editedPersonId(person: Person): Person {
+        if (person.id === 0) {
+            const registeredPersons = this.registered_persons();
+            const lastId = registeredPersons.length > 0 
+                ? registeredPersons[registeredPersons.length - 1].id 
+                : 0;
+            
+            return { ...person, id: lastId + 1 };
         }
-
-        return person
+        return person;
     }
 
-    add_persons_record(person: Person) {
-        this.registered_persons().push(this.editedPersonId(person))
+    add_persons_record(person: Person): number {
+        const new_person = this.editedPersonId(person);
+        
+        this.registered_persons.update(prev => [...prev, new_person]);
+
+        return new_person.id;
+    }
+
+    update_person_record(person_to_update: Person) {
+        this.registered_persons.update(prev => 
+            prev.map(person => 
+                person.id === person_to_update.id ? { ...person, ...person_to_update } : person
+            )
+        );
     }
 }

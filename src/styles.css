@@ -11,25 +11,32 @@
     --primary: #804e49;
     --black: #0a122a;
     --black-tint: #b6b8bf;
+    --black-tint-1: #ced0d4;
     --white: #fbfaf8;
 
-    --orange-4: #FFEECC;
-    --orange-5: #F5F3EFCC;
-    --black-4: rgb(84, 88, 99, 0.6);
     --black-2: rgb(52, 55, 62, 0.9);
-    --form-label-color: rgb(51, 54, 63, 0.8);
-    --form-field-background-color: rgba(229, 229, 229, 0.3);
     --form-field-placeholder-color: rgb(84, 88, 99, .6);
     --success: #5FC381;
     --error: #DD524D;
+    
 
-    --black-tint-1: #ced0d4;
-
+    --mat-sys-primary: var(--black);
     --mat-sys-surface-container: var(--white);
+
+    /* Form Fields */
     --mat-option-label-text-color: #000;
     --mat-select-enabled-trigger-text-color: #000;
     --mat-option-selected-state-layer-color: var(--black-tint-1);
     --mat-option-hover-state-layer-color: var(--black-tint-1);
+
+    /* Radio Buttons */
+    --mat-sys-body-medium-font: "Verdana", sans-serif;
+    --mat-radio-label-text-weight: 200;
+    --mdc-radio-state-layer-size: 25px;
+    --mdc-radio-selected-icon-color: var(--primary);
+    --mdc-radio-selected-focus-icon-color: var(--primary);
+    --mdc-radio-unselected-icon-color: var(--primary);
+    --mdc-radio-unselected-focus-icon-color: var(--primary);
 }
 
 :host {

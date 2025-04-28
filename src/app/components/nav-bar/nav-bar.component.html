@@ -4,29 +4,34 @@
 
 <section class="nav-bar my-flex justify-between">
     <a href="/" class="logo h-10"><img src="logo.svg" alt="LP10 Logo"></a>
-    
+
     <span class="inline-flex cursor-pointer" (click)="toggleNavBar()">
-        <svg class="pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6h10M4 12h16M7 12h13M4 18h10"/></svg>
+        <svg class="pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <rect width="24" height="24" fill="none" />
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M10 6h10M4 12h16M7 12h13M4 18h10" />
+        </svg>
     </span>
 </section>
 
-<div class="nav-bar-container" #navcontainer>
-<section class="expanded-nav-bar w-full my-flex justify-evenly">
-    <nav class="flex w-2/4 justify-evenly items-center">
-        @for (link of links; track link) {
-        <a href="" rel="noopener" class="capitalize">{{link}}</a>
-        }
-    </nav>
+<div class="nav-bar-container" (click)="toggleNavBar()" #navcontainer>
+    <section class="expanded-nav-bar w-full my-flex flex-col gap-5 justify-start">
+        <nav>
+            @for (link of links; track link) {
+            <a href="" rel="noopener" class="capitalize block py-[10px] pr-5 my-[7.5px]">{{link}}</a>
+            }
+        </nav>
 
-    <form class="ml-auto non-laptop-screen:mx-auto non-laptop-screen:mt-5 search-form my-flex w-fit bg-orange-5 py-2 pl-2 pr-4 rounded-[5px]">
-        <input type="text" name="" id="" placeholder="Search" class="h-full bg-inherit">
-        <button type="submit" class="p-1 my-flex"><iconify-icon icon="iconamoon:search" width="20"
-                height="20"></iconify-icon></button>
-    </form>
-
-    <a href="/support" class="my-flex bg-slate-300 block ml-5 w-fit non-laptop-screen:mx-auto">
-        <span class="me-2">Support</span>
-        <iconify-icon icon="fluent:person-support-20-regular" width="20" height="20"></iconify-icon>
-    </a>
-</section>
+        <div class="bottom-pane">
+            <a href="/support" class="my-flex my-2">
+                <span class="me-2">Support</span>
+                <iconify-icon icon="fluent:person-support-20-regular" width="20" height="20"></iconify-icon>
+            </a>
+            <form class="ml-auto mx-auto search-form my-flex border py-2 pl-2 pr-4 ">
+                <input type="text" name="" id="" placeholder="Search" class="h-full bg-inherit">
+                <button type="submit" class="p-1 my-flex"><iconify-icon icon="iconamoon:search" width="20"
+                        height="20"></iconify-icon></button>
+            </form>
+        </div>
+    </section>
 </div>

@@ -1,25 +1,28 @@
-import { AfterViewInit, Component, computed, ElementRef, inject, QueryList, signal, Signal, ViewChildren, ViewChild } from '@angular/core';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, QueryList, signal, Signal, ViewChild, ViewChildren } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
 import { AgeCategoryComponent } from "../../components/age-category/age-category.component";
-import { RegistrationService } from '../../services/registration.service';
-import { RegistrationDataService } from '../../services/registration-data.service';
 import { Person } from '../../models/person.model';
+import { RegistrationDataService } from '../../services/registration-data.service';
+import { RegistrationService } from '../../services/registration.service';
+import { environment } from '../../../environments/environment';
+declare var FlutterwaveCheckout: any;
 
 @Component({
     selector: 'app-registration',
-    imports: [MatProgressBarModule, MatInputModule, MatSelectModule, MatButtonModule, MatFormFieldModule, FormsModule, AgeCategoryComponent, ReactiveFormsModule],
+    imports: [MatProgressBarModule, MatInputModule, MatSelectModule, MatButtonModule, MatRadioModule, MatFormFieldModule, FormsModule, AgeCategoryComponent, ReactiveFormsModule],
     templateUrl: './registration.component.html',
     styleUrl: './registration.component.css'
 })
 export class RegistrationComponent implements AfterViewInit {
     reg_data_service = inject(RegistrationDataService);
 
-    constructor(private regService: RegistrationService) { }
+    constructor(private regService: RegistrationService, private cdr: ChangeDetectorRef) { }
 
     async ngAfterViewInit(): Promise<void> {
         this.zones.set(await this.regService.fetchZones())
@@ -44,6 +47,7 @@ export class RegistrationComponent implements AfterViewInit {
     registration_data = new FormGroup({
         first_name: new FormControl('', Validators.required),
         last_name: new FormControl('', Validators.required),
+        gender: new FormControl('', Validators.required),
         email: new FormControl('', Validators.email),
         age: new FormControl('', [Validators.min(5), Validators.max(25)])
     })
@@ -78,19 +82,10 @@ export class RegistrationComponent implements AfterViewInit {
         details: new FormControl('')
     })
 
-    user_gender: string = ''
-
-    setGender(e: any) {
-        this.user_gender = e.target.id
-    }
-
     @ViewChildren('gender') gender_btns !: QueryList<ElementRef>;
     resetAllFormData(all: boolean) {
         // considering this functionality is needed for both saving person data and final submission, an 'all' parameter is needed to know if to clear all or partially all. If all is true, it means it is final submission, hence even the registration data needs to reset
         if (all) this.reg_data_service.reset_registration_data()
-
-        // reset gender
-        this.user_gender = ''
 
         // reset all form values
         this.lp10_origin_data.setValue({
@@ -108,26 +103,28 @@ export class RegistrationComponent implements AfterViewInit {
         this.registration_data.setValue({
             first_name: '',
             age: '',
+            gender: '',
             last_name: '',
             email: ''
-        })
-
-        this.gender_btns.forEach(btn => {
-            btn.nativeElement.checked = false;
         })
     }
 
     deactivate_registration_breakdown: boolean = false
-    async saveData() {        
-        if (!this.registration_data.errors === null || this.user_gender === '') return
+    new_person_id: number = 0;
 
+    async saveData() {
+        if (!this.registration_data.errors === null) return
+
+        if (this.registration_data.dirty) { }
+
+        // fetch all invalid form fields in the origin section
         let invalids: FormControl<string | null>[] = []
 
         if (this.origin === 'lp10' && this.lp10_origin_data.invalid) {
             if (this.lp10_origin_data.controls.parish.invalid) invalids.push(this.lp10_origin_data.controls.parish)
 
             if (this.lp10_origin_data.controls.zone.invalid) invalids.push(this.lp10_origin_data.controls.zone)
-                
+
             return
         }
         else if (this.origin === 'non-lp10' && this.nonlp10_origin_data.invalid) {
@@ -142,13 +139,13 @@ export class RegistrationComponent implements AfterViewInit {
 
             return
         }
-        
+
         const person: Person = {
-            id: 0,
+            id: this.new_person_id,
             first_name: new String(this.registration_data.value.first_name).toString(),
             last_name: new String(this.registration_data.value.last_name).toString(),
             email: new String(this.registration_data.value.email).toString(),
-            gender: this.user_gender,
+            gender: new String(this.registration_data.value.gender).toString(),
             year_of_birth: new Date().getFullYear() - parseInt(new String(this.registration_data.value.age).toString()),
             origin: this.origin,
             parish: this.origin === 'lp10' && this.lp10_origin_data.value.parish || '',
@@ -159,7 +156,8 @@ export class RegistrationComponent implements AfterViewInit {
             details: this.origin === 'non-rccg' && this.nonrccg_origin_data.value.details || ''
         }
 
-        this.reg_data_service.add_persons_record(person);
+        if (this.new_person_id !== 0) this.reg_data_service.update_person_record(person)
+        else this.new_person_id = this.reg_data_service.add_persons_record(person);
 
         console.log(this.reg_data_service.fetch_all_registered_persons_records());
 
@@ -182,25 +180,84 @@ export class RegistrationComponent implements AfterViewInit {
     @ViewChild('pagesContainer')
     pagesContainer!: ElementRef<HTMLElement>;
 
+    @ViewChild('mainContainer')
+    mainContainer!: ElementRef<HTMLElement>;
+
+    transition_duration: number = 400;
+
     nextStep() {
         this.current_step.update(num => ++num)
 
-        this.pagesContainer.nativeElement.style.transform = `translateX(calc(-100% + 20px))`
+        // move to next page
+        this.pagesContainer.nativeElement.style.transform = `translateX(calc(-100% + 19px))`
+
+        // scroll to the top on the next page
+        setTimeout(() => {
+            window.scrollBy({ top: -1000, behavior: 'smooth' })
+        }, this.transition_duration)
     }
 
     previousStep() {
-        if(this.current_step() === 1) return
-
+        if (this.current_step() === 1) return
         this.current_step.update(num => --num)
 
+        // move to previous page
         this.pagesContainer.nativeElement.style.transform = `translateX(calc(0%))`
+
+        // listener for edit on the form
+
     }
 
     previewData() {
         this.nextStep();
-        
-        console.log(this.current_step());
-        
+
         console.log("data registration preview");
+    }
+
+    makePayment() {
+        const person: Person[] = this.reg_data_service.fetch_all_registered_persons_records()
+
+        if(person.length > 1) FlutterwaveCheckout({
+            public_key: environment.flutterwave.publick_key,
+            tx_ref: new String().concat('lp10_convention_', Date.now().toString()),
+            amount: 5000,
+            currency: 'NGN',
+            payment_options: 'card, banktransfer, account, opay, ussd',
+            callback: (response: any) => {
+                console.log(response);
+                
+                if(response.status === 'successful') this.onPaymentSuccess(response)
+            },
+            onclose: () => { console.log('modal closed!') },
+            customizations: {
+                title: 'LP10 Event Portal',
+                description: 'RCCG Convention 2025 with LP10'
+            },
+        });
+        else FlutterwaveCheckout({
+            public_key: environment.flutterwave.publick_key,
+            tx_ref: new String().concat('lp10_convention_', Date.now().toString()),
+            amount: 5000,
+            currency: 'NGN',
+            payment_options: 'card, banktransfer, account, opay, ussd',
+            callback: (response: any) => {
+                console.log(response);
+                
+                if(response.status === 'successful') this.onPaymentSuccess(response)
+            },
+            onclose: () => { console.log('modal closed!') },
+            customer: {
+                email: person[0].email,
+                name: person[0].first_name,
+            },
+            customizations: {
+                title: 'LP10 Event Portal',
+                description: 'RCCG Convention 2025 with LP10'
+            },
+        });
+    }
+
+    onPaymentSuccess(resp: any) {
+        this.nextStep();
     }
 }

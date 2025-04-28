@@ -8,12 +8,10 @@ module.exports = {
             'white': '#fbfaf8',
             'primary': '#804e49',
             'black': '#0a122a',
-            'orange-4': '#FFEECC',
-            'orange-5': '#F5F3EFCC',
-            'black-4': 'rgb(84, 88, 99, 0.6)',
+            'black-tint': '#b6b8bf',
+            'black-tint-1': '#ced0d4',
+
             'black-2': 'rgb(52, 55, 62, 0.9)',
-            'form-label-color': 'rgb(51, 54, 63, 0.8)',
-            'form-field-background-color': 'rgba(229, 229, 229, 0.3)',
             'form-field-placeholder-color': 'rgb(84, 88, 99, 0.6)',
             'success': '#5FC381',
             'error': '#DD524D'
