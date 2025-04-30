@@ -5,7 +5,8 @@
 }
 
 .progress-bar-container {
-    max-width: 80%;
+    width: 100%;
+    max-width: 80dvw;
     padding-inline: 10%;
     padding-block: 1.5rem;
     margin-inline: auto;
@@ -13,7 +14,7 @@
     position: sticky;
     top: 50px;
     z-index: 2;
-    backdrop-filter: blur(1px);
+    backdrop-filter: blur(2.5px);
     background-color: rgb(255, 255, 255, 0.6);
 
     .step {
@@ -57,10 +58,10 @@
 
     .step .num {
         padding: 5px;
+        aspect-ratio: 1 / 1;
         border-radius: 50%;
         background: var(--black-tint);
         color: #fff;
-        aspect-ratio: 1;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -94,7 +95,7 @@
     @apply outline-[1.5px] outline outline-primary outline-offset-[3.5px];
 
     margin-right: 13.5px;
-    height: calc(1rem - 6.5px);
+    width: calc(1rem - 6.5px);
     aspect-ratio: 1;
     appearance: none;
     background-color: transparent;
@@ -260,6 +261,10 @@ section.form>form {
 
     form .row .field {
         margin-bottom: 0;
+    }
+
+    .progress-bar-container {
+        max-width: 90dvw;
     }
 
     .preview-page-button-actions {

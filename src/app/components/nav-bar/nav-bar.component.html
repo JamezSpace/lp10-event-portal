@@ -5,7 +5,7 @@
 <section class="nav-bar my-flex justify-between">
     <a href="/" class="logo h-10"><img src="logo.svg" alt="LP10 Logo"></a>
 
-    <span class="inline-flex cursor-pointer" (click)="toggleNavBar()">
+    <span class="inline-flex cursor-pointer" (click)="toggleNavBar($event)">
         <svg class="pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <rect width="24" height="24" fill="none" />
             <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -14,7 +14,7 @@
     </span>
 </section>
 
-<div class="nav-bar-container" (click)="toggleNavBar()" #navcontainer>
+<div class="nav-bar-container" (click)="toggleNavBar($event)" #navcontainer>
     <section class="expanded-nav-bar w-full my-flex flex-col gap-5 justify-start">
         <nav>
             @for (link of links; track link) {
@@ -29,7 +29,7 @@
             </a>
             <form class="ml-auto mx-auto search-form my-flex border py-2 pl-2 pr-4 ">
                 <input type="text" name="" id="" placeholder="Search" class="h-full bg-inherit">
-                <button type="submit" class="p-1 my-flex"><iconify-icon icon="iconamoon:search" width="20"
+                <button type="submit" class="p-1 my-flex" aria-label="Search"><iconify-icon icon="iconamoon:search" width="20"
                         height="20"></iconify-icon></button>
             </form>
         </div>

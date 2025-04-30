@@ -1,11 +1,11 @@
 <div class="main-container" #mainContainer>
-    <section class="progress-bar-container my-flex">
+    <section class="progress-bar-container my-flex" aria-label="progress bar container">
         <div [className]="
         current_step() === 1 ? 'step active' :
         current_step() > 1 ? 'step completed' : 'step' " aria-label="step 1 indicator">
             <span class="num">1</span>
         </div>
-        <mat-progress-bar mode="determinate" [value]="current_step() > 1 ? 100 : 15"></mat-progress-bar>
+        <mat-progress-bar mode="determinate" [value]="current_step() > 1 ? 100 : 15" aria-label="progress bar line"></mat-progress-bar>
         <div [className]="
         current_step() === 2 ? 'step active' :
         current_step() > 2 ? 'step completed' : 'step' " aria-label="step 2 indicator">
@@ -13,7 +13,7 @@
         </div>
         <mat-progress-bar mode="determinate" [value]="
             current_step() < 2 ? 0 : 
-            current_step() > 2 ? 100 : 15"></mat-progress-bar>
+            current_step() > 2 ? 100 : 15" aria-label="progress bar line"></mat-progress-bar>
         <div [className]="
         current_step() === 3 ? 'step active' :
         current_step() > 3 ? 'step completed' : 'step' " aria-label="step 3 indicator">
@@ -106,8 +106,7 @@
                                 <age-category [category]="'teenager'" />
                                 <age-category [category]="'children'" />
                             </section>
-                            <span class="block w-6 h-[2px] bg-black"
-                                aria-label="little-horizantal-rule"></span>
+                            <span class="block w-6 h-[2px] bg-black"></span>
                             <article class="text-black text-size-normal" label="fee display">
                                 <span class="symbol">N</span>
                                 <span id="amount"

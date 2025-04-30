@@ -13,7 +13,8 @@ export class NavBarComponent {
 
     @ViewChild('navcontainer') navcontainer !: ElementRef
 
-    toggleNavBar() {
-        this.navcontainer.nativeElement.classList.toggle('active')
+    toggleNavBar(e: any) {
+      console.log(e.target)
+      this.navcontainer.nativeElement.classList.toggle('active')
     }
 }
