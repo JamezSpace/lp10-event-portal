@@ -228,7 +228,7 @@ export class RegistrationComponent implements AfterViewInit {
                 
                 if(response.status === 'successful') this.onPaymentSuccess(response)
             },
-            onclose: () => { console.log('modal closed!') },
+            onclose: () => { onPayment() },
             customizations: {
                 title: 'LP10 Event Portal',
                 description: 'RCCG Convention 2025 with LP10'
@@ -243,9 +243,9 @@ export class RegistrationComponent implements AfterViewInit {
             callback: (response: any) => {
                 console.log(response);
                 
-                if(response.status === 'successful') this.onPaymentSuccess(response)
+                if(response.status === 'successful') this.onPayment(response)
             },
-            onclose: () => { console.log('modal closed!') },
+            onclose: this.onPayment(),
             customer: {
                 email: person[0].email,
                 name: person[0].first_name,
@@ -257,7 +257,7 @@ export class RegistrationComponent implements AfterViewInit {
         });
     }
 
-    onPaymentSuccess(resp: any) {
+    onPayment(resp: any) {
         this.nextStep();
     }
 }
