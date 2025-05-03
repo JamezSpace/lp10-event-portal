@@ -7,10 +7,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { AgeCategoryComponent } from "../../components/age-category/age-category.component";
-import { Person } from '../../models/person.model';
+import { Person } from '../../interfaces/person.interface';
 import { RegistrationDataService } from '../../services/registration-data.service';
 import { RegistrationService } from '../../services/registration.service';
 import { environment } from '../../../environments/environment';
+import { FlutterwaveCallbackResponse } from '../../interfaces/payment.interfaces';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../../components/dialog/dialog.component';
 declare var FlutterwaveCheckout: any;
 
 @Component({
@@ -21,6 +24,7 @@ declare var FlutterwaveCheckout: any;
 })
 export class RegistrationComponent implements AfterViewInit {
     reg_data_service = inject(RegistrationDataService);
+    readonly dialog = inject(MatDialog);
 
     constructor(private regService: RegistrationService, private cdr: ChangeDetectorRef) { }
 
@@ -68,7 +72,7 @@ export class RegistrationComponent implements AfterViewInit {
     }
 
     lp10_origin_data = new FormGroup({
-        zone: new FormControl('', Validators.required),
+        zone: new FormControl(null, Validators.required),
         parish: new FormControl('', Validators.required)
     })
 
@@ -90,7 +94,7 @@ export class RegistrationComponent implements AfterViewInit {
         // reset all form values
         this.lp10_origin_data.setValue({
             parish: '',
-            zone: ''
+            zone: null
         })
         this.nonlp10_origin_data.setValue({
             region: '',
@@ -110,7 +114,8 @@ export class RegistrationComponent implements AfterViewInit {
     }
 
     deactivate_registration_breakdown: boolean = false
-    new_person_id: number = 0;
+    persons_ids: number[] = [0];
+    database_saved_ids: string[] = []
 
     async saveData() {
         if (!this.registration_data.errors === null) return
@@ -141,7 +146,7 @@ export class RegistrationComponent implements AfterViewInit {
         }
 
         const person: Person = {
-            id: this.new_person_id,
+            id: this.persons_ids[this.persons_ids.length - 1],
             first_name: new String(this.registration_data.value.first_name).toString(),
             last_name: new String(this.registration_data.value.last_name).toString(),
             email: new String(this.registration_data.value.email).toString(),
@@ -153,11 +158,14 @@ export class RegistrationComponent implements AfterViewInit {
             region: this.origin === 'non-lp10' && this.nonlp10_origin_data.value.region || '',
             province: this.origin === 'non-lp10' && this.nonlp10_origin_data.value.province || '',
             denomination: this.origin === 'non-rccg' && this.nonrccg_origin_data.value.denomination || '',
-            details: this.origin === 'non-rccg' && this.nonrccg_origin_data.value.details || ''
+            details: this.origin === 'non-rccg' && this.nonrccg_origin_data.value.details || '',
+            hasPaid: false
         }
 
-        if (this.new_person_id !== 0) this.reg_data_service.update_person_record(person)
-        else this.new_person_id = this.reg_data_service.add_persons_record(person);
+        // that is, if the length of the array (number of saved data) is more than 1 
+        if (this.persons_ids.length !== 1 && this.current_registration() + 1 === this.persons_ids.length)
+            this.reg_data_service.update_person_record(person)
+        else this.persons_ids.push(this.reg_data_service.add_persons_record(person));
 
         console.log(this.reg_data_service.fetch_all_registered_persons_records());
 
@@ -172,7 +180,11 @@ export class RegistrationComponent implements AfterViewInit {
             return
         }
 
-        await this.regService.sendToDatabase()
+        const saved_ids = await this.regService.sendPersonDataToDatabase()
+
+        // store up the ids of the persons just saved into the database in the array so paymentStatus can easily be updated for each of them after payment
+        if(saved_ids) this.database_saved_ids = saved_ids;
+
         // this.resetAllFormData(true)
         this.previewData()
     }
@@ -189,7 +201,8 @@ export class RegistrationComponent implements AfterViewInit {
         this.current_step.update(num => ++num)
 
         // move to next page
-        this.pagesContainer.nativeElement.style.transform = `translateX(calc(-100% + 19px))`
+        this.pagesContainer.nativeElement.style.transform = this.current_step() !== 3 ?
+             `translateX(calc(-100% + 19px))` : `translateX(calc(-200% + 19px))`
 
         // scroll to the top on the next page
         setTimeout(() => {
@@ -214,50 +227,94 @@ export class RegistrationComponent implements AfterViewInit {
         console.log("data registration preview");
     }
 
-    makePayment() {
-        const person: Person[] = this.reg_data_service.fetch_all_registered_persons_records()
+    payers_name = signal<string>('')
+    payers_email = signal<string>('')
+    openDialog(): void {
+        const dialogRef = this.dialog.open(DialogComponent);
 
-        if(person.length > 1) FlutterwaveCheckout({
-            public_key: environment.flutterwave.publick_key,
-            tx_ref: new String().concat('lp10_convention_', Date.now().toString()),
-            amount: 5000,
-            currency: 'NGN',
-            payment_options: 'card, banktransfer, account, opay, ussd',
-            callback: (response: any) => {
-                console.log(response);
-                
-                if(response.status === 'successful') this.onPaymentSuccess(response)
-            },
-            onclose: () => { onPayment() },
-            customizations: {
-                title: 'LP10 Event Portal',
-                description: 'RCCG Convention 2025 with LP10'
-            },
-        });
-        else FlutterwaveCheckout({
-            public_key: environment.flutterwave.publick_key,
-            tx_ref: new String().concat('lp10_convention_', Date.now().toString()),
-            amount: 5000,
-            currency: 'NGN',
-            payment_options: 'card, banktransfer, account, opay, ussd',
-            callback: (response: any) => {
-                console.log(response);
-                
-                if(response.status === 'successful') this.onPayment(response)
-            },
-            onclose: this.onPayment(),
-            customer: {
-                email: person[0].email,
-                name: person[0].first_name,
-            },
-            customizations: {
-                title: 'LP10 Event Portal',
-                description: 'RCCG Convention 2025 with LP10'
-            },
+        dialogRef.afterClosed().subscribe(result => {
+            console.log("Result", result);
+
+            if (result !== undefined) {
+                this.payers_name.update(data => result.payers_name)
+                this.payers_email.update(data => result.payers_email)
+            }
+
+            this.makePayment()
         });
     }
 
-    onPayment(resp: any) {
+    goToMakePaymentStep() {
+        if (this.reg_data_service.fetch_all_registered_persons_records().length === 1) return this.makePayment()
+
+        this.openDialog()
+    }
+
+    protected flutter_response: FlutterwaveCallbackResponse | undefined;
+    successful_payment = signal(false)
+
+    makePayment() {        
+        const persons: Person[] = this.reg_data_service.fetch_all_registered_persons_records()
+        console.log(persons);
+        
+        const commonPaymentParams = {
+            public_key: environment.flutterwave.publick_key,
+            tx_ref: `lp10_convention_${Date.now()}`,
+            amount: this.reg_data_service.get_total_fee_of_all_registration(),
+            currency: 'NGN',
+            payment_options: 'card, banktransfer, account, opay, ussd',
+            onclose: () => { this.onFlutterWindowClosure() },
+            customizations: {
+                title: 'LP10 Event Portal',
+                description: 'RCCG Convention 2025 with LP10'
+            },
+        };
+
+        if (persons.length > 1) {
+            const modal = FlutterwaveCheckout({
+                commonPaymentParams,
+                customer: {
+                    email: this.payers_email(),
+                    name: this.payers_name(),
+                },
+                callback: (response: FlutterwaveCallbackResponse) => {
+                    console.log(response);
+
+                    this.flutter_response = response;
+                    this.onFlutterWindowClosure();
+                    modal.close()
+                }
+            });
+        } else {
+            const modal = FlutterwaveCheckout({
+                ...commonPaymentParams,
+                customer: {
+                    email: persons[0].email,
+                    name: persons[0].first_name,
+                },
+                callback: (response: FlutterwaveCallbackResponse) => {
+                    console.log(response);
+
+                    this.flutter_response = response;
+                    this.onFlutterWindowClosure();
+                    modal.close()
+                }
+            });
+        }
+    }
+
+    async onFlutterWindowClosure() {
+        if (typeof this.flutter_response === 'undefined') return
+        // if (this.flutter_response.status !== 'successful') return
+
+        // verify payment from server as recommended by flutterwave
+        const payment_verification = await this.regService.validatePayment(this.flutter_response.transaction_id, this.flutter_response.amount, this.database_saved_ids)
+        if (payment_verification.status !== 'valid') {
+            console.log("payment is not valid from backend");
+            return
+        }
+
+        this.successful_payment.update(() => true);
         this.nextStep();
     }
 }

@@ -11,5 +11,6 @@ export interface Person {
     region?: string,    
     province?: string,
     denomination?: string,
-    details?: string
+    details?: string,
+    hasPaid: boolean
 }

@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Kindly enter the payer's details</h2>
+<mat-dialog-content>
+    <mat-form-field class="block w-full">
+        <mat-label>Name of the person paying</mat-label>
+        <input matInput appearance="outline" [(ngModel)]="payers_name">
+    </mat-form-field>
+    <mat-form-field class="block w-full">
+        <mat-label>Email Address (of the person paying)</mat-label>
+        <input matInput appearance="outline" [(ngModel)]="payers_email">
+    </mat-form-field>
+    <mat-dialog-actions>
+        <button mat-button (click)="buttonClick()">Cancel</button>
+        <button mat-button (click)="buttonClick()">Pay Now</button>
+      </mat-dialog-actions>
+</mat-dialog-content>

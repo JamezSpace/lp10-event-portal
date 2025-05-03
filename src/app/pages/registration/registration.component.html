@@ -53,9 +53,8 @@
                                         <mat-label>Zone</mat-label>
                                         <mat-select formControlName="zone">
                                             <mat-option>Select your zone</mat-option>
-                                            <mat-option value="Sunshine">Sunshine</mat-option>
                                             @for (zone of zones(); track $index) {
-                                            <option [value]="">{{ zone }}</option>
+                                            <mat-option [value]="zone">{{ zone }}</mat-option>
                                             }
                                         </mat-select>
                                     </mat-form-field>
@@ -211,7 +210,7 @@
                         </svg>
                         Back
                     </button>
-                    <button type="button" class="my-flex px-5 py-2 border-[2px] btn" (click)="makePayment()">Proceed To
+                    <button type="button" class="my-flex px-5 py-2 border-[2px] btn" (click)="goToMakePaymentStep()">Proceed To
                         Payment</button>
                 </div>
             </section>
@@ -222,7 +221,7 @@
                         <img src="successful-anim.gif" alt="successful animation" class="object-cover">
                     </div>
                     <!-- IM HERE -->
-                    @if () {}
+                    @if (successful_payment()) {}
                     <h2>Registration Complete!</h2>
                     <p class="text-center">Please ensure to download a copy of your <a class="text-success underline" href="/download-receipt" onclick="alert('yoo! I\'m kidding')">registration slip here!</a></p>
                 </div>

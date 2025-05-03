@@ -1,6 +1,6 @@
 import { Component, computed, EventEmitter, Input, Output, Signal } from '@angular/core';
 import { RegistrationDataService } from '../../services/registration-data.service';
-import { BulkRegistrationData } from '../../models/registration-data.model';
+import { BulkRegistrationData } from '../../interfaces/registration-data.interface';
 
 @Component({
   selector: 'age-category',

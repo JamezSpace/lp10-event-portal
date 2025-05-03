@@ -1,6 +1,6 @@
 import { computed, Injectable, Signal, signal } from '@angular/core';
-import { BulkRegistrationData } from '../models/registration-data.model';
-import { Person } from '../models/person.model';
+import { Person } from '../interfaces/person.interface';
+import { BulkRegistrationData } from '../interfaces/registration-data.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -74,28 +74,25 @@ export class RegistrationDataService {
     }
 
     editedPersonId(person: Person): Person {
-        if (person.id === 0) {
-            const registeredPersons = this.registered_persons();
-            const lastId = registeredPersons.length > 0 
-                ? registeredPersons[registeredPersons.length - 1].id 
-                : 0;
-            
-            return { ...person, id: lastId + 1 };
-        }
-        return person;
+        const registeredPersons = this.registered_persons();
+        const lastId = registeredPersons.length > 0
+            ? registeredPersons[registeredPersons.length - 1].id
+            : 0;
+
+        return { ...person, id: lastId + 1 };
     }
 
     add_persons_record(person: Person): number {
         const new_person = this.editedPersonId(person);
-        
+
         this.registered_persons.update(prev => [...prev, new_person]);
 
         return new_person.id;
     }
 
     update_person_record(person_to_update: Person) {
-        this.registered_persons.update(prev => 
-            prev.map(person => 
+        this.registered_persons.update(prev =>
+            prev.map(person =>
                 person.id === person_to_update.id ? { ...person, ...person_to_update } : person
             )
         );
