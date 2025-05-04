@@ -38,10 +38,9 @@
         position: absolute;
         text-transform: capitalize;
         opacity: 0.8;
-        font-size: 90%;
-        left: -50%;
+        font-size: 80%;
         bottom: -50%;
-        transform: translate(-10%, 20%);
+        transform: translate(0, 20%);
     }
 
     .step:nth-of-type(1)::after {
@@ -58,6 +57,8 @@
 
     .step .num {
         padding: 5px;
+        width: 30px;
+        font-size: 80%;
         aspect-ratio: 1 / 1;
         border-radius: 50%;
         background: var(--black-tint);
@@ -96,7 +97,8 @@
 
     margin-right: 13.5px;
     width: calc(1rem - 6.5px);
-    aspect-ratio: 1;
+    aspect-ratio: 1 / 1;
+    height: calc(1rem - 6.5px);
     appearance: none;
     background-color: transparent;
     border-radius: 50%;
@@ -191,6 +193,8 @@ mat-radio-group {
 
 .subtitle-heading {
     margin-bottom: 8px;
+    letter-spacing: -0.75px;
+    font-weight: 700;
 }
 
 section.form>div,
@@ -225,6 +229,7 @@ section.form>form {
     border-color: var(--primary);
     background-color: transparent;
     color: var(--primary);
+    font-size: 90%;
 }
 
 .preview-registered-persons-table {
@@ -264,7 +269,7 @@ section.form>form {
     }
 
     .progress-bar-container {
-        max-width: 90dvw;
+        max-width: 100dvw;
     }
 
     .preview-page-button-actions {

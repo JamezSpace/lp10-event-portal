@@ -14,9 +14,9 @@ export class RegistrationDataService {
     })
 
     registration_pricing = signal<BulkRegistrationData>({
-        teenager: 2000,
-        children: 1000,
-        teacher: 2000
+        teenager: 5000,
+        children: 5000,
+        teacher: 5000
     })
 
     private registered_persons = signal<Person[]>([])

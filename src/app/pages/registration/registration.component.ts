@@ -1,24 +1,25 @@
 import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, QueryList, signal, Signal, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { environment } from '../../../environments/environment';
 import { AgeCategoryComponent } from "../../components/age-category/age-category.component";
+import { DialogComponent } from '../../components/dialog/dialog.component';
+import { FlutterwaveCallbackResponse } from '../../interfaces/payment.interfaces';
 import { Person } from '../../interfaces/person.interface';
 import { RegistrationDataService } from '../../services/registration-data.service';
 import { RegistrationService } from '../../services/registration.service';
-import { environment } from '../../../environments/environment';
-import { FlutterwaveCallbackResponse } from '../../interfaces/payment.interfaces';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '../../components/dialog/dialog.component';
 declare var FlutterwaveCheckout: any;
 
 @Component({
     selector: 'app-registration',
-    imports: [MatProgressBarModule, MatInputModule, MatSelectModule, MatButtonModule, MatRadioModule, MatFormFieldModule, FormsModule, AgeCategoryComponent, ReactiveFormsModule],
+    imports: [MatProgressBarModule, MatInputModule, MatSelectModule, MatButtonModule, MatRadioModule, MatFormFieldModule, FormsModule, AgeCategoryComponent, ReactiveFormsModule, MatProgressSpinnerModule],
     templateUrl: './registration.component.html',
     styleUrl: './registration.component.css'
 })
@@ -52,8 +53,8 @@ export class RegistrationComponent implements AfterViewInit {
         first_name: new FormControl('', Validators.required),
         last_name: new FormControl('', Validators.required),
         gender: new FormControl('', Validators.required),
-        email: new FormControl('', Validators.email),
-        age: new FormControl('', [Validators.min(5), Validators.max(25)])
+        email: new FormControl('', [Validators.email, Validators.required]),
+        age: new FormControl('', [Validators.min(5), Validators.max(25), Validators.required])
     })
 
     origin: string = 'lp10'
@@ -183,7 +184,7 @@ export class RegistrationComponent implements AfterViewInit {
         const saved_ids = await this.regService.sendPersonDataToDatabase()
 
         // store up the ids of the persons just saved into the database in the array so paymentStatus can easily be updated for each of them after payment
-        if(saved_ids) this.database_saved_ids = saved_ids;
+        if (saved_ids) this.database_saved_ids = saved_ids;
 
         // this.resetAllFormData(true)
         this.previewData()
@@ -201,8 +202,20 @@ export class RegistrationComponent implements AfterViewInit {
         this.current_step.update(num => ++num)
 
         // move to next page
-        this.pagesContainer.nativeElement.style.transform = this.current_step() !== 3 ?
-             `translateX(calc(-100% + 19px))` : `translateX(calc(-200% + 19px))`
+        // this.pagesContainer.nativeElement.style.transform = this.current_step() !== 3 ?
+        //      `translateX(calc(-100% + 19px))` : `translateX(calc(-200% + 19px))`
+
+        const pages_container = this.pagesContainer.nativeElement;
+
+        if (this.current_step() !== 3) {
+            pages_container.classList.add("transform");
+            pages_container.classList.add("translate-x-[calc(-100%+19px)]");
+            pages_container.classList.add("phone-screen:translate-x-[calc(-101%)]");
+        } else {
+            pages_container.classList.add("transform");
+            pages_container.classList.add("translate-x-[calc(-200%+19px)]");
+            pages_container.classList.add("phone-screen:translate-x-[calc(-200%)]");
+        }
 
         // scroll to the top on the next page
         setTimeout(() => {
@@ -214,11 +227,11 @@ export class RegistrationComponent implements AfterViewInit {
         if (this.current_step() === 1) return
         this.current_step.update(num => --num)
 
+        const pages_container = this.pagesContainer.nativeElement;
+
         // move to previous page
-        this.pagesContainer.nativeElement.style.transform = `translateX(calc(0%))`
-
-        // listener for edit on the form
-
+        pages_container.classList.replace("translate-x-[calc(-100%+19px)]", "translate-x-0") 
+        pages_container.classList.replace("phone-screen:translate-x-[calc(-101%)]", "translate-x-0")
     }
 
     previewData() {
@@ -253,10 +266,10 @@ export class RegistrationComponent implements AfterViewInit {
     protected flutter_response: FlutterwaveCallbackResponse | undefined;
     successful_payment = signal(false)
 
-    makePayment() {        
+    makePayment() {
         const persons: Person[] = this.reg_data_service.fetch_all_registered_persons_records()
         console.log(persons);
-        
+
         const commonPaymentParams = {
             public_key: environment.flutterwave.publick_key,
             tx_ref: `lp10_convention_${Date.now()}`,
@@ -303,18 +316,33 @@ export class RegistrationComponent implements AfterViewInit {
         }
     }
 
+
+    @ViewChild("loader")
+    loader!: ElementRef<HTMLDivElement>;
+
+    toggleLoader() {
+        if (this.loader.nativeElement.classList.contains('flex'))
+            this.loader.nativeElement.classList.replace('flex', 'hidden')
+        else
+            this.loader.nativeElement.classList.replace('hidden', 'flex')
+    }
+
     async onFlutterWindowClosure() {
         if (typeof this.flutter_response === 'undefined') return
         // if (this.flutter_response.status !== 'successful') return
+
+        this.toggleLoader()
 
         // verify payment from server as recommended by flutterwave
         const payment_verification = await this.regService.validatePayment(this.flutter_response.transaction_id, this.flutter_response.amount, this.database_saved_ids)
         if (payment_verification.status !== 'valid') {
             console.log("payment is not valid from backend");
+            this.toggleLoader()
             return
         }
 
         this.successful_payment.update(() => true);
         this.nextStep();
+        this.toggleLoader();
     }
 }

@@ -4,9 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "prebuild": "node -r dotenv/config populate.env.js",
     "build": "ng build",
+    "build-ssr": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "serve-ssr": "node dist/frontend-main/server/server.mjs"
   },
   "private": true,
   "dependencies": {
@@ -30,6 +33,7 @@
     "@angular/compiler-cli": "^19.0.0",
     "@types/jasmine": "~5.1.0",
     "autoprefixer": "^10.4.20",
+    "dotenv": "^16.5.0",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

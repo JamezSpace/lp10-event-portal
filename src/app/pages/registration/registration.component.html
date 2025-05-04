@@ -1,3 +1,7 @@
+<div class="fixed z-10 w-full h-dvh hidden justify-center items-center backdrop-blur-[1px]" #loader>
+    <mat-spinner></mat-spinner>
+</div>
+
 <div class="main-container" #mainContainer>
     <section class="progress-bar-container my-flex" aria-label="progress bar container">
         <div [className]="
@@ -22,7 +26,7 @@
     </section>
 
     <div class="carousel-wrapper">
-        <div class="carousel-container px-5" #pagesContainer>
+        <div class="carousel-container px-5 phone-screen:px-2" #pagesContainer>
             <div [className]="current_step() === 1 ? 'page page-active' : 'page'">
                 <section class="form w-11/12 non-laptop-screen:w-full mx-auto">
                     <div class="origin-group-container">
@@ -49,16 +53,17 @@
                             <form name="lp10" [className]="origin === 'lp10' ? '' : 'hidden'"
                                 [formGroup]="lp10_origin_data">
                                 <section class="row">
-                                    <mat-form-field class="field">
+                                    <mat-form-field class="field" appearance="outline">
                                         <mat-label>Zone</mat-label>
                                         <mat-select formControlName="zone">
                                             <mat-option>Select your zone</mat-option>
+                                            <mat-option value="sunshine">Sunshine Zone</mat-option>
                                             @for (zone of zones(); track $index) {
                                             <mat-option [value]="zone">{{ zone }}</mat-option>
                                             }
                                         </mat-select>
                                     </mat-form-field>
-                                    <mat-form-field class="field">
+                                    <mat-form-field class="field" appearance="outline">
                                         <mat-label>Parish</mat-label>
                                         <input matInput type="text" placeholder="e.g. New Life Parish"
                                             formControlName="parish">
@@ -68,12 +73,12 @@
                             <form name="non-lp10" [formGroup]="nonlp10_origin_data"
                                 [className]="origin === 'non-lp10' ? 'w-full' : 'hidden'">
                                 <section class="row">
-                                    <mat-form-field class="field">
+                                    <mat-form-field class="field" appearance="outline">
                                         <mat-label>Region</mat-label>
                                         <input matInput type="number" placeholder="Your Region"
                                             formControlName="region">
                                     </mat-form-field>
-                                    <mat-form-field class="field">
+                                    <mat-form-field class="field" appearance="outline">
                                         <mat-label>Province</mat-label>
                                         <input matInput type="text" placeholder="Your province"
                                             formControlName="province">
@@ -83,12 +88,12 @@
                             <form name="others" [className]="origin === 'non-rccg' ? 'w-full' : 'hidden'"
                                 [formGroup]="nonrccg_origin_data">
                                 <section class="row">
-                                    <mat-form-field class="field">
+                                    <mat-form-field class="field" appearance="outline">
                                         <mat-label>Denomination</mat-label>
                                         <input matInput type="text" placeholder="Type here..."
                                             formControlName="denomination">
                                     </mat-form-field>
-                                    <mat-form-field class="field">
+                                    <mat-form-field class="field" appearance="outline">
                                         <mat-label>Important details</mat-label>
                                         <input matInput type="text" placeholder="Type here..."
                                             formControlName="details">
@@ -124,7 +129,7 @@
                                 }}</span>
                         </h3>
                         <section class="row">
-                            <mat-form-field class="field">
+                            <mat-form-field class="field" appearance="outline">
                                 <mat-label>First name</mat-label>
                                 <input matInput placeholder="e.g. John" formControlName="first_name" type="text">
                             </mat-form-field>
@@ -132,7 +137,7 @@
                             <label for="first-name">first name</label>
                             <input type="text" placeholder="e.g. John" id="first-name" formControlName="first_name">
                         </div> -->
-                            <mat-form-field class="field">
+                            <mat-form-field class="field" appearance="outline">
                                 <mat-label>Last name</mat-label>
                                 <input matInput placeholder="e.g. Doe" formControlName="last_name" type="text">
                             </mat-form-field>
@@ -150,7 +155,7 @@
                                     <mat-radio-button value="female">Female</mat-radio-button>
                                 </mat-radio-group>
                             </div>
-                            <mat-form-field class="field">
+                            <mat-form-field class="field" appearance="outline">
                                 <mat-label>Age</mat-label>
                                 <input matInput placeholder="e.g. 19" min="5" formControlName="age" type="number">
                             </mat-form-field>
@@ -160,7 +165,7 @@
                         </div> -->
                         </section>
                         <section class="row">
-                            <mat-form-field class="field">
+                            <mat-form-field class="field" appearance="outline">
                                 <mat-label>Email</mat-label>
                                 <input matInput placeholder="e.g. test@gmail.com" formControlName="email" type="email">
                             </mat-form-field>
@@ -169,7 +174,7 @@
                             <input type="email" placeholder="e.g. test@gmail.com" id="email" formControlName="email">
                         </div> -->
                         </section>
-                        <button type="submit" class="block w-full py-3 border-[2px] btn mt-5"
+                        <button type="submit" class="block w-full py-3 border-[2px] btn mt-5 font-black"
                             [disabled]="!registration_data.dirty">{{
                             total_number_registering() > 1 ? 'Save Data' : 'Submit' }}</button>
                     </form>
