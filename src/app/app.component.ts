@@ -10,8 +10,6 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
     styleUrl: './app.component.css'
 })
 export class AppComponent {
-    title = 'lp10-event-portal';
-
     async ngAfterViewInit() {
         await fetch(environment.base_backend.url);
     }

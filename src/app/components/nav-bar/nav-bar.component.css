@@ -15,14 +15,19 @@
 }
 
 .nav-bar-container {
+    --transition-value: transform 400ms ease-in-out;
+
+    z-index: 2;
     background-color: rgb(180, 180, 180, 0.6);
     height: calc(100dvh - 50px);
-    backdrop-filter: blur(2px);
-    position: fixed;
-    z-index: -1;
     width: 100%;
+    backdrop-filter: blur(2px);
+    will-change: transform;
+    transform: translateX(100%);
+    position: fixed;
     top: 50px;
     right: 0;
+    transition: var(--transition-value) 150ms;
 
     .expanded-nav-bar {
         padding-inline: 20px;
@@ -31,10 +36,10 @@
         right: 0;
         width: 40%;
         background-color: #fff;
-        transform: translateX(100%);
-        transition: transform 400ms ease;
         align-items: normal;
         will-change: transform;
+        transform: translateX(100%);
+        transition: var(--transition-value);
     }
 }
 
@@ -50,7 +55,7 @@
 }
 
 .nav-bar-container.active {
-    z-index: 2;
+    transform: translateX(0);
 
     .expanded-nav-bar {
         transform: translateX(0);
