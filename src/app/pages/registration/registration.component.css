@@ -61,16 +61,12 @@
         font-size: 80%;
         aspect-ratio: 1 / 1;
         border-radius: 50%;
-        background: var(--black-tint);
+        background: var(--black-tint-20);
         color: #fff;
         display: flex;
         justify-content: center;
         align-items: center;
         background-blend-mode: color;
-    }
-
-    mat-progress-bar {
-        background-color: var(--black-tint);
     }
 }
 
@@ -166,7 +162,6 @@ form .row .field {
     & label {
         display: block;
         text-transform: capitalize;
-        margin-block: 2.5px 8px;
     }
 
     & input::placeholder {}

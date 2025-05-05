@@ -6,13 +6,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@use '@angular/material' as mat;
 
 :root {
     --primary: #804e49;
+    --primary-tint: #b39592;
+    --primary-tint-30: #ccb8b6;
+    --primary-tint-50: #e6dcdb;
     --black: #0a122a;
-    --black-tint: #b6b8bf;
-    --black-tint-1: #ced0d4;
+    --black-tint: #54596a;
+    --black-tint-20: #b6b8bf;
+    --black-tint-30: #ced0d4;
     --white: #fbfaf8;
 
     --black-2: rgb(52, 55, 62, 0.9);
@@ -21,23 +24,10 @@
     --error: #DD524D;
 
 
-    --mat-sys-primary: var(--black);
-    --mat-sys-surface-container: var(--white);
-
     /* Form Fields */
-    --mat-option-label-text-color: #000;
-    --mat-select-enabled-trigger-text-color: #000;
-    --mat-option-selected-state-layer-color: var(--black-tint-1);
-    --mat-option-hover-state-layer-color: var(--black-tint-1);
-
-    /* Radio Buttons */
-    /* --mat-sys-body-medium-font: "Verdana", sans-serif; */
-    --mat-radio-label-text-weight: 400;
-    --mdc-radio-state-layer-size: 25px;
-    --mdc-radio-selected-icon-color: var(--primary);
-    --mdc-radio-selected-focus-icon-color: var(--primary);
-    --mdc-radio-unselected-icon-color: var(--primary);
-    --mdc-radio-unselected-focus-icon-color: var(--primary);
+    /* --mat-option-label-text-color: #000;
+    --mat-select-enabled-trigger-text-color: #000; */
+    /* --mat-option-selected-state-layer-color: var(--black-tint-30); */
 }
 
 *,
