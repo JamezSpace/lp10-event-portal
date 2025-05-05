@@ -34,6 +34,7 @@
         transform: translateX(100%);
         transition: transform 400ms ease;
         align-items: normal;
+        will-change: transform;
     }
 }
 
@@ -53,30 +54,6 @@
 
     .expanded-nav-bar {
         transform: translateX(0);
-    }
-}
-
-.opened-nav-bar {
-    transform: translateX(40%);
-    position: fixed;
-    top: 0;
-    right: 0;
-    background: #fff;
-    z-index: 1;
-}
-
-.opened-nav-bar.active {
-    transform: translateX(0);
-}
-
-.opened-nav-bar nav {
-    flex-direction: column;
-    margin-block: 20px;
-    margin-inline: auto;
-
-    a {
-        display: block;
-        padding-block: 10px;
     }
 }
 

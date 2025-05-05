@@ -14,7 +14,6 @@ export class NavBarComponent {
     @ViewChild('navcontainer') navcontainer !: ElementRef
 
     toggleNavBar(e: any) {
-      console.log(e.target)
-      this.navcontainer.nativeElement.classList.toggle('active')
+      if(!e.target.classList.contains('expanded-nav-bar')) this.navcontainer.nativeElement.classList.toggle('active')
     }
 }

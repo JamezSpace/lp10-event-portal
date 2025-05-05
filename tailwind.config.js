@@ -19,7 +19,8 @@ module.exports = {
         fontSize: {
             'size-small': '16px',
             'size-normal': '20px',
-            'size-heading': '24px'
+            'size-heading': '24px',
+            'size-heading-1.5': '36px'
         },
         extend: {
             fontFamily: { 'sans-serif': 'Inter, sans-serif' },
