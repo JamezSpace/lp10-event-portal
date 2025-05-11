@@ -1,5 +1,5 @@
-import { AfterViewInit, ChangeDetectorRef, Component, computed, ElementRef, inject, QueryList, signal, Signal, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { OnInit, ChangeDetectorRef, Component, computed, ElementRef, inject, QueryList, signal, Signal, ViewChild, ViewChildren } from '@angular/core';
+import { EmailValidator, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,14 +23,34 @@ declare var FlutterwaveCheckout: any;
     templateUrl: './registration.component.html',
     styleUrl: './registration.component.css'
 })
-export class RegistrationComponent implements AfterViewInit {
+export class RegistrationComponent implements OnInit {
     reg_data_service = inject(RegistrationDataService);
     readonly dialog = inject(MatDialog);
 
     constructor(private regService: RegistrationService, private cdr: ChangeDetectorRef) { }
 
-    async ngAfterViewInit(): Promise<void> {
-        this.zones.set(await this.regService.fetchZones())
+    async ngOnInit(): Promise<void> {
+        // cookies were used to store the zones data for 2 minutes, so that it doesn't have to be fetched from the backend every time the page is refreshed. This is to prevent overloading the backend with requests.
+        const zonesCookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('zones='));
+
+        // Check if the cookie exists and is not expired
+        if (!zonesCookie) {
+            const zones_from_backend = await this.regService.fetchZones();
+
+            // Set zones in cookies with a 2-minute expiry
+            const expiryDate = new Date();
+            expiryDate.setTime(expiryDate.getTime() + 2 * 60 * 1000); // 2 minutes in milliseconds
+            document.cookie = `zones=${encodeURIComponent(JSON.stringify(zones_from_backend))}; expires=${expiryDate.toUTCString()}; path=/`;
+
+            this.zones.set(zones_from_backend);
+        } else {
+            const zones = JSON.parse(decodeURIComponent(zonesCookie.split('=')[1]));
+            this.zones.set(zones);
+        }
+
+        this.zones().length === 0 ? this.lp10_origin_data.get('zone')?.disable() : this.lp10_origin_data.get('zone')?.enable()
     }
 
     current_step = signal(1);
@@ -52,13 +72,13 @@ export class RegistrationComponent implements AfterViewInit {
     registration_data = new FormGroup({
         first_name: new FormControl('', Validators.required),
         last_name: new FormControl('', Validators.required),
-        gender: new FormControl('', Validators.required),
+        gender: new FormControl(null, Validators.required),
         email: new FormControl('', [Validators.email, Validators.required]),
-        age: new FormControl('', [Validators.min(5), Validators.max(25), Validators.required])
+        age: new FormControl(0, [Validators.min(5), Validators.max(25), Validators.required])
     })
 
     origin: string = 'lp10'
-    zones = signal<string[]>(['']);
+    zones = signal<string[]>([]);
 
     onLp10Selection() {
         this.origin = 'lp10'
@@ -73,7 +93,7 @@ export class RegistrationComponent implements AfterViewInit {
     }
 
     lp10_origin_data = new FormGroup({
-        zone: new FormControl(null, Validators.required),
+        zone: new FormControl('', Validators.required),
         parish: new FormControl('', Validators.required)
     })
 
@@ -87,31 +107,26 @@ export class RegistrationComponent implements AfterViewInit {
         details: new FormControl('')
     })
 
-    @ViewChildren('gender') gender_btns !: QueryList<ElementRef>;
+    get allFieldsChanged(): boolean { return Object.values(this.registration_data.controls).every(control => control.dirty); }
+
+    resetFormGroup(form: FormGroup) {
+        form.reset();
+    }
+
     resetAllFormData(all: boolean) {
         // considering this functionality is needed for both saving person data and final submission, an 'all' parameter is needed to know if to clear all or partially all. If all is true, it means it is final submission, hence even the registration data needs to reset
-        if (all) this.reg_data_service.reset_registration_data()
+        if (all) this.reg_data_service.reset_registration_data();
 
-        // reset all form values
-        this.lp10_origin_data.setValue({
-            parish: '',
-            zone: null
-        })
-        this.nonlp10_origin_data.setValue({
-            region: '',
-            province: ''
-        })
-        this.nonrccg_origin_data.setValue({
-            denomination: '',
-            details: ''
-        })
-        this.registration_data.setValue({
+        this.lp10_origin_data.reset()
+        this.nonlp10_origin_data.reset()
+        this.nonrccg_origin_data.reset()
+        this.registration_data.reset({
             first_name: '',
-            age: '',
-            gender: '',
             last_name: '',
-            email: ''
-        })
+            gender: null,
+            email: '',
+            age: null
+        });
     }
 
     deactivate_registration_breakdown: boolean = false
@@ -119,32 +134,10 @@ export class RegistrationComponent implements AfterViewInit {
     database_saved_ids: string[] = []
 
     async saveData() {
-        if (!this.registration_data.errors === null) return
+        console.log("Errors", this.registration_data.invalid);
+        console.log("Invalid", this.registration_data.invalid);
 
-        if (this.registration_data.dirty) { }
-
-        // fetch all invalid form fields in the origin section
-        let invalids: FormControl<string | null>[] = []
-
-        if (this.origin === 'lp10' && this.lp10_origin_data.invalid) {
-            if (this.lp10_origin_data.controls.parish.invalid) invalids.push(this.lp10_origin_data.controls.parish)
-
-            if (this.lp10_origin_data.controls.zone.invalid) invalids.push(this.lp10_origin_data.controls.zone)
-
-            return
-        }
-        else if (this.origin === 'non-lp10' && this.nonlp10_origin_data.invalid) {
-            if (this.nonlp10_origin_data.controls.province.invalid) invalids.push(this.nonlp10_origin_data.controls.province)
-
-            if (this.nonlp10_origin_data.controls.region.invalid) invalids.push(this.nonlp10_origin_data.controls.region)
-
-            return
-        }
-        else if (this.origin === 'non-rccg' && this.nonrccg_origin_data.controls.denomination.invalid) {
-            invalids.push(this.nonrccg_origin_data.controls.denomination)
-
-            return
-        }
+        if (this.registration_data.invalid) return
 
         const person: Person = {
             id: this.persons_ids[this.persons_ids.length - 1],
@@ -230,7 +223,7 @@ export class RegistrationComponent implements AfterViewInit {
         const pages_container = this.pagesContainer.nativeElement;
 
         // move to previous page
-        pages_container.classList.replace("translate-x-[calc(-100%+19px)]", "translate-x-0") 
+        pages_container.classList.replace("translate-x-[calc(-100%+19px)]", "translate-x-0")
         pages_container.classList.replace("phone-screen:translate-x-[calc(-101%)]", "translate-x-0")
     }
 
@@ -268,14 +261,13 @@ export class RegistrationComponent implements AfterViewInit {
 
     makePayment() {
         const persons: Person[] = this.reg_data_service.fetch_all_registered_persons_records()
-        console.log(persons);
 
         const commonPaymentParams = {
             public_key: environment.flutterwave.publick_key,
             tx_ref: `lp10_convention_${Date.now()}`,
             amount: this.reg_data_service.get_total_fee_of_all_registration(),
             currency: 'NGN',
-            payment_options: 'card, banktransfer, account, opay, ussd',
+            payment_options: 'banktransfer, card, account, opay',
             onclose: () => { this.onFlutterWindowClosure() },
             customizations: {
                 title: 'LP10 Event Portal',
@@ -285,7 +277,7 @@ export class RegistrationComponent implements AfterViewInit {
 
         if (persons.length > 1) {
             const modal = FlutterwaveCheckout({
-                commonPaymentParams,
+                ...commonPaymentParams,
                 customer: {
                     email: this.payers_email(),
                     name: this.payers_name(),

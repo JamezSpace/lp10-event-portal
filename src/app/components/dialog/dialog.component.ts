@@ -26,8 +26,19 @@ export class DialogComponent {
     readonly dialogRef = inject(MatDialogRef<DialogComponent>);
     payers_name = signal('');
     payers_email = signal('');
+    cancel(): void {
+        this.dialogRef.close(); // no data
+    }
 
-    buttonClick(): void {
-        this.dialogRef.close({ payers_name: this.payers_name(), payers_email: this.payers_email() });
+    confirm(): void {
+        const result = {
+            payers_name: this.payers_name(),
+            payers_email: this.payers_email()
+        };
+
+        // SAFELY defer closing to next microtask
+        Promise.resolve().then(() => {
+            this.dialogRef.close(result);
+        });
     }
 }

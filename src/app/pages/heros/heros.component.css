@@ -44,18 +44,3 @@
         }
     }
 }
-
-/* @media screen and (max-width: 380px) {
-    .heros {
-        grid-template-areas: "text-content text-content"
-        "down right";
-        grid-template-columns: 1fr 1fr ;
-        grid-template-rows: auto 1fr;
-
-        .image-container {
-            grid-area: right;
-            background-image: linear-gradient(rgb(255, 255, 255, 0.4), rgb(255, 255, 255, 0.4)), url('/handsome_lp10_child.webp');
-            background-repeat: no-repeat;
-        }
-    }
-} */

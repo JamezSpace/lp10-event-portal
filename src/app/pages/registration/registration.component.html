@@ -9,7 +9,8 @@
         current_step() > 1 ? 'step completed' : 'step' " aria-label="step 1 indicator">
             <span class="num">1</span>
         </div>
-        <mat-progress-bar mode="determinate" [value]="current_step() > 1 ? 100 : 15" aria-label="progress bar line"></mat-progress-bar>
+        <mat-progress-bar mode="determinate" [value]="current_step() > 1 ? 100 : 15"
+            aria-label="progress bar line"></mat-progress-bar>
         <div [className]="
         current_step() === 2 ? 'step active' :
         current_step() > 2 ? 'step completed' : 'step' " aria-label="step 2 indicator">
@@ -53,47 +54,62 @@
                             <form name="lp10" [className]="origin === 'lp10' ? '' : 'hidden'"
                                 [formGroup]="lp10_origin_data">
                                 <section class="row">
-                                    <mat-form-field class="field" >
+                                    @if (zones().length > 0) {
+                                    <mat-form-field class="field">
                                         <mat-label>Zone</mat-label>
                                         <mat-select formControlName="zone">
-                                            <mat-option>Select your zone</mat-option>
+                                            <mat-option value="" disabled>Select your zone</mat-option>
+                                            <!-- this value is for local testing only -->
                                             <mat-option value="sunshine">Sunshine Zone</mat-option>
-                                            @for (zone of zones(); track $index) {
+                                            @for (zone of zones(); track zone) {
                                             <mat-option [value]="zone">{{ zone }}</mat-option>
                                             }
                                         </mat-select>
                                     </mat-form-field>
-                                    <mat-form-field class="field" >
+                                    }
+                                    <mat-form-field class="field">
                                         <mat-label>Parish</mat-label>
                                         <input matInput type="text" placeholder="e.g. New Life Parish"
                                             formControlName="parish">
+                                        @if (lp10_origin_data.controls.parish.invalid) {
+                                            <mat-error>Parish is required</mat-error>
+                                        }
                                     </mat-form-field>
                                 </section>
                             </form>
                             <form name="non-lp10" [formGroup]="nonlp10_origin_data"
                                 [className]="origin === 'non-lp10' ? 'w-full' : 'hidden'">
                                 <section class="row">
-                                    <mat-form-field class="field" >
+                                    <mat-form-field class="field">
                                         <mat-label>Region</mat-label>
                                         <input matInput type="number" placeholder="Your Region"
                                             formControlName="region">
+                                        @if (nonlp10_origin_data.controls.region.invalid) {
+                                            <mat-error>Region is required</mat-error>
+                                        }
                                     </mat-form-field>
-                                    <mat-form-field class="field" >
+                                    <mat-form-field class="field">
                                         <mat-label>Province</mat-label>
                                         <input matInput type="text" placeholder="Your province"
                                             formControlName="province">
+                                        @if (nonlp10_origin_data.controls.province.invalid) {
+                                            <mat-error>Province is required</mat-error>
+                                        }
                                     </mat-form-field>
                                 </section>
                             </form>
                             <form name="others" [className]="origin === 'non-rccg' ? 'w-full' : 'hidden'"
                                 [formGroup]="nonrccg_origin_data">
                                 <section class="row">
-                                    <mat-form-field class="field" >
+                                    <mat-form-field class="field">
                                         <mat-label>Denomination</mat-label>
                                         <input matInput type="text" placeholder="Type here..."
                                             formControlName="denomination">
+                                        @if (nonrccg_origin_data.controls.denomination.invalid) {
+                                            <mat-error>Denomination is required</mat-error>
+                                        }
                                     </mat-form-field>
-                                    <mat-form-field class="field" >
+                                    <mat-form-field class="field">
                                         <mat-label>Important details</mat-label>
                                         <input matInput type="text" placeholder="Type here..."
                                             formControlName="details">
@@ -129,17 +145,23 @@
                                 }}</span>
                         </h3>
                         <section class="row">
-                            <mat-form-field class="field" >
+                            <mat-form-field class="field">
                                 <mat-label>First name</mat-label>
                                 <input matInput placeholder="e.g. John" formControlName="first_name" type="text">
+                                @if (registration_data.controls.first_name.touched &&registration_data.controls.last_name.invalid) {
+                                    <mat-error>First name is required</mat-error>
+                                }
                             </mat-form-field>
                             <!-- <div class="field">
                             <label for="first-name">first name</label>
                             <input type="text" placeholder="e.g. John" id="first-name" formControlName="first_name">
                         </div> -->
-                            <mat-form-field class="field" >
+                            <mat-form-field class="field">
                                 <mat-label>Last name</mat-label>
                                 <input matInput placeholder="e.g. Doe" formControlName="last_name" type="text">
+                                @if (registration_data.controls.last_name.touched && registration_data.controls.last_name.invalid) {
+                                    <mat-error>Last name is required</mat-error>
+                                }
                             </mat-form-field>
                             <!-- <div class="field">
                             <label for="last-name">last name</label>
@@ -155,9 +177,15 @@
                                     <mat-radio-button value="female">Female</mat-radio-button>
                                 </mat-radio-group>
                             </div>
-                            <mat-form-field class="field" >
+                            <mat-form-field class="field">
                                 <mat-label>Age</mat-label>
                                 <input matInput placeholder="e.g. 19" min="5" formControlName="age" type="number">
+                                @if (registration_data.controls.age.value !== null && registration_data.controls.age.value !== 0 && (registration_data.controls.age.value < 5 || registration_data.controls.age.value > 25)) {
+                                    <mat-error>Age limit is 5 to 25</mat-error>
+                                }
+                                @else if (registration_data.controls.age.value === null || registration_data.controls.age.value === 0) {
+                                    <mat-error>Age is required</mat-error>
+                                }
                             </mat-form-field>
                             <!-- <div class="field">
                             <label for="age">age</label>
@@ -165,9 +193,15 @@
                         </div> -->
                         </section>
                         <section class="row">
-                            <mat-form-field class="field" >
+                            <mat-form-field class="field">
                                 <mat-label>Email</mat-label>
                                 <input matInput placeholder="e.g. test@gmail.com" formControlName="email" type="email">
+                                @if (registration_data.controls.email.hasError('email')) {
+                                    <mat-error>Enter a valid email...</mat-error>
+                                } 
+                                @else if (registration_data.controls.email.invalid) {
+                                    <mat-error>Email is required</mat-error>
+                                }
                             </mat-form-field>
                             <!-- <div class="field">
                             <label for="email">email</label>
@@ -175,7 +209,7 @@
                         </div> -->
                         </section>
                         <button type="submit" class="block w-full py-3 border-[2px] btn mt-5 font-black"
-                            [disabled]="!registration_data.dirty">{{
+                            [disabled]="!allFieldsChanged">{{
                             total_number_registering() > 1 ? 'Save Data' : 'Submit' }}</button>
                     </form>
                 </section>
@@ -215,7 +249,8 @@
                         </svg>
                         Back
                     </button>
-                    <button type="button" class="my-flex px-5 py-2 border-[2px] btn" (click)="goToMakePaymentStep()">Proceed To
+                    <button type="button" class="my-flex px-5 py-2 border-[2px] btn"
+                        (click)="goToMakePaymentStep()">Proceed To
                         Payment</button>
                 </div>
             </section>
@@ -228,7 +263,9 @@
                     <!-- IM HERE -->
                     @if (successful_payment()) {}
                     <h2>Registration Complete!</h2>
-                    <p class="text-center">Please ensure to download a copy of your <a class="text-success underline" href="/download-receipt" onclick="alert('yoo! I\'m kidding')">registration slip here!</a></p>
+                    <p class="text-center">Please ensure to download a copy of your <a class="text-success underline"
+                            href="/download-receipt" onclick="alert('yoo! I\'m kidding')">registration slip here!</a>
+                    </p>
                 </div>
             </section>
         </div>

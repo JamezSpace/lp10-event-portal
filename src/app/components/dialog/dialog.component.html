@@ -9,7 +9,7 @@
         <input matInput appearance="outline" [(ngModel)]="payers_email">
     </mat-form-field>
     <mat-dialog-actions>
-        <button mat-button (click)="buttonClick()">Cancel</button>
-        <button mat-button (click)="buttonClick()">Pay Now</button>
-      </mat-dialog-actions>
+        <button mat-button (click)="cancel()">Cancel</button>
+        <button mat-button (click)="confirm()">Pay Now</button>
+    </mat-dialog-actions>
 </mat-dialog-content>

@@ -16,7 +16,12 @@ export class RegistrationService {
             }), data = await response.json()
 
             // data is an array of objects holding the zones ([{id, name}])
-            return data.map((zone: { name: string }) => zone.name);
+            return data.map((zone: { name: string }) => 
+                // turn to title case
+                zone.name.replace(/\w\S*/g, (txt: string) => 
+                    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                )
+            );
         } catch (error: any) {
             console.error(error);
             return []
