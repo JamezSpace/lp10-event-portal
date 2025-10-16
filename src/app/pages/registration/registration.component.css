@@ -106,7 +106,7 @@
 }
 
 .origin-specifics {
-    margin-top: 8px;
+    margin-top: 20px;
 }
 
 .my-input {
@@ -184,6 +184,10 @@ input:not(:-webkit-autofill, [type="radio"]) {
 mat-radio-group {
     display: inline-flex;
     gap: 20px;
+}
+
+mat-error {
+    margin-bottom: 10px;
 }
 
 .subtitle-heading {

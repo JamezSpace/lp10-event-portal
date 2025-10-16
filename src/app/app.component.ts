@@ -11,6 +11,8 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 })
 export class AppComponent {
     async ngAfterViewInit() {
-        await fetch(environment.base_backend.url);
+        await fetch(environment.base_backend.url, {
+            mode: 'cors'
+        });
     }
 }

@@ -29,7 +29,7 @@
     <div class="carousel-wrapper">
         <div class="carousel-container px-5 phone-screen:px-2" #pagesContainer>
             <div [className]="current_step() === 1 ? 'page page-active' : 'page'">
-                <section class="form w-11/12 non-laptop-screen:w-full mx-auto">
+                <section class="form w-4/6 non-laptop-screen:w-full mx-auto">
                     <div class="origin-group-container">
                         <h3 class="capitalize subtitle-heading">Origin</h3>
                         <article
@@ -71,8 +71,10 @@
                                         <mat-label>Parish</mat-label>
                                         <input matInput type="text" placeholder="e.g. New Life Parish"
                                             formControlName="parish">
-                                        @if (lp10_origin_data.controls.parish.invalid) {
-                                            <mat-error>Parish is required</mat-error>
+                                        @if (lp10_origin_data.controls.parish.hasError('pattern')) {
+                                            <mat-error>Only words are allowed!</mat-error>
+                                        } @else if (lp10_origin_data.controls.parish.dirty && lp10_origin_data.controls.parish.invalid) {
+                                            <mat-error>Parish is required!</mat-error>
                                         }
                                     </mat-form-field>
                                 </section>
@@ -121,17 +123,17 @@
                     <div class="registration-breakdown-group-container">
                         <h3 class="capitalize subtitle-heading">registering</h3>
                         <section
-                            [className]="(deactivate_registration_breakdown ? 'opacity-50 pointer-events-none' : '') + 'registration-breakdown-group my-flex justify-between'">
+                            [className]="(deactivate_registration_breakdown ? 'opacity-50 pointer-events-none' : '') + 'registration-breakdown-group my-flex justify-between px-[10px]'">
                             <section class="number-gui">
                                 <age-category [category]="'teenager'" />
                                 <age-category [category]="'children'" />
                             </section>
-                            <span class="block w-6 h-[2px] bg-black"></span>
+                            <span class="block w-6 h-[1.5px] bg-black"></span>
                             <article class="text-black text-size-normal" label="fee display">
-                                <span class="symbol">N</span>
+                                <!-- <span class="symbol">N</span> -->
                                 <span id="amount"
                                     aria-label="this is the amount it costs based on your selection of age categories for registration">
-                                    {{ total_fee().toFixed(2) }}
+                                    {{ total_fee() === 0 ? 'NGN --' : total_fee().toLocaleString('en-US', {style: 'currency', currency: 'NGN'}) }}
                                 </span>
                                 <span class="currency"></span>
                             </article>
@@ -148,7 +150,10 @@
                             <mat-form-field class="field">
                                 <mat-label>First name</mat-label>
                                 <input matInput placeholder="e.g. John" formControlName="first_name" type="text">
-                                @if (registration_data.controls.first_name.touched &&registration_data.controls.last_name.invalid) {
+                                @if(registration_data.controls.first_name.hasError('pattern')) {
+                                    <mat-error>Only words permitted here!</mat-error>
+                                }
+                                @else if (registration_data.controls.first_name.dirty && registration_data.controls.first_name.invalid) {
                                     <mat-error>First name is required</mat-error>
                                 }
                             </mat-form-field>
@@ -159,7 +164,10 @@
                             <mat-form-field class="field">
                                 <mat-label>Last name</mat-label>
                                 <input matInput placeholder="e.g. Doe" formControlName="last_name" type="text">
-                                @if (registration_data.controls.last_name.touched && registration_data.controls.last_name.invalid) {
+                                @if(registration_data.controls.last_name.hasError('pattern')) {
+                                    <mat-error>Only words permitted here!</mat-error>
+                                }
+                                @else if (registration_data.controls.last_name.dirty && registration_data.controls.last_name.invalid) {
                                     <mat-error>Last name is required</mat-error>
                                 }
                             </mat-form-field>

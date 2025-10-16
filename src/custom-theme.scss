@@ -17,6 +17,8 @@ html {
             outlined-focus-outline-color: var(--primary),
             outlined-focus-label-text-color: var(--primary),
             outlined-input-text-placeholder-color: var(--black-tint-20),
+            container-height: '40px',
+            container-vertical-padding: '8px'
         ));
 
     // progress bar
