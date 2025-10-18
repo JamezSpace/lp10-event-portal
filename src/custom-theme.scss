@@ -37,7 +37,7 @@ html {
             selected-focus-icon-color: var(--primary),
             unselected-icon-color: var(--primary),
             unselected-focus-icon-color: var(--primary),
-            state-layer-size: '40px',
+            state-layer-size: '30px',
             checked-ripple-color: var(--primary)));
 
     // select
@@ -48,11 +48,15 @@ html {
 
     @include mat.option-overrides((selected-state-layer-color: var(--primary-tint-30),
             hover-state-layer-color: var(--primary-tint-30),
-            selected-state-label-text-color: '#000'
+            selected-state-label-text-color: '#000',
         ))
 }
 
 
 .mdc-notched-outline__notch {
     border-style: none;
+}
+
+.mat-mdc-option.mat-mdc-option {
+    min-height: 40px;
 }

@@ -109,7 +109,7 @@ export class RegistrationComponent implements OnInit {
   registration_data = new FormGroup({
     first_name: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z]*')]),
     last_name: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z]*')]),
-    gender: new FormControl(null, Validators.requiredTrue),
+    gender: new FormControl(null, Validators.required),
     email: new FormControl('', [Validators.email, Validators.required]),
     age: new FormControl(null, [
       Validators.min(5),
@@ -178,9 +178,17 @@ export class RegistrationComponent implements OnInit {
   persons_ids: number[] = [0];
   database_saved_ids: string[] = [];
 
+  logControlsAndValidity() {
+    console.log(`Age valid: ${this.registration_data.controls.age.valid}`);
+    console.log(`Email valid: ${this.registration_data.controls.email.valid}`);
+    console.log(`First name valid: ${this.registration_data.controls.first_name.valid}`);
+    console.log(`Last name valid: ${this.registration_data.controls.last_name.valid}`);
+    console.log(`Gender valid: ${this.registration_data.controls.gender.valid}`);
+  }
+
   async saveData() {
-    console.log('Errors', this.registration_data.invalid);
-    console.log('Invalid', this.registration_data.invalid);
+    // DEBUG
+    this.logControlsAndValidity()
 
     if (this.registration_data.invalid) return;
 

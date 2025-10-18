@@ -162,6 +162,8 @@ form .row .field {
     & label {
         display: block;
         text-transform: capitalize;
+        line-height: 1;
+        margin-bottom: 5px;
     }
 
     & input::placeholder {}
@@ -241,6 +243,10 @@ section.form>form {
     tr {
         vertical-align: top;
         border-bottom: 1px solid #000;
+
+        &:not(:first-of-type) {
+            line-height: 2;
+        }
     }
 
     tr td {
