@@ -273,7 +273,7 @@ export class RegistrationComponent implements OnInit {
 
     const pages_container = this.pagesContainer.nativeElement;
 
-    if (this.current_step() !== 3) {
+    if (this.current_step() !== 2) {
       pages_container.classList.add('transform');
       pages_container.classList.add('translate-x-[calc(-100%+19px)]');
       pages_container.classList.add('phone-screen:translate-x-[calc(-101%)]');
@@ -314,7 +314,7 @@ export class RegistrationComponent implements OnInit {
 
   payers_name = signal<string>('');
   payers_email = signal<string>('');
-  openDialog(): void {
+  openDialogToMakePaymentForMultiplePersons(): void {
     const dialogRef = this.dialog.open(DialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -325,7 +325,7 @@ export class RegistrationComponent implements OnInit {
         this.payers_email.update((data) => result.payers_email);
       }
 
-      this.makePaymentWithFlutterwave();
+      this.makePaymentWithPaystack();
     });
   }
 
@@ -337,7 +337,7 @@ export class RegistrationComponent implements OnInit {
         this.makePaymentWithPaystack();
         return }
 
-    this.openDialog();
+    this.openDialogToMakePaymentForMultiplePersons();
   }
 
   protected flutter_response: FlutterwaveCallbackResponse | undefined;
@@ -396,18 +396,34 @@ export class RegistrationComponent implements OnInit {
   }
 
   async makePaymentWithPaystack() {
+    // show loader
+    this.toggleLoader()
+
     const persons: Person[] =
       this.reg_data_service.fetch_all_registered_persons_records();
 
-    persons.length > 1
-      ? this.reg_service.makePaymentWithPaystack(
+    console.log("Ids of persons just saved to the database", this.database_saved_ids);
+
+    // hide loader
+    this.toggleLoader()
+
+    const transaction_ref = persons.length > 1
+      ? await this.reg_service.makePaymentWithPaystack(
+            this.payers_name(),
           this.payers_email(),
           this.reg_data_service.get_total_fee_of_all_registration()
         )
-      : this.reg_service.makePaymentWithPaystack(
+      : await this.reg_service.makePaymentWithPaystack(
+            persons[0].last_name,
           persons[0].email,
           this.reg_data_service.get_total_fee_of_all_registration()
         );
+
+    if(!transaction_ref) return
+
+    const updated = await this.reg_service.addTransactionRefToPersonsDetails(this.database_saved_ids, {
+        transaction_ref
+    })
     
     return
   }

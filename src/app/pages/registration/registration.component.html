@@ -262,20 +262,6 @@
                         Payment</button>
                 </div>
             </section>
-
-            <section [className]="current_step() === 3 ? 'page page-active' : 'page'">
-                <div class="content-container my-flex flex-col gap-3 px-5">
-                    <div class="aspect-square w-10 my-flex justify-center">
-                        <img src="successful-anim.gif" alt="successful animation" class="object-cover">
-                    </div>
-                    <!-- IM HERE -->
-                    @if (successful_payment()) {}
-                    <h2>Registration Complete!</h2>
-                    <p class="text-center">Please ensure to download a copy of your <a class="text-success underline"
-                            href="/download-receipt" onclick="alert('yoo! I\'m kidding')">registration slip here!</a>
-                    </p>
-                </div>
-            </section>
         </div>
     </div>
 </div>

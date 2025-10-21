@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { RegistrationDataService } from './registration-data.service';
-import { Validators } from '@angular/forms';
+import { PaystackInit } from '../interfaces/payment.interfaces';
+import { fetchJson } from '../../utils/service.utils';
+import { ApiResponse } from '../interfaces/api-response.interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -33,21 +35,24 @@ export class RegistrationService {
 
   async sendPersonDataToDatabase(): Promise<void | string[]> {
     try {
-      const response = await fetch(`${environment.base_backend.url}/persons`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        mode: 'cors',
-        body: JSON.stringify(
-          this.regDataService.fetch_all_registered_persons_records()
-        ),
-      });
+      const response_data = await fetchJson<ApiResponse<{ ids: string[] }>>(
+        `${environment.base_backend.url}/persons`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          mode: 'cors',
+          body: JSON.stringify(
+            this.regDataService.fetch_all_registered_persons_records()
+          ),
+        }
+      );
 
-      const response_data = await response.json();
+      if (!response_data.data) throw new Error(response_data.error);
 
-      return Object.values(response_data.ids);
+      return Object.values(response_data.data.ids);
     } catch (error: any) {
       console.error(error.message);
       return;
@@ -55,11 +60,12 @@ export class RegistrationService {
   }
 
   async makePaymentWithPaystack(
+    payers_name: string,
     payers_email: string,
     total_amount_to_be_paid: number
   ) {
     try {
-      const response = await fetch(
+      const response_data = await fetchJson<ApiResponse<PaystackInit>>(
         `${environment.base_backend.url}/payments/paystack`,
         {
           method: 'POST',
@@ -69,26 +75,75 @@ export class RegistrationService {
           },
           mode: 'cors',
           body: JSON.stringify({
+            name: payers_name,
             email: payers_email,
             amount: total_amount_to_be_paid,
           }),
         }
       );
 
-      const response_data = await response.json();
+      if (!response_data.data) {
+        window.alert('please check your internet connection!');
+        return;
+      }
 
       // response_data looks like {success: boolean, message: string, data: paystack object}
       window.location.href = response_data.data.data.authorization_url;
+
+      return response_data.data.data.reference;
     } catch (error: any) {
       console.error(error.message);
       return;
     }
   }
 
-  async verifyPaymentWithPaystack(total_amount_to_be_paid: number) {
+  async addTransactionRefToPersonsDetails(
+    ids: string[],
+    update_to_make: object
+  ) {
+    let response;
+
+    try {
+      ids.length === 1
+        ? (response = await fetch(
+            `${environment.base_backend.url}/persons/${ids[0]}`,
+            {
+              mode: 'cors',
+              method: 'PUT',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(update_to_make),
+            }
+          ))
+        : (response = await fetch(`${environment.base_backend.url}/persons`, {
+            mode: 'cors',
+            method: 'PUT',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ids,
+              updates: update_to_make,
+            }),
+          }));
+
+      // no checking any backend response coz, backend is returning 204 status code - no content
+
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  // may not need these two functions below
+  async verifyPaymentWithPaystack() {
     try {
       const response = await fetch(
-        `${environment.base_backend.url}/payments/paystack/verify?amount=${total_amount_to_be_paid}`,
+        `${environment.base_backend.url}/payments/paystack/verify`,
         {
           method: 'GET',
           headers: {
