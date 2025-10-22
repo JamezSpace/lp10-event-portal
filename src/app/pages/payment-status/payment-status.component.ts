@@ -15,7 +15,7 @@ export class PaymentStatusComponent implements OnInit {
   ngOnInit() {
     const status = this.route.snapshot.queryParamMap.get('status');
 
-    if(status) this.status.set(status)
+    if(status && ['success','failed'].includes(status)) this.status.set(status)
     else this.router.navigateByUrl('')
   }
 }

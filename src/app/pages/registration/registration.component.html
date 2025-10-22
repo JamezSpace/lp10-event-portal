@@ -1,267 +1,417 @@
-<div class="fixed z-10 w-full h-dvh hidden justify-center items-center backdrop-blur-[1px]" #loader>
-    <mat-spinner></mat-spinner>
+<div
+  class="fixed z-10 w-full h-dvh hidden justify-center items-center backdrop-blur-[1px]"
+  #loader
+>
+  <mat-spinner></mat-spinner>
 </div>
 
 <div class="main-container" #mainContainer>
-    <section class="progress-bar-container my-flex" aria-label="progress bar container">
-        <div [className]="
-        current_step() === 1 ? 'step active' :
-        current_step() > 1 ? 'step completed' : 'step' " aria-label="step 1 indicator">
-            <span class="num">1</span>
-        </div>
-        <mat-progress-bar mode="determinate" [value]="current_step() > 1 ? 100 : 15"
-            aria-label="progress bar line"></mat-progress-bar>
-        <div [className]="
-        current_step() === 2 ? 'step active' :
-        current_step() > 2 ? 'step completed' : 'step' " aria-label="step 2 indicator">
-            <span class="num">2</span>
-        </div>
-        <mat-progress-bar mode="determinate" [value]="
-            current_step() < 2 ? 0 : 
-            current_step() > 2 ? 100 : 15" aria-label="progress bar line"></mat-progress-bar>
-        <div [className]="
-        current_step() === 3 ? 'step active' :
-        current_step() > 3 ? 'step completed' : 'step' " aria-label="step 3 indicator">
-            <span class="num">3</span>
-        </div>
-    </section>
+  <section
+    class="progress-bar-container my-flex"
+    aria-label="progress bar container"
+  >
+    <div
+      [className]="
+        current_step() === 1
+          ? 'step active'
+          : current_step() > 1
+          ? 'step completed'
+          : 'step'
+      "
+      aria-label="step 1 indicator"
+    >
+      <span class="num">1</span>
+    </div>
+    <mat-progress-bar
+      mode="determinate"
+      [value]="current_step() > 1 ? 100 : 11"
+      aria-label="progress bar line"
+    ></mat-progress-bar>
+    <div
+      [className]="
+        current_step() === 2
+          ? 'step active'
+          : current_step() > 2
+          ? 'step completed'
+          : 'step'
+      "
+      aria-label="step 2 indicator"
+    >
+      <span class="num">2</span>
+    </div>
+    <mat-progress-bar
+      mode="determinate"
+      [value]="current_step() < 2 ? 0 : current_step() > 2 ? 100 : 23"
+      aria-label="progress bar line"
+    ></mat-progress-bar>
+    <div
+      [className]="
+        current_step() === 3
+          ? 'step active'
+          : current_step() > 3
+          ? 'step completed'
+          : 'step'
+      "
+      aria-label="step 3 indicator"
+    >
+      <span class="num">3</span>
+    </div>
+  </section>
 
-    <div class="carousel-wrapper">
-        <div class="carousel-container px-5 phone-screen:px-2" #pagesContainer>
-            <div [className]="current_step() === 1 ? 'page page-active' : 'page'">
-                <section class="form w-4/6 non-laptop-screen:w-full mx-auto">
-                    <div class="origin-group-container">
-                        <h3 class="capitalize subtitle-heading">Origin</h3>
-                        <article
-                            class="origin-container w-full my-flex justify-between px-[10px] phone-screen:flex-col phone-screen:items-start phone-screen:gap-2 mb-2">
-                            <label for="lp10" class="my-flex cursor-pointer">
-                                <input type="radio" name="origin" id="lp10" class="custom-radio-button"
-                                    (change)="onLp10Selection()" checked>
-                                Lagos Province 10
-                            </label>
-                            <label for="non-lp10" class="my-flex cursor-pointer">
-                                <input type="radio" name="origin" id="non-lp10" class="custom-radio-button"
-                                    (change)="onNonLp10Selection()">
-                                Other Provinces
-                            </label>
-                            <label for="others" class="my-flex cursor-pointer">
-                                <input type="radio" name="origin" id="others" class="custom-radio-button"
-                                    (change)="onNonRccg()">
-                                Non-RCCG
-                            </label>
-                        </article>
-                        <article class="origin-specifics w-full">
-                            <form name="lp10" [className]="origin === 'lp10' ? '' : 'hidden'"
-                                [formGroup]="lp10_origin_data">
-                                <section class="row">
-                                    @if (zones().length > 0) {
-                                    <mat-form-field class="field">
-                                        <mat-label>Zone</mat-label>
-                                        <mat-select formControlName="zone">
-                                            <mat-option value="" disabled>Select your zone</mat-option>
-                                            <!-- this value is for local testing only -->
-                                            <mat-option value="sunshine">Sunshine Zone</mat-option>
-                                            @for (zone of zones(); track zone) {
-                                            <mat-option [value]="zone">{{ zone }}</mat-option>
-                                            }
-                                        </mat-select>
-                                    </mat-form-field>
-                                    }
-                                    <mat-form-field class="field">
-                                        <mat-label>Parish</mat-label>
-                                        <input matInput type="text" placeholder="e.g. New Life Parish"
-                                            formControlName="parish">
-                                        @if (lp10_origin_data.controls.parish.hasError('pattern')) {
-                                            <mat-error>Only words are allowed!</mat-error>
-                                        } @else if (lp10_origin_data.controls.parish.dirty && lp10_origin_data.controls.parish.invalid) {
-                                            <mat-error>Parish is required!</mat-error>
-                                        }
-                                    </mat-form-field>
-                                </section>
-                            </form>
-                            <form name="non-lp10" [formGroup]="nonlp10_origin_data"
-                                [className]="origin === 'non-lp10' ? 'w-full' : 'hidden'">
-                                <section class="row">
-                                    <mat-form-field class="field">
-                                        <mat-label>Region</mat-label>
-                                        <input matInput type="number" placeholder="Your Region"
-                                            formControlName="region">
-                                        @if (nonlp10_origin_data.controls.region.invalid) {
-                                            <mat-error>Region is required</mat-error>
-                                        }
-                                    </mat-form-field>
-                                    <mat-form-field class="field">
-                                        <mat-label>Province</mat-label>
-                                        <input matInput type="text" placeholder="Your province"
-                                            formControlName="province">
-                                        @if (nonlp10_origin_data.controls.province.invalid) {
-                                            <mat-error>Province is required</mat-error>
-                                        }
-                                    </mat-form-field>
-                                </section>
-                            </form>
-                            <form name="others" [className]="origin === 'non-rccg' ? 'w-full' : 'hidden'"
-                                [formGroup]="nonrccg_origin_data">
-                                <section class="row">
-                                    <mat-form-field class="field">
-                                        <mat-label>Denomination</mat-label>
-                                        <input matInput type="text" placeholder="Type here..."
-                                            formControlName="denomination">
-                                        @if (nonrccg_origin_data.controls.denomination.invalid) {
-                                            <mat-error>Denomination is required</mat-error>
-                                        }
-                                    </mat-form-field>
-                                    <mat-form-field class="field">
-                                        <mat-label>Important details</mat-label>
-                                        <input matInput type="text" placeholder="Type here..."
-                                            formControlName="details">
-                                    </mat-form-field>
-                                </section>
-                            </form>
-                        </article>
-                    </div>
-                    <div class="registration-breakdown-group-container">
-                        <h3 class="capitalize subtitle-heading">registering</h3>
-                        <section
-                            [className]="(deactivate_registration_breakdown ? 'opacity-50 pointer-events-none' : '') + 'registration-breakdown-group my-flex justify-between px-[10px]'">
-                            <section class="number-gui">
-                                <age-category [category]="'teenager'" />
-                                <age-category [category]="'children'" />
-                            </section>
-                            <span class="block w-6 h-[1.5px] bg-black"></span>
-                            <article class="text-black text-size-normal" label="fee display">
-                                <!-- <span class="symbol">N</span> -->
-                                <span id="amount"
-                                    aria-label="this is the amount it costs based on your selection of age categories for registration">
-                                    {{ total_fee() === 0 ? 'NGN --' : total_fee().toLocaleString('en-US', {style: 'currency', currency: 'NGN'}) }}
-                                </span>
-                                <span class="currency"></span>
-                            </article>
-                        </section>
-                    </div>
-                    <form [formGroup]="registration_data" (ngSubmit)="saveData()"
-                        [className]="current_registration() ? '' : 'opacity-50 pointer-events-none'">
-                        <h3 class="capitalize subtitle-heading">
-                            personal information
-                            <span class="dot relative text-form-field-placeholder-color">{{ current_registration()
-                                }}</span>
-                        </h3>
-                        <section class="row">
-                            <mat-form-field class="field">
-                                <mat-label>First name</mat-label>
-                                <input matInput placeholder="e.g. John" formControlName="first_name" type="text">
-                                @if(registration_data.controls.first_name.hasError('pattern')) {
-                                    <mat-error>Only words permitted here!</mat-error>
-                                }
-                                @else if (registration_data.controls.first_name.dirty && registration_data.controls.first_name.invalid) {
-                                    <mat-error>First name is required</mat-error>
-                                }
-                            </mat-form-field>
-                            <!-- <div class="field">
+  <div class="carousel-wrapper">
+    <div class="carousel-container px-5 phone-screen:px-2" #pagesContainer>
+      <div [className]="current_step() === 1 ? 'page page-active' : 'page'">
+        <section class="form w-4/6 non-laptop-screen:w-full mx-auto">
+          <div class="origin-group-container">
+            <h3 class="capitalize subtitle-heading">Origin</h3>
+            <article
+              class="origin-container w-full my-flex justify-between px-[10px] phone-screen:flex-col phone-screen:items-start phone-screen:gap-2 mb-2"
+            >
+              <label for="lp10" class="my-flex cursor-pointer">
+                <input
+                  type="radio"
+                  name="origin"
+                  id="lp10"
+                  class="custom-radio-button"
+                  (change)="onLp10Selection()"
+                  checked
+                />
+                Lagos Province 10
+              </label>
+              <label for="non-lp10" class="my-flex cursor-pointer">
+                <input
+                  type="radio"
+                  name="origin"
+                  id="non-lp10"
+                  class="custom-radio-button"
+                  (change)="onNonLp10Selection()"
+                />
+                Other Provinces
+              </label>
+              <label for="others" class="my-flex cursor-pointer">
+                <input
+                  type="radio"
+                  name="origin"
+                  id="others"
+                  class="custom-radio-button"
+                  (change)="onNonRccg()"
+                />
+                Non-RCCG
+              </label>
+            </article>
+            <article class="origin-specifics w-full">
+              <form
+                name="lp10"
+                [className]="origin === 'lp10' ? '' : 'hidden'"
+                [formGroup]="lp10_origin_data"
+              >
+                <section class="row">
+                  @if (zones().length > 0) {
+                  <mat-form-field class="field">
+                    <mat-label>Zone</mat-label>
+                    <mat-select formControlName="zone">
+                      <mat-option value="" disabled
+                        >Select your zone</mat-option
+                      >
+                      <!-- this value is for local testing only -->
+                      <mat-option value="sunshine">Sunshine Zone</mat-option>
+                      @for (zone of zones(); track zone) {
+                      <mat-option [value]="zone">{{ zone }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                  }
+                  <mat-form-field class="field">
+                    <mat-label>Parish</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      placeholder="e.g. New Life Parish"
+                      formControlName="parish"
+                    />
+                    @if (lp10_origin_data.controls.parish.hasError('pattern')) {
+                    <mat-error>Only words are allowed!</mat-error>
+                    } @else if (lp10_origin_data.controls.parish.touched && lp10_origin_data.controls.parish.invalid) {
+                    <mat-error>Remember to fill your parish yoo!</mat-error>
+                    } @else {
+                    <mat-error>Parish is required!</mat-error>
+                    }
+                    <!-- thought to have this error flagged only when the control is dirty (that is, user has interacted with the Ui so the ui doesnt look stained) but its best for the application flow that it be when ui is touched -->
+                  </mat-form-field>
+                </section>
+              </form>
+              <form
+                name="non-lp10"
+                [formGroup]="nonlp10_origin_data"
+                [className]="origin === 'non-lp10' ? 'w-full' : 'hidden'"
+              >
+                <section class="row">
+                  <mat-form-field class="field">
+                    <mat-label>Region</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      placeholder="Your Region"
+                      formControlName="region"
+                    />
+                    @if (nonlp10_origin_data.controls.region.invalid) {
+                    <mat-error>Region is required</mat-error>
+                    }
+                  </mat-form-field>
+                  <mat-form-field class="field">
+                    <mat-label>Province</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      placeholder="Your province"
+                      formControlName="province"
+                    />
+                    @if (nonlp10_origin_data.controls.province.invalid) {
+                    <mat-error>Province is required</mat-error>
+                    }
+                  </mat-form-field>
+                </section>
+              </form>
+              <form
+                name="others"
+                [className]="origin === 'non-rccg' ? 'w-full' : 'hidden'"
+                [formGroup]="nonrccg_origin_data"
+              >
+                <section class="row">
+                  <mat-form-field class="field">
+                    <mat-label>Denomination</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      placeholder="Type here..."
+                      formControlName="denomination"
+                    />
+                    @if (nonrccg_origin_data.controls.denomination.invalid) {
+                    <mat-error>Denomination is required</mat-error>
+                    }
+                  </mat-form-field>
+                  <mat-form-field class="field">
+                    <mat-label>Important details</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      placeholder="Type here..."
+                      formControlName="details"
+                    />
+                  </mat-form-field>
+                </section>
+              </form>
+            </article>
+          </div>
+          <div class="registration-breakdown-group-container">
+            <h3 class="capitalize subtitle-heading">registering</h3>
+            <section
+              [className]="
+                (deactivate_registration_breakdown
+                  ? 'opacity-50 pointer-events-none'
+                  : '') +
+                'registration-breakdown-group my-flex justify-between px-[10px]'
+              "
+            >
+              <section class="number-gui">
+                <age-category [category]="'teenager'" />
+                <age-category [category]="'children'" />
+              </section>
+              <span class="block w-6 h-[1.5px] bg-black"></span>
+              <article class="text-black text-size-normal" label="fee display">
+                <!-- <span class="symbol">N</span> -->
+                <span
+                  id="amount"
+                  aria-label="this is the amount it costs based on your selection of age categories for registration"
+                >
+                  {{
+                    total_fee() === 0
+                      ? "NGN --"
+                      : total_fee().toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "NGN"
+                        })
+                  }}
+                </span>
+                <span class="currency"></span>
+              </article>
+            </section>
+          </div>
+          <form
+            [formGroup]="registration_data"
+            (ngSubmit)="saveData()"
+            [className]="
+              current_registration() ? '' : 'opacity-50 pointer-events-none'
+            "
+          >
+            <h3 class="capitalize subtitle-heading">
+              personal information
+              <span class="dot relative text-form-field-placeholder-color">{{
+                current_registration()
+              }}</span>
+            </h3>
+            <section class="row">
+              <mat-form-field class="field">
+                <mat-label>First name</mat-label>
+                <input
+                  matInput
+                  placeholder="e.g. John"
+                  formControlName="first_name"
+                  type="text"
+                />
+                @if(registration_data.controls.first_name.hasError('pattern')) {
+                <mat-error>Only words permitted here!</mat-error>
+                } @else if (registration_data.controls.first_name.dirty &&
+                registration_data.controls.first_name.invalid) {
+                <mat-error>First name is required</mat-error>
+                }
+              </mat-form-field>
+              <!-- <div class="field">
                             <label for="first-name">first name</label>
                             <input type="text" placeholder="e.g. John" id="first-name" formControlName="first_name">
                         </div> -->
-                            <mat-form-field class="field">
-                                <mat-label>Last name</mat-label>
-                                <input matInput placeholder="e.g. Doe" formControlName="last_name" type="text">
-                                @if(registration_data.controls.last_name.hasError('pattern')) {
-                                    <mat-error>Only words permitted here!</mat-error>
-                                }
-                                @else if (registration_data.controls.last_name.dirty && registration_data.controls.last_name.invalid) {
-                                    <mat-error>Last name is required</mat-error>
-                                }
-                            </mat-form-field>
-                            <!-- <div class="field">
+              <mat-form-field class="field">
+                <mat-label>Last name</mat-label>
+                <input
+                  matInput
+                  placeholder="e.g. Doe"
+                  formControlName="last_name"
+                  type="text"
+                />
+                @if(registration_data.controls.last_name.hasError('pattern')) {
+                <mat-error>Only words permitted here!</mat-error>
+                } @else if (registration_data.controls.last_name.dirty &&
+                registration_data.controls.last_name.invalid) {
+                <mat-error>Last name is required</mat-error>
+                }
+              </mat-form-field>
+              <!-- <div class="field">
                             <label for="last-name">last name</label>
                             <input type="text" placeholder="e.g. Doe" id="last-name" formControlName="last_name">
                         </div> -->
-                        </section>
-                        <section class="row">
-                            <div class="field mb-4">
-                                <label for="gender">gender</label>
+            </section>
+            <section class="row">
+              <div class="field mb-4">
+                <label for="gender">gender</label>
 
-                                <mat-radio-group formControlName="gender">
-                                    <mat-radio-button value="male">Male</mat-radio-button>
-                                    <mat-radio-button value="female">Female</mat-radio-button>
-                                </mat-radio-group>
-                            </div>
-                            <mat-form-field class="field">
-                                <mat-label>Age</mat-label>
-                                <input matInput placeholder="e.g. 19" min="5" formControlName="age" type="number">
-                                @if (registration_data.controls.age.value !== null && registration_data.controls.age.value !== 0 && (registration_data.controls.age.value < 5 || registration_data.controls.age.value > 25)) {
-                                    <mat-error>Age limit is 5 to 25</mat-error>
-                                }
-                                @else if (registration_data.controls.age.value === null || registration_data.controls.age.value === 0) {
-                                    <mat-error>Age is required</mat-error>
-                                }
-                            </mat-form-field>
-                            <!-- <div class="field">
+                <mat-radio-group formControlName="gender">
+                  <mat-radio-button value="male">Male</mat-radio-button>
+                  <mat-radio-button value="female">Female</mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <mat-form-field class="field">
+                <mat-label>Age</mat-label>
+                <input
+                  matInput
+                  placeholder="e.g. 19"
+                  min="5"
+                  formControlName="age"
+                  type="number"
+                />
+                @if (registration_data.controls.age.value &&
+                (registration_data.controls.age.value < 5 ||
+                registration_data.controls.age.value > 25)) {
+                <mat-error>Age limit is 5 to 25</mat-error>
+                } @else if (registration_data.controls.email.dirty &&
+                registration_data.controls.email.invalid &&
+                !registration_data.controls.age.value) {
+                <mat-error>Age is required</mat-error>
+                }
+              </mat-form-field>
+              <!-- <div class="field">
                             <label for="age">age</label>
                             <input type="number" placeholder="e.g. 19" id="age" min="5" formControlName="age">
                         </div> -->
-                        </section>
-                        <section class="row">
-                            <mat-form-field class="field">
-                                <mat-label>Email</mat-label>
-                                <input matInput placeholder="e.g. test@gmail.com" formControlName="email" type="email">
-                                @if (registration_data.controls.email.hasError('email')) {
-                                    <mat-error>Enter a valid email...</mat-error>
-                                } 
-                                @else if (registration_data.controls.email.invalid) {
-                                    <mat-error>Email is required</mat-error>
-                                }
-                            </mat-form-field>
-                            <!-- <div class="field">
+            </section>
+            <section class="row">
+              <mat-form-field class="field">
+                <mat-label>Email</mat-label>
+                <input
+                  matInput
+                  placeholder="e.g. test@gmail.com"
+                  formControlName="email"
+                  type="email"
+                />
+                @if (registration_data.controls.email.hasError('email')) {
+                <mat-error>Enter a valid email...</mat-error>
+                } @else if (registration_data.controls.email.dirty &&
+                registration_data.controls.email.invalid) {
+                <mat-error>Email is required</mat-error>
+                }
+              </mat-form-field>
+              <!-- <div class="field">
                             <label for="email">email</label>
                             <input type="email" placeholder="e.g. test@gmail.com" id="email" formControlName="email">
                         </div> -->
-                        </section>
-                        <button type="submit" class="block w-full py-3 border-[2px] btn mt-5 font-black"
-                            [disabled]="!allFieldsChanged">{{
-                            total_number_registering() > 1 ? 'Save Data' : 'Submit' }}</button>
-                    </form>
-                </section>
-            </div>
-
-            <section [className]="current_step() === 2 ? 'page page-active' : 'page'">
-                <div class="overflow-x-auto">
-                    <table class="preview-registered-persons-table w-full">
-                        <tr>
-                            <th>name</th>
-                            <th>gender</th>
-                            <th>year of Birth</th>
-                            <th>email</th>
-                            <th>zone</th>
-                            <th>parish</th>
-                        </tr>
-                        @for (person of reg_data_service.fetch_all_registered_persons_records(); track $index) {
-                        <tr>
-                            <td>{{ person.first_name + ' ' + person.last_name }}</td>
-                            <td>{{ person.gender }}</td>
-                            <td>{{ person.year_of_birth }}</td>
-                            <td>{{ person.email }}</td>
-                            <td>{{ person.zone }}</td>
-                            <td>{{ person.parish }}</td>
-                        </tr>
-                        }
-                    </table>
-                </div>
-
-                <div class="preview-page-button-actions my-flex justify-between gap-3 mx-auto my-3 mt-10">
-                    <button type="button" class="my-flex gap-[5px] px-5 py-2 border-[2px] btn-secondary"
-                        (click)="previousStep()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
-                            <rect width="512" height="512" fill="none" />
-                            <path fill="currentColor"
-                                d="M497.333 239.999H80.092l95.995-95.995l-22.627-22.627L18.837 256L153.46 390.623l22.627-22.627l-95.997-95.997h417.243z" />
-                        </svg>
-                        Back
-                    </button>
-                    <button type="button" class="my-flex px-5 py-2 border-[2px] btn"
-                        (click)="goToMakePaymentStep()">Proceed To
-                        Payment</button>
-                </div>
             </section>
+            <button
+              type="submit"
+              class="block w-full py-3 border-[2px] btn mt-5 font-black"
+              [disabled]="!allFieldsChanged"
+            >
+              {{ total_number_registering() > 1 ? "Save Data" : "Submit" }}
+            </button>
+          </form>
+        </section>
+      </div>
+
+      <section [className]="current_step() === 2 ? 'page page-active' : 'page'">
+        <div class="overflow-x-auto">
+          <table class="preview-registered-persons-table w-full">
+            <tr>
+              <th>name</th>
+              <th>gender</th>
+              <th>year of Birth</th>
+              <th>email</th>
+              <th>zone</th>
+              <th>parish</th>
+            </tr>
+            @for (person of
+            reg_data_service.fetch_all_registered_persons_records(); track
+            $index) {
+            <tr>
+              <td>{{ person.first_name + " " + person.last_name }}</td>
+              <td>{{ person.gender }}</td>
+              <td>{{ person.year_of_birth }}</td>
+              <td>{{ person.email }}</td>
+              <td>{{ person.zone }}</td>
+              <td>{{ person.parish }}</td>
+            </tr>
+            }
+          </table>
         </div>
+
+        <div
+          class="preview-page-button-actions my-flex justify-between gap-3 mx-auto my-3 mt-10"
+        >
+          <button
+            type="button"
+            class="my-flex gap-[5px] px-5 py-2 border-[2px] btn-secondary"
+            (click)="previousStep()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="1em"
+              height="1em"
+              viewBox="0 0 512 512"
+            >
+              <rect width="512" height="512" fill="none" />
+              <path
+                fill="currentColor"
+                d="M497.333 239.999H80.092l95.995-95.995l-22.627-22.627L18.837 256L153.46 390.623l22.627-22.627l-95.997-95.997h417.243z"
+              />
+            </svg>
+            Back
+          </button>
+          <button
+            type="button"
+            class="my-flex px-5 py-2 border-[2px] btn"
+            (click)="goToMakePaymentStep()"
+          >
+            Proceed To Payment
+          </button>
+        </div>
+      </section>
     </div>
+  </div>
 </div>

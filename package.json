@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "prebuild": "node -r dotenv/config populate.env.js",
     "build": "ng build",
+    "vercel-build": "npm install -g @angular/cli && ng build --configuration production",
     "build-ssr": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",

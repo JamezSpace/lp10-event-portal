@@ -1,4 +1,4 @@
-<section class="">
+<section class="pt-20">
   <div class="content-container my-flex flex-col gap-3 px-5">
     @if (status() === 'success') {
     <div class="aspect-square w-10 my-flex justify-center">
@@ -10,7 +10,7 @@
     </div>
     <!-- IM HERE -->
     <h2>Registration Complete</h2>
-    <p class="text-center">
+    <p class="text-center text-black-2">
         Payment successfully completed! Please ensure to download a copy of your registration slip here!
     </p>
     <a
@@ -20,7 +20,7 @@
         >download ticket</a
       >
       <!-- on the ticket, insert qr code that when scanned, confirms payment status -->
-    } @else {
+    } @else if(status() === 'failed') {
     <div class="aspect-square w-10 my-flex justify-center">
       <img
         src="unsuccessful-anim.gif"
@@ -29,8 +29,8 @@
       />
     </div>
     <h2>Payment Failed!</h2>
-    <p class="text-center">
-      You can choose to <a href="/convention-2025" class="hover:underline">start all over again</a> or <a href="/help" class="hover:underline">report error</a>
+    <p class="text-center text-black-2">
+      You can choose to <a href="/convention-2025" class="underline hover:text-black">start all over again</a> or <a href="/help" class="underline hover:text-black">report error.</a>
     </p>
     }
   </div>

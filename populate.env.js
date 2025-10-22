@@ -6,12 +6,9 @@ const dotenv = require('dotenv').config({path: 'src/.env'}); ;
 
 const targetPath = path.join(__dirname, './src/environments/environment.ts'); 
 const envConfigFile = `export const environment = {
-    production: false,
+    production: true,
     base_backend : {
         url : '${process.env.url}'
-    },
-    flutterwave: {
-        publick_key: '${process.env.publick_key}'
     }
 };
 `;

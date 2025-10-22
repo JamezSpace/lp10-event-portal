@@ -5,14 +5,11 @@ import {
   computed,
   ElementRef,
   inject,
-  QueryList,
   signal,
   Signal,
   ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import {
-  EmailValidator,
   FormControl,
   FormGroup,
   FormsModule,
@@ -27,14 +24,11 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { environment } from '../../../environments/environment';
 import { AgeCategoryComponent } from '../../components/age-category/age-category.component';
 import { DialogComponent } from '../../components/dialog/dialog.component';
-import { FlutterwaveCallbackResponse } from '../../interfaces/payment.interfaces';
 import { Person } from '../../interfaces/person.interface';
 import { RegistrationDataService } from '../../services/registration-data.service';
 import { RegistrationService } from '../../services/registration.service';
-declare var FlutterwaveCheckout: any;
 
 @Component({
   selector: 'app-registration',
@@ -57,10 +51,7 @@ export class RegistrationComponent implements OnInit {
   reg_data_service = inject(RegistrationDataService);
   readonly dialog = inject(MatDialog);
 
-  constructor(
-    private reg_service: RegistrationService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private reg_service: RegistrationService) {}
 
   async ngOnInit(): Promise<void> {
     // cookies were used to store the zones data for 2 minutes, so that it doesn't have to be fetched from the backend every time the page is refreshed. This is to prevent overloading the backend with requests.
@@ -107,11 +98,17 @@ export class RegistrationComponent implements OnInit {
   });
 
   registration_data = new FormGroup({
-    first_name: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z]*')]),
-    last_name: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z]*')]),
+    first_name: new FormControl(null, [
+      Validators.required,
+      Validators.pattern('[a-zA-Z]*'),
+    ]),
+    last_name: new FormControl(null, [
+      Validators.required,
+      Validators.pattern('[a-zA-Z]*'),
+    ]),
     gender: new FormControl(null, Validators.required),
-    email: new FormControl('', [Validators.email, Validators.required]),
-    age: new FormControl(null, [
+    email: new FormControl(null, [Validators.email, Validators.required]),
+    age: new FormControl<number | null>(null, [
       Validators.min(5),
       Validators.max(25),
       Validators.required,
@@ -135,7 +132,10 @@ export class RegistrationComponent implements OnInit {
 
   lp10_origin_data = new FormGroup({
     zone: new FormControl('', Validators.required),
-    parish: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
+    parish: new FormControl('', [
+      Validators.required,
+      Validators.pattern('[a-zA-Z ]*'),
+    ]),
   });
 
   nonlp10_origin_data = new FormGroup({
@@ -154,10 +154,6 @@ export class RegistrationComponent implements OnInit {
     );
   }
 
-  resetFormGroup(form: FormGroup) {
-    form.reset();
-  }
-
   resetAllFormData(all: boolean) {
     // considering this functionality is needed for both saving person data and final submission, an 'all' parameter is needed to know if to clear all or partially all. If all is true, it means it is final submission, hence even the registration data needs to reset
     if (all) this.reg_data_service.reset_registration_data();
@@ -165,13 +161,19 @@ export class RegistrationComponent implements OnInit {
     this.lp10_origin_data.reset();
     this.nonlp10_origin_data.reset();
     this.nonrccg_origin_data.reset();
-    this.registration_data.reset({
-      first_name: '',
-      last_name: '',
-      gender: null,
-      email: '',
-      age: null,
-    });
+
+    this.registration_data.reset();
+    this.clearAllErrorsOnFormControls(this.registration_data);
+  }
+
+  clearAllErrorsOnFormControls(form_group: FormGroup) {
+    for (const control in form_group.controls) {
+      if (!Object.hasOwn(form_group.controls, control)) continue;
+
+      const c = form_group.controls[control];
+      
+      c.setErrors(null)
+    }
   }
 
   deactivate_registration_breakdown: boolean = false;
@@ -179,18 +181,83 @@ export class RegistrationComponent implements OnInit {
   database_saved_ids: string[] = [];
 
   logControlsAndValidity() {
+    switch (this.origin) {
+      case 'lp10':
+        console.log(`Zone valid: ${this.lp10_origin_data.controls.zone.valid}`);
+        console.log(
+          `Parish valid: ${this.lp10_origin_data.controls.parish.valid}`
+        );
+        break;
+      case 'non-lp10':
+        console.log(
+          `Pronvince valid: ${this.nonlp10_origin_data.controls.province.valid}`
+        );
+        console.log(
+          `Region valid: ${this.nonlp10_origin_data.controls.region.valid}`
+        );
+        break;
+      case 'non-rccg':
+        console.log(
+          `Denomination valid: ${this.nonrccg_origin_data.controls.denomination.valid}`
+        );
+        console.log(
+          `Details valid: ${this.nonrccg_origin_data.controls.details.valid}`
+        );
+        break;
+    }
+
     console.log(`Age valid: ${this.registration_data.controls.age.valid}`);
     console.log(`Email valid: ${this.registration_data.controls.email.valid}`);
-    console.log(`First name valid: ${this.registration_data.controls.first_name.valid}`);
-    console.log(`Last name valid: ${this.registration_data.controls.last_name.valid}`);
-    console.log(`Gender valid: ${this.registration_data.controls.gender.valid}`);
+    console.log(
+      `First name valid: ${this.registration_data.controls.first_name.valid}`
+    );
+    console.log(
+      `Last name valid: ${this.registration_data.controls.last_name.valid}`
+    );
+    console.log(
+      `Gender valid: ${this.registration_data.controls.gender.valid}`
+    );
+  }
+
+  allNecessaryFieldsValid() {
+    if (this.registration_data.invalid) return false;
+
+    let valid: boolean = true;
+    switch (this.origin) {
+      case 'lp10':
+        valid = !this.lp10_origin_data.invalid;
+        break;
+      case 'non-lp10':
+        valid = !this.nonlp10_origin_data.invalid;
+        break;
+      case 'non-rccg':
+        valid = !this.nonrccg_origin_data.invalid;
+        break;
+      default:
+        break;
+    }
+
+    return valid;
   }
 
   async saveData() {
-    // DEBUG
-    this.logControlsAndValidity()
+    // this triggers origin formgroup validation on submit of the form
+    switch (this.origin) {
+      case 'lp10':
+        this.lp10_origin_data.markAllAsTouched();
+        break;
+      case 'non-lp10':
+        this.nonlp10_origin_data.markAllAsTouched();
+        break;
+      case 'non-rccg':
+        this.nonrccg_origin_data.markAllAsTouched();
+        break;
+    }
 
-    if (this.registration_data.invalid) return;
+    // DEBUG
+    // this.logControlsAndValidity();
+
+    if (!this.allNecessaryFieldsValid()) return;
 
     const person: Person = {
       id: this.persons_ids[this.persons_ids.length - 1],
@@ -234,8 +301,6 @@ export class RegistrationComponent implements OnInit {
     else
       this.persons_ids.push(this.reg_data_service.add_persons_record(person));
 
-    console.log(this.reg_data_service.fetch_all_registered_persons_records());
-
     // in other words, if registration is more than a single person
     if (this.current_registration() !== this.total_number_registering()) {
       this.current_registration = signal(this.current_registration() + 1);
@@ -273,7 +338,7 @@ export class RegistrationComponent implements OnInit {
 
     const pages_container = this.pagesContainer.nativeElement;
 
-    if (this.current_step() !== 2) {
+    if (this.current_step() !== 3) {
       pages_container.classList.add('transform');
       pages_container.classList.add('translate-x-[calc(-100%+19px)]');
       pages_container.classList.add('phone-screen:translate-x-[calc(-101%)]');
@@ -332,100 +397,52 @@ export class RegistrationComponent implements OnInit {
   goToMakePaymentStep() {
     if (
       this.reg_data_service.fetch_all_registered_persons_records().length === 1
-    )
-      {
-        this.makePaymentWithPaystack();
-        return }
+    ) {
+      this.makePaymentWithPaystack();
+      return;
+    }
 
     this.openDialogToMakePaymentForMultiplePersons();
   }
 
-  protected flutter_response: FlutterwaveCallbackResponse | undefined;
-  successful_payment = signal(false);
-
-  makePaymentWithFlutterwave() {
-    const persons: Person[] =
-      this.reg_data_service.fetch_all_registered_persons_records();
-
-    const commonPaymentParams = {
-      public_key: environment.flutterwave.publick_key,
-      tx_ref: `lp10_convention_${Date.now()}`,
-      amount: this.reg_data_service.get_total_fee_of_all_registration(),
-      currency: 'NGN',
-      payment_options: 'banktransfer, card, account, opay',
-      onclose: () => {
-        this.onFlutterWindowClosure();
-      },
-      customizations: {
-        title: 'LP10 Event Portal',
-        description: 'RCCG Convention 2025 with LP10',
-      },
-    };
-
-    if (persons.length > 1) {
-      const modal = FlutterwaveCheckout({
-        ...commonPaymentParams,
-        customer: {
-          email: this.payers_email(),
-          name: this.payers_name(),
-        },
-        callback: (response: FlutterwaveCallbackResponse) => {
-          console.log(response);
-
-          this.flutter_response = response;
-          this.onFlutterWindowClosure();
-          modal.close();
-        },
-      });
-    } else {
-      const modal = FlutterwaveCheckout({
-        ...commonPaymentParams,
-        customer: {
-          email: persons[0].email,
-          name: persons[0].first_name,
-        },
-        callback: (response: FlutterwaveCallbackResponse) => {
-          console.log(response);
-
-          this.flutter_response = response;
-          this.onFlutterWindowClosure();
-          modal.close();
-        },
-      });
-    }
-  }
-
   async makePaymentWithPaystack() {
     // show loader
-    this.toggleLoader()
+    this.toggleLoader();
 
     const persons: Person[] =
       this.reg_data_service.fetch_all_registered_persons_records();
 
-    console.log("Ids of persons just saved to the database", this.database_saved_ids);
+    console.log(
+      'Ids of persons just saved to the database',
+      this.database_saved_ids
+    );
 
     // hide loader
-    this.toggleLoader()
+    this.toggleLoader();
 
-    const transaction_ref = persons.length > 1
-      ? await this.reg_service.makePaymentWithPaystack(
+    const transaction_ref =
+      persons.length > 1
+        ? await this.reg_service.makePaymentWithPaystack(
             this.payers_name(),
-          this.payers_email(),
-          this.reg_data_service.get_total_fee_of_all_registration()
-        )
-      : await this.reg_service.makePaymentWithPaystack(
+            this.payers_email(),
+            this.reg_data_service.get_total_fee_of_all_registration()
+          )
+        : await this.reg_service.makePaymentWithPaystack(
             persons[0].last_name,
-          persons[0].email,
-          this.reg_data_service.get_total_fee_of_all_registration()
-        );
+            persons[0].email,
+            this.reg_data_service.get_total_fee_of_all_registration()
+          );
 
-    if(!transaction_ref) return
+    if (!transaction_ref) return;
 
-    const updated = await this.reg_service.addTransactionRefToPersonsDetails(this.database_saved_ids, {
-        transaction_ref
-    })
-    
-    return
+    const updated = await this.reg_service.addTransactionRefToPersonsDetails(
+      this.database_saved_ids,
+      {
+        transaction_ref,
+      }
+    );
+
+    return;
   }
 
   @ViewChild('loader')
@@ -435,28 +452,5 @@ export class RegistrationComponent implements OnInit {
     if (this.loader.nativeElement.classList.contains('flex'))
       this.loader.nativeElement.classList.replace('flex', 'hidden');
     else this.loader.nativeElement.classList.replace('hidden', 'flex');
-  }
-
-  async onFlutterWindowClosure() {
-    if (typeof this.flutter_response === 'undefined') return;
-    // if (this.flutter_response.status !== 'successful') return
-
-    this.toggleLoader();
-
-    // verify payment from server as recommended by flutterwave
-    const payment_verification = await this.reg_service.validatePayment(
-      this.flutter_response.transaction_id,
-      this.flutter_response.amount,
-      this.database_saved_ids
-    );
-    if (payment_verification.status !== 'valid') {
-      console.log('payment is not valid from backend');
-      this.toggleLoader();
-      return;
-    }
-
-    this.successful_payment.update(() => true);
-    this.nextStep();
-    this.toggleLoader();
   }
 }
