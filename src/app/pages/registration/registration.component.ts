@@ -1,6 +1,5 @@
 import {
   OnInit,
-  ChangeDetectorRef,
   Component,
   computed,
   ElementRef,
@@ -16,14 +15,15 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AgeCategoryComponent } from '../../components/age-category/age-category.component';
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { Person } from '../../interfaces/person.interface';
@@ -48,7 +48,8 @@ import { RegistrationService } from '../../services/registration.service';
   styleUrl: './registration.component.css',
 })
 export class RegistrationComponent implements OnInit {
-  reg_data_service = inject(RegistrationDataService);
+    private snackBar = inject(MatSnackBar);
+    reg_data_service = inject(RegistrationDataService);
   readonly dialog = inject(MatDialog);
 
   constructor(private reg_service: RegistrationService) {}
@@ -79,6 +80,12 @@ export class RegistrationComponent implements OnInit {
     this.zones().length === 0
       ? this.lp10_origin_data.get('zone')?.disable()
       : this.lp10_origin_data.get('zone')?.enable();
+  }
+
+  openSnackBar(message: string, action: string, duration: number) {
+    this.snackBar.open(message, action, {
+        duration: duration
+    });
   }
 
   current_step = signal(1);
@@ -171,8 +178,8 @@ export class RegistrationComponent implements OnInit {
       if (!Object.hasOwn(form_group.controls, control)) continue;
 
       const c = form_group.controls[control];
-      
-      c.setErrors(null)
+
+      c.setErrors(null);
     }
   }
 
@@ -237,6 +244,7 @@ export class RegistrationComponent implements OnInit {
         break;
     }
 
+    if(!valid) this.openSnackBar('Almost there! Please fill out all required fields in the Origin section.', '', 3000)
     return valid;
   }
 
@@ -398,6 +406,8 @@ export class RegistrationComponent implements OnInit {
     if (
       this.reg_data_service.fetch_all_registered_persons_records().length === 1
     ) {
+      // show loader
+      this.toggleLoader();
       this.makePaymentWithPaystack();
       return;
     }
@@ -406,7 +416,7 @@ export class RegistrationComponent implements OnInit {
   }
 
   async makePaymentWithPaystack() {
-    // show loader
+    // hide loader
     this.toggleLoader();
 
     const persons: Person[] =
@@ -416,9 +426,6 @@ export class RegistrationComponent implements OnInit {
       'Ids of persons just saved to the database',
       this.database_saved_ids
     );
-
-    // hide loader
-    this.toggleLoader();
 
     const transaction_ref =
       persons.length > 1
