@@ -83,17 +83,16 @@ export class RegistrationService {
       );
 
       if (!response_data.data) {
-        window.alert('please check your internet connection!');
-        return;
+        return {success: false, error: 'Please check your internet connection.'};
       }
 
       // response_data looks like {success: boolean, message: string, data: paystack object}
       window.location.href = response_data.data.data.authorization_url;
 
-      return response_data.data.data.reference;
+      return {success: true, ref: response_data.data.data.reference};
     } catch (error: any) {
       console.error(error.message);
-      return;
+      return {success: false, error: error.message}
     }
   }
 

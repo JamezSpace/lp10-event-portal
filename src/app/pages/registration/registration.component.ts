@@ -20,7 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -48,8 +48,8 @@ import { RegistrationService } from '../../services/registration.service';
   styleUrl: './registration.component.css',
 })
 export class RegistrationComponent implements OnInit {
-    private snackBar = inject(MatSnackBar);
-    reg_data_service = inject(RegistrationDataService);
+  private snackBar = inject(MatSnackBar);
+  reg_data_service = inject(RegistrationDataService);
   readonly dialog = inject(MatDialog);
 
   constructor(private reg_service: RegistrationService) {}
@@ -84,7 +84,7 @@ export class RegistrationComponent implements OnInit {
 
   openSnackBar(message: string, action: string, duration: number) {
     this.snackBar.open(message, action, {
-        duration: duration
+      duration: duration,
     });
   }
 
@@ -161,10 +161,7 @@ export class RegistrationComponent implements OnInit {
     );
   }
 
-  resetAllFormData(all: boolean) {
-    // considering this functionality is needed for both saving person data and final submission, an 'all' parameter is needed to know if to clear all or partially all. If all is true, it means it is final submission, hence even the registration data needs to reset
-    if (all) this.reg_data_service.reset_registration_data();
-
+  resetAllFormData() {
     this.lp10_origin_data.reset();
     this.nonlp10_origin_data.reset();
     this.nonrccg_origin_data.reset();
@@ -244,7 +241,12 @@ export class RegistrationComponent implements OnInit {
         break;
     }
 
-    if(!valid) this.openSnackBar('Almost there! Please fill out all required fields in the Origin section.', '', 3000)
+    if (!valid)
+      this.openSnackBar(
+        'Almost there! Please fill out all required fields in the Origin section.',
+        '',
+        3000
+      );
     return valid;
   }
 
@@ -315,7 +317,7 @@ export class RegistrationComponent implements OnInit {
 
       // disable changing registration data once a single person's data has been submitted
       this.deactivate_registration_breakdown = true;
-      this.resetAllFormData(false);
+      this.resetAllFormData();
 
       return;
     }
@@ -325,7 +327,6 @@ export class RegistrationComponent implements OnInit {
     // store up the ids of the persons just saved into the database in the array so paymentStatus can easily be updated for each of them after payment
     if (saved_ids) this.database_saved_ids = saved_ids;
 
-    // this.resetAllFormData(true)
     this.previewData();
   }
 
@@ -416,9 +417,6 @@ export class RegistrationComponent implements OnInit {
   }
 
   async makePaymentWithPaystack() {
-    // hide loader
-    this.toggleLoader();
-
     const persons: Person[] =
       this.reg_data_service.fetch_all_registered_persons_records();
 
@@ -427,7 +425,7 @@ export class RegistrationComponent implements OnInit {
       this.database_saved_ids
     );
 
-    const transaction_ref =
+    const transaction_response =
       persons.length > 1
         ? await this.reg_service.makePaymentWithPaystack(
             this.payers_name(),
@@ -440,14 +438,22 @@ export class RegistrationComponent implements OnInit {
             this.reg_data_service.get_total_fee_of_all_registration()
           );
 
-    if (!transaction_ref) return;
+    if (!transaction_response.success) {
+      // hide loader
+      this.toggleLoader();
 
-    const updated = await this.reg_service.addTransactionRefToPersonsDetails(
-      this.database_saved_ids,
-      {
-        transaction_ref,
-      }
-    );
+      this.openSnackBar(transaction_response.error, '', 3000);
+      return;
+    }
+
+    if (transaction_response.ref) {
+      const updated = await this.reg_service.addTransactionRefToPersonsDetails(
+        this.database_saved_ids,
+        {
+          transaction_ref: transaction_response.ref,
+        }
+      );
+    }
 
     return;
   }

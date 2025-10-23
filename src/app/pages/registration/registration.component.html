@@ -102,8 +102,9 @@
             <article class="origin-specifics w-full">
               <form
                 name="lp10"
-                [className]="origin === 'lp10' ? '' : 'hidden'"
-                [formGroup]="lp10_origin_data"
+                 autocomplete="off"
+                 [formGroup]="lp10_origin_data"
+                 [className]="origin === 'lp10' ? '' : 'hidden'"
               >
                 <section class="row">
                   @if (zones().length > 0) {
@@ -140,6 +141,7 @@
               </form>
               <form
                 name="non-lp10"
+                 autocomplete="off"
                 [formGroup]="nonlp10_origin_data"
                 [className]="origin === 'non-lp10' ? 'w-full' : 'hidden'"
               >
@@ -172,6 +174,7 @@
               </form>
               <form
                 name="others"
+                autocomplete="off"
                 [className]="origin === 'non-rccg' ? 'w-full' : 'hidden'"
                 [formGroup]="nonrccg_origin_data"
               >
@@ -237,6 +240,7 @@
           </div>
           <form
             [formGroup]="registration_data"
+            autocomplete="off"
             (ngSubmit)="saveData()"
             [className]="
               current_registration() ? '' : 'opacity-50 pointer-events-none'
