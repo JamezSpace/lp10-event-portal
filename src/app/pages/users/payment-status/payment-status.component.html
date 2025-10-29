@@ -1,7 +1,7 @@
 <section class="pt-20">
-  <div class="content-container my-flex flex-col gap-3 px-5">
+  <div class="content-container flex-center flex-col gap-3 px-5">
     @if (status() === 'success') {
-    <div class="aspect-square w-16 my-flex justify-center">
+    <div class="aspect-square w-16 flex-center justify-center">
       <img
         src="successful-anim.gif"
         alt="successful Payment animation"
@@ -23,7 +23,7 @@
     </button>
     <!-- on the ticket, insert qr code that when scanned, confirms payment status -->
     } @else if(status() === 'failed') {
-    <div class="aspect-square w-10 my-flex justify-center">
+    <div class="aspect-square w-10 flex-center justify-center">
       <img
         src="unsuccessful-anim.gif"
         alt="unsuccessful Payment animation"

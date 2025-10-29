@@ -22,12 +22,6 @@
     --form-field-placeholder-color: rgb(84, 88, 99, .6);
     --success: #5FC381;
     --error: #DD524D;
-
-
-    /* Form Fields */
-    /* --mat-option-label-text-color: #000;
-    --mat-select-enabled-trigger-text-color: #000; */
-    /* --mat-option-selected-state-layer-color: var(--black-tint-30); */
 }
 
 *,
@@ -102,11 +96,68 @@ h6 {
     font-size: 0.67em;
 }
 
-.my-flex {
+.flex-center {
     display: flex;
     align-items: center;
 }
 
 .bg-inherit {
     background-color: inherit;
+}
+
+.my-button {
+    --bg-color: hsl(from var(--primary) h s calc(l + 10));
+
+    padding: 10px 20px;
+    white-space: nowrap;
+    gap: 8px;
+    border: 1px solid var(--bg-color);
+    border-radius: 0.5rem;
+    font-size: 90%;
+    background-color: var(--bg-color);
+    color: var(--white);
+    font-weight: 400;
+    text-transform: capitalize;
+    transition-property: background-color, outline;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+
+    &:hover {
+        --bg-color: var(--primary);
+
+        background-color: var(--bg-color);
+    }
+
+    &:focus {
+        outline: 1px solid #333;
+    }
+
+    &.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    &.red {
+        background-color: var(--secondary);
+        border-color: var(--secondary);
+        color: white;
+    }
+
+    &.red:hover {
+        background-color: hsl(from var(--secondary) h s calc(l - 10));
+    }
+}
+
+.my-button.secondary {
+    background-color: transparent;
+    color: var(--primary);
+
+    &:hover {
+        outline: 1px solid var(--primary);
+    }
+
+    &.red {
+        border-color: var(--seconary);
+        color: var(--seconary);
+    }
 }

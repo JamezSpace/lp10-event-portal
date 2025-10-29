@@ -1,5 +1,5 @@
 import { Component, computed, EventEmitter, Input, Output, Signal } from '@angular/core';
-import { RegistrationDataService } from '../../services/registration-data.service';
+import { RegistrationDataService } from '../../services/registration-data/registration-data.service';
 import { BulkRegistrationData } from '../../interfaces/registration-data.interface';
 
 @Component({

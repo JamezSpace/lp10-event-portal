@@ -2,13 +2,13 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angul
 import 'iconify-icon';
 
 @Component({
-  selector: 'app-nav-bar',
+  selector: 'app-user-nav-bar',
   imports: [],
-  templateUrl: './nav-bar.component.html',
-  styleUrl: './nav-bar.component.css',
+  templateUrl: './user-nav-bar.component.html',
+  styleUrl: './user-nav-bar.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class NavBarComponent {
+export class UserNavBarComponent {
     links: string[] = ['home', 'events', 'socials', 'shop'];
 
     @ViewChild('navcontainer') navcontainer !: ElementRef

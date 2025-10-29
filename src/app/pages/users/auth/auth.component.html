@@ -1,0 +1,26 @@
+<section class="px-5 py-5 pt-10 flex flex-col items-center custom-bg">
+    <h1 class="mb-5">Log in as Admin</h1>
+    <form class="w-[40%] max-md:w-3/5 max-sm:w-4/5">
+        <div class="field">
+            <label for="">Email Address</label>
+            <input type="text" matInput placeholder="Type in your email..." [(ngModel)]="email" name="email">
+        </div>
+
+
+        <div class="field">
+            <label for="">Password</label>
+            <input type="password" placeholder="Type in your password..." [(ngModel)]="password" name="password">
+        </div>
+
+        <div class="mt-2">
+            <button class="capitalize hover:underline float-right font-medium text-[85%]">forgot password?</button>
+        </div>
+        <button class="my-button w-full mt-8" (click)="login()">
+            @if (loading()) {
+            <mat-spinner [diameter]="15" class="mx-auto"></mat-spinner>
+            } @else {
+            login
+            }
+        </button>
+    </form>
+</section>

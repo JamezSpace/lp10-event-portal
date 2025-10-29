@@ -1,6 +1,6 @@
 import { computed, Injectable, Signal, signal } from '@angular/core';
-import { Person, PersonEntity } from '../interfaces/person.interface';
-import { BulkRegistrationData } from '../interfaces/registration-data.interface';
+import { Person, PersonEntity } from '../../interfaces/person.interface';
+import { BulkRegistrationData } from '../../interfaces/registration-data.interface';
 
 @Injectable({
     providedIn: 'root'

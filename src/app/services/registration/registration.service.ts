@@ -1,9 +1,9 @@
 import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { RegistrationDataService } from './registration-data.service';
-import { PaystackInit } from '../interfaces/payment.interfaces';
-import { fetchJson } from '../../utils/service.utils';
-import { ApiResponse } from '../interfaces/api-response.interfaces';
+import { environment } from '../../../environments/environment';
+import { RegistrationDataService } from '../registration-data/registration-data.service';
+import { PaystackInit } from '../../interfaces/payment.interfaces';
+import { fetchJson } from '../../../utils/service.utils';
+import { ApiResponse } from '../../interfaces/api-response.interfaces';
 
 @Injectable({
   providedIn: 'root',

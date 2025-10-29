@@ -2,7 +2,7 @@ import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
-import { Event } from '../../interfaces/event.interface';
+import { Event } from '../../../interfaces/event.interface';
 import {
   Component,
   ElementRef,
@@ -11,7 +11,7 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
-import { RegistrationService } from '../../services/registration.service';
+import { RegistrationService } from '../../../services/registration/registration.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({

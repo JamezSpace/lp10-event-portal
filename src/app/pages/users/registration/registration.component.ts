@@ -24,11 +24,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AgeCategoryComponent } from '../../components/age-category/age-category.component';
-import { DialogComponent } from '../../components/dialog/dialog.component';
-import { Person, PersonEntity } from '../../interfaces/person.interface';
-import { RegistrationDataService } from '../../services/registration-data.service';
-import { RegistrationService } from '../../services/registration.service';
+import { AgeCategoryComponent } from '../../../components/age-category/age-category.component';
+import { DialogComponent } from '../../../components/dialog/dialog.component';
+import { Person, PersonEntity } from '../../../interfaces/person.interface';
+import { RegistrationDataService } from '../../../services/registration-data/registration-data.service';
+import { RegistrationService } from '../../../services/registration/registration.service';
 
 @Component({
   selector: 'app-registration',

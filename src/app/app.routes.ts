@@ -1,29 +1,45 @@
 import { Routes } from '@angular/router';
-import { RegistrationComponent } from './pages/registration/registration.component';
-import { HerosComponent } from './pages/heros/heros.component';
-import { HelpComponent } from './pages/help/help.component';
-import { PaymentStatusComponent } from './pages/payment-status/payment-status.component';
-import { EventTicketComponent } from './pages/event-ticket/event-ticket.component';
+import { RegistrationComponent } from './pages/users/registration/registration.component';
+import { HelpComponent } from './pages/users/help/help.component';
+import { PaymentStatusComponent } from './pages/users/payment-status/payment-status.component';
+import { EventTicketComponent } from './pages/users/event-ticket/event-ticket.component';
+import { authGuard } from './guards/auth.guard';
+import { AuthComponent } from './pages/users/auth/auth.component';
+import { IndexComponent } from './pages/users/index/index.component';
 
 export const routes: Routes = [
-    {
-        path: '',
-        component: HerosComponent
-    }, 
-    {
-        path: 'convention-2025',
-        component: RegistrationComponent
-    },
-    {
-        path: 'help',
-        component: HelpComponent
-    },
-    {
-        path: 'payment-status',
-        component: PaymentStatusComponent
-    },
-    {
-        path: 'event-ticket',
-        component: EventTicketComponent
-    }
+  {
+    path: '',
+    component: IndexComponent,
+  },
+  {
+    path: 'convention-2025',
+    component: RegistrationComponent,
+  },
+  {
+    path: 'help',
+    component: HelpComponent,
+  },
+  {
+    path: 'payment-status',
+    component: PaymentStatusComponent,
+  },
+  {
+    path: 'event-ticket',
+    component: EventTicketComponent,
+  },
+  {
+    path: 'admin/auth',
+    component: AuthComponent,
+  },
+  {
+    path: 'admin',
+    canActivate: [authGuard],
+    children: [
+        {
+            path: 'dashboard',
+            loadComponent: () => import('./pages/admin/dashboard-home/dashboard-home.component').then(page => page.DashboardHomeComponent),
+        }
+    ],
+  },
 ];

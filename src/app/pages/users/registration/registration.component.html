@@ -7,7 +7,7 @@
 
 <div class="main-container" #mainContainer>
   <section
-    class="progress-bar-container my-flex"
+    class="progress-bar-container flex-center"
     aria-label="progress bar container"
   >
     <div
@@ -65,9 +65,9 @@
           <div class="origin-group-container">
             <h3 class="capitalize subtitle-heading">Origin</h3>
             <article
-              class="origin-container w-full my-flex justify-between px-[10px] phone-screen:flex-col phone-screen:items-start phone-screen:gap-2 mb-2"
+              class="origin-container w-full flex-center justify-between px-[10px] phone-screen:flex-col phone-screen:items-start phone-screen:gap-2 mb-2"
             >
-              <label for="lp10" class="my-flex cursor-pointer">
+              <label for="lp10" class="flex-center cursor-pointer">
                 <input
                   type="radio"
                   name="origin"
@@ -78,7 +78,7 @@
                 />
                 Lagos Province 10
               </label>
-              <label for="non-lp10" class="my-flex cursor-pointer">
+              <label for="non-lp10" class="flex-center cursor-pointer">
                 <input
                   type="radio"
                   name="origin"
@@ -88,7 +88,7 @@
                 />
                 Other Provinces
               </label>
-              <label for="others" class="my-flex cursor-pointer">
+              <label for="others" class="flex-center cursor-pointer">
                 <input
                   type="radio"
                   name="origin"
@@ -211,7 +211,7 @@
                 (deactivate_registration_breakdown
                   ? 'opacity-50 pointer-events-none'
                   : '') +
-                'registration-breakdown-group my-flex justify-between px-[10px]'
+                'registration-breakdown-group flex-center justify-between px-[10px]'
               "
             >
               <section class="number-gui">
@@ -384,11 +384,11 @@
         </div>
 
         <div
-          class="preview-page-button-actions my-flex justify-between gap-3 mx-auto my-3 mt-10"
+          class="preview-page-button-actions flex-center justify-between gap-3 mx-auto my-3 mt-10"
         >
           <button
             type="button"
-            class="my-flex gap-[5px] px-5 py-2 border-[2px] btn-secondary"
+            class="flex-center gap-[5px] px-5 py-2 border-[2px] btn-secondary"
             (click)="previousStep()"
           >
             <svg
@@ -407,7 +407,7 @@
           </button>
           <button
             type="button"
-            class="my-flex px-5 py-2 border-[2px] btn"
+            class="flex-center px-5 py-2 border-[2px] btn"
             (click)="goToMakePaymentStep()"
           >
             Proceed To Payment
