@@ -1,0 +1,1 @@
+Route for verifying user payment - `${environment.base_backend.url}/registrations?ref=${transaction_ref}`

@@ -14,3 +14,5 @@ export interface Person {
     details?: string,
     hasPaid: boolean
 }
+
+export interface PersonEntity extends Omit<Person, 'id'> {}

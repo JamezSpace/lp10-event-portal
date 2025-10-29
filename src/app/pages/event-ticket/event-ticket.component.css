@@ -1,0 +1,23 @@
+.img-bg {
+    height: 93dvh;
+    background: linear-gradient(rgb(0,0,0,0.7)), url('/flier.webp');
+    background-size: cover;
+
+    & .content-container {
+        width: min(80%, 448px);
+        background-color: rgb(255,255,255,0.95);
+        backdrop-filter: blur(2px);
+    }
+}
+
+.bg-inherit {
+    background-color: inherit;
+}
+
+.hidden-print {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  opacity: 1;
+  pointer-events: none;
+}

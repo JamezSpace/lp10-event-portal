@@ -1,5 +1,5 @@
 import { computed, Injectable, Signal, signal } from '@angular/core';
-import { Person } from '../interfaces/person.interface';
+import { Person, PersonEntity } from '../interfaces/person.interface';
 import { BulkRegistrationData } from '../interfaces/registration-data.interface';
 
 @Injectable({
@@ -29,7 +29,7 @@ export class RegistrationDataService {
         return this.registration_data().children + this.registration_data().teenager + this.registration_data().teacher;
     })
 
-    reset_registration_data() {
+    reset_registration_data(): void {
         this.registration_data.set({
             teenager: 0, children: 0, teacher: 0
         })
@@ -69,8 +69,10 @@ export class RegistrationDataService {
         return;
     }
 
-    fetch_all_registered_persons_records(): Person[] {
-        return this.registered_persons();
+    fetch_all_registered_persons_records(): PersonEntity[] {
+        const registered_persons_without_id = this.registered_persons().map(({ id, ...person_without_id }) => person_without_id);
+        
+        return registered_persons_without_id;
     }
 
     editedPersonId(person: Person): Person {

@@ -1,0 +1,31 @@
+<div class="img-bg flex hidden-print justify-center items-center" #ticket>
+  <section
+    class="content-container p-5 rounded-xl max-w-md flex flex-col items-center"
+  >
+    <h2 class="text-center leading-7">{{ event.name }}</h2>
+    <p class="mt-3.5 mb-0">
+      <span>{{ event.date.toLocaleDateString("en-US") }}</span>
+      |
+      <span>{{ event.date.toLocaleTimeString("en-US") }}</span>
+    </p>
+    <p class="mb-5">{{ event.venue }}</p>
+
+    <!-- qr code to scan for event registration validation -->
+    <qrcode
+      [qrdata]="transaction_ref()"
+      [errorCorrectionLevel]="'M'"
+      [width]="210"
+    ></qrcode>
+
+    <div class="mt-5 text-[14px]"><span>&commat;</span>lp10juniorchurch</div>
+  </section>
+</div>
+
+<div class="h-[70dvh] flex-col justify-center items-center">
+  <h1 #text_to_display>One moment please...</h1>
+  <div
+    class="mt-7 flex justify-center items-center"
+  >
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

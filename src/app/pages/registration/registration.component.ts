@@ -26,7 +26,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AgeCategoryComponent } from '../../components/age-category/age-category.component';
 import { DialogComponent } from '../../components/dialog/dialog.component';
-import { Person } from '../../interfaces/person.interface';
+import { Person, PersonEntity } from '../../interfaces/person.interface';
 import { RegistrationDataService } from '../../services/registration-data.service';
 import { RegistrationService } from '../../services/registration.service';
 
@@ -286,19 +286,19 @@ export class RegistrationComponent implements OnInit {
       zone: (this.origin === 'lp10' && this.lp10_origin_data.value.zone) || '',
       region:
         (this.origin === 'non-lp10' && this.nonlp10_origin_data.value.region) ||
-        '',
+        undefined,
       province:
         (this.origin === 'non-lp10' &&
           this.nonlp10_origin_data.value.province) ||
-        '',
+        undefined,
       denomination:
         (this.origin === 'non-rccg' &&
           this.nonrccg_origin_data.value.denomination) ||
-        '',
+        undefined,
       details:
         (this.origin === 'non-rccg' &&
           this.nonrccg_origin_data.value.details) ||
-        '',
+        undefined,
       hasPaid: false,
     };
 
@@ -309,7 +309,9 @@ export class RegistrationComponent implements OnInit {
     )
       this.reg_data_service.update_person_record(person);
     else
-      this.persons_ids.push(this.reg_data_service.add_persons_record(person));
+      this.persons_ids.push(
+        this.reg_data_service.add_persons_record(person)
+      );
 
     // in other words, if registration is more than a single person
     if (this.current_registration() !== this.total_number_registering()) {
@@ -417,7 +419,7 @@ export class RegistrationComponent implements OnInit {
   }
 
   async makePaymentWithPaystack() {
-    const persons: Person[] =
+    const persons: PersonEntity[] =
       this.reg_data_service.fetch_all_registered_persons_records();
 
     console.log(

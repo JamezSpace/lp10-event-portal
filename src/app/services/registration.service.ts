@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { RegistrationDataService } from './registration-data.service';
 import { PaystackInit } from '../interfaces/payment.interfaces';
@@ -195,4 +195,6 @@ export class RegistrationService {
       return;
     }
   }
+
+  transaction_reference = signal<string>('bd8w0k1c6n')
 }
