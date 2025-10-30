@@ -38,7 +38,11 @@ export const routes: Routes = [
     children: [
         {
             path: 'dashboard',
-            loadComponent: () => import('./pages/admin/dashboard-home/dashboard-home.component').then(page => page.DashboardHomeComponent),
+            loadComponent: () => import('./pages/admin/overview/overview.component').then(page => page.OverviewComponent),
+        },
+        {
+            path: 'events',
+            loadComponent: () => import('./pages/admin/events/events.component').then(page => page.EventsComponent),
         }
     ],
   },

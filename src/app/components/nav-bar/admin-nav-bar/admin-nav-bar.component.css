@@ -1,0 +1,64 @@
+.side-nav {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    background-color: var(--white);
+
+    & nav {
+        padding-inline: 20px;
+    }
+
+    & nav a {
+        padding-block: 1.25rem 0.75rem;
+        cursor: pointer;
+        width: 100%;
+        white-space: nowrap;
+        text-align: center;
+        transition: transform 200ms ease;
+        display: block;
+        position: relative;
+        opacity: 0.85;
+
+        &.active {
+            color: var(--neutral-foreground);
+            border-bottom: 2.5px solid var(--neutral-foreground);
+            opacity: 1;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -1.75px;
+            left: 0;
+            width: 0;
+            height: 1.75px;
+            background-color: #000;
+            transition: width 200ms;
+        }
+
+        &:hover::after {
+            width: 100%;
+        }
+    }
+}
+
+.logout_btn:hover {
+    background-color: hsl(from var(--secondary) h s calc(l - 20) /0.5);
+    color: var(--neutral-foreground);
+}
+
+@media screen and (max-width: 48rem) {
+    .side-nav {
+        height: 100vh;
+        position: fixed;
+        z-index: 10;
+        top: 48px;
+        right: 0;
+        transform: translateX(100%);
+        transition: transform 200ms;
+    }
+
+    .side-nav.opened {
+        transform: translateX(0);
+    }
+}
