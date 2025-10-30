@@ -1,10 +1,9 @@
 .operation {
-    @apply border-primary text-primary;
-
     padding: 5px;
     aspect-ratio: 1;
     border-radius: 50%;
-    border: 1.5px solid;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
     display: inline-flex;
     justify-content: center;
     align-items: center;
