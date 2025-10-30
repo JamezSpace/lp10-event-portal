@@ -89,8 +89,6 @@
 }
 
 .custom-radio-button {
-    @apply outline-[1.5px] outline outline-primary outline-offset-[3.5px];
-
     margin-right: 13.5px;
     width: calc(1rem - 6.5px);
     aspect-ratio: 1 / 1;
@@ -98,11 +96,14 @@
     appearance: none;
     background-color: transparent;
     border-radius: 50%;
+    outline: 1.5px solid var(--primary);
+    outline-offset: 3.5px;
     transition: outline-color 200ms, background-color 200ms;
 }
 
 .custom-radio-button:checked {
-    @apply outline-primary bg-primary;
+    outline-color: var(--primary);
+    background-color: var(--primary);
 }
 
 .origin-specifics {
