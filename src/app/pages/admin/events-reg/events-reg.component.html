@@ -1,0 +1,45 @@
+<h2 class="pt-5 mb-4">December Campout Registrations Ongoing!</h2>
+
+<app-stat [stat]="statistics" />
+
+<h4 class="my-7 mb-2.5">Persons Checked In</h4>
+<button class="my-button mb-5" (click)="verifyRegistration()">
+  Verify Registration
+</button>
+<div class="overflow-x-auto">
+  <table>
+    <thead>
+      <th>sn</th>
+      <th>full name</th>
+      <th>gender</th>
+      <th>age</th>
+      <th>zone</th>
+      <th>payer</th>
+    </thead>
+    <tbody>
+      @for (person of persons(); track $index) {
+      <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ person.last_name + " " + person.first_name }}</td>
+        <td>{{ person.gender }}</td>
+        <td>{{ getAge(person.year_of_birth) }}</td>
+        <td>{{ person.zone }}</td>
+        <td>{{ person.payer.name }}</td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="6" class="text-gray-700">
+          <p class="text-center my-5">no person checked in yet</p>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+<mat-paginator
+  [length]="pagination().total"
+  [pageSize]="pagination().limit"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>

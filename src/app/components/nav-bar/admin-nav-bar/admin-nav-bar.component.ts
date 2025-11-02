@@ -13,11 +13,15 @@ export class AdminNavBarComponent {
   sub_navbar_menus: NavBarMenu[] = [
     {
       label: 'overview',
-      route: '/dashboard',
+      route: '/admin/dashboard',
     },
     {
       label: 'events',
-      route: '/events',
+      route: '/admin/events',
+    },
+    {
+      label: 'events registrations',
+      route: '/admin/events-reg',
     },
   ];
 

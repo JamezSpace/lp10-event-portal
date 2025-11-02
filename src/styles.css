@@ -17,16 +17,7 @@
     --black-2: rgb(52, 55, 62, 0.9);
     --form-field-placeholder-color: rgb(84, 88, 99, .6);
     --success: #5FC381;
-    --error: #DD524D;
-}
-
-*,
-*::after,
-*::before {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    font-family: inherit;
+    --error: #de1610;
 }
 
 html {
@@ -42,7 +33,7 @@ body {
     /* background-color: rgb(from var(--white) r g b /0.6); */
 }
 
-a {
+/* a {
     color: unset;
     text-decoration: none;
 }
@@ -51,13 +42,14 @@ input,
 button,
 dialog {
     outline: none;
-    /* border: none; */
+    border: none;
 }
+*/
 
 button {
     cursor: pointer;
     background-color: unset;
-}
+} 
 
 h1,
 h2,
@@ -65,15 +57,18 @@ h3,
 h4,
 h5,
 h6 {
-    font-weight: bold;
+    font-weight: 500;
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 1.5em;
+    line-height: 1.5em;
+    margin-block: 5px 20px;
 }
 
 h2 {
-    font-size: 1.5em;
+    font-size: 1.2em;
+    line-height: 1.2em;
 }
 
 h3 {
@@ -101,10 +96,14 @@ h6 {
     background-color: inherit;
 }
 
+.bg-primary {
+    background-color: var(--primary);
+}
+
 .my-button {
     --bg-color: hsl(from var(--primary) h s calc(l + 10));
 
-    padding: 10px 20px;
+    padding: 8px 16px;
     white-space: nowrap;
     gap: 8px;
     border: 1px solid var(--bg-color);
@@ -149,11 +148,56 @@ h6 {
     color: var(--primary);
 
     &:hover {
-        outline: 1px solid var(--primary);
+        outline: 0.25px solid var(--primary);
     }
 
     &.red {
-        border-color: var(--seconary);
-        color: var(--seconary);
+        border-color: var(--error);
+        color: var(--error);
+    }
+
+    &.red:hover {
+        outline-color: var(--error);
+    }
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+
+    th {
+        text-align: left;
+        font-weight: 500;
+        text-transform: capitalize;
+    }
+
+    th,
+    td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+}
+
+.dialog-responsive {
+    width: 80vw;
+    max-height: 80vh;
+    overflow: auto;
+}
+
+@media screen and (max-width : 48rem) {
+    .dialog-responsive {
+        width: 80vw;
+        max-height: 90vh !important;
+    }
+}
+
+@media screen and (max-width : 40rem) {
+    .dialog-responsive {
+        width: 100%;
+        height: 100%;
+        max-width: 95vw !important;
+        max-height: 90vh !important;
     }
 }

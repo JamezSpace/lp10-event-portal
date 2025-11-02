@@ -19,11 +19,11 @@ import { MatInputModule } from '@angular/material/input';
         MatDialogTitle,
         MatDialogContent,
         MatDialogActions],
-    templateUrl: './dialog.component.html',
-    styleUrl: './dialog.component.css'
+    templateUrl: './payment-dialog.component.html',
+    styleUrl: './payment-dialog.component.css'
 })
-export class DialogComponent {
-    readonly dialogRef = inject(MatDialogRef<DialogComponent>);
+export class PaymentDialogComponent {
+    readonly dialogRef = inject(MatDialogRef<PaymentDialogComponent>);
     payers_name = signal('');
     payers_email = signal('');
     cancel(): void {

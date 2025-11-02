@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { environment } from '../environments/environment';
 import { UserNavBarComponent } from './components/nav-bar/user-nav-bar/user-nav-bar.component';
 import { AdminNavBarComponent } from './components/nav-bar/admin-nav-bar/admin-nav-bar.component';
-import { AuthService } from './services/auth/auth.service';
+import { AuthService } from './services/admin/auth/auth.service';
 
 @Component({
     selector: 'app-root',

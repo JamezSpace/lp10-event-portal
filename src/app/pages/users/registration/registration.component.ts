@@ -25,10 +25,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AgeCategoryComponent } from '../../../components/age-category/age-category.component';
-import { DialogComponent } from '../../../components/dialog/dialog.component';
+import { PaymentDialogComponent } from '../../../components/dialogs/payment-dialog/payment-dialog.component';
 import { Person, PersonEntity } from '../../../interfaces/person.interface';
-import { RegistrationDataService } from '../../../services/registration-data/registration-data.service';
-import { RegistrationService } from '../../../services/registration/registration.service';
+import { RegistrationDataService } from '../../../services/users/registration-data/registration-data.service';
+import { RegistrationService } from '../../../services/users/registration/registration.service';
+import { toggleLoader } from '../../../../utils/components.utils';
 
 @Component({
   selector: 'app-registration',
@@ -352,11 +353,11 @@ export class RegistrationComponent implements OnInit {
     if (this.current_step() !== 3) {
       pages_container.classList.add('transform');
       pages_container.classList.add('translate-x-[calc(-100%+19px)]');
-      pages_container.classList.add('phone-screen:translate-x-[calc(-101%)]');
+      pages_container.classList.add('max-[465px]:translate-x-[calc(-101%)]');
     } else {
       pages_container.classList.add('transform');
       pages_container.classList.add('translate-x-[calc(-200%+19px)]');
-      pages_container.classList.add('phone-screen:translate-x-[calc(-200%)]');
+      pages_container.classList.add('max-[465px]:translate-x-[calc(-200%)]');
     }
 
     // scroll to the top on the next page
@@ -377,7 +378,7 @@ export class RegistrationComponent implements OnInit {
       'translate-x-0'
     );
     pages_container.classList.replace(
-      'phone-screen:translate-x-[calc(-101%)]',
+      'max-[465px]:translate-x-[calc(-101%)]',
       'translate-x-0'
     );
   }
@@ -391,7 +392,7 @@ export class RegistrationComponent implements OnInit {
   payers_name = signal<string>('');
   payers_email = signal<string>('');
   openDialogToMakePaymentForMultiplePersons(): void {
-    const dialogRef = this.dialog.open(DialogComponent);
+    const dialogRef = this.dialog.open(PaymentDialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log('Result', result);
@@ -410,7 +411,7 @@ export class RegistrationComponent implements OnInit {
       this.reg_data_service.fetch_all_registered_persons_records().length === 1
     ) {
       // show loader
-      this.toggleLoader();
+      toggleLoader(this.loader);
       this.makePaymentWithPaystack();
       return;
     }
@@ -442,7 +443,7 @@ export class RegistrationComponent implements OnInit {
 
     if (!transaction_response.success) {
       // hide loader
-      this.toggleLoader();
+      toggleLoader(this.loader);
 
       this.openSnackBar(transaction_response.error, '', 3000);
       return;
@@ -462,10 +463,4 @@ export class RegistrationComponent implements OnInit {
 
   @ViewChild('loader')
   loader!: ElementRef<HTMLDivElement>;
-
-  toggleLoader() {
-    if (this.loader.nativeElement.classList.contains('flex'))
-      this.loader.nativeElement.classList.replace('flex', 'hidden');
-    else this.loader.nativeElement.classList.replace('hidden', 'flex');
-  }
 }

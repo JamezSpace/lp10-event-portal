@@ -11,18 +11,19 @@
     <p class="mb-5">{{ event.venue }}</p>
 
     <!-- qr code to scan for event registration validation -->
-    <qrcode
+     <div class="qr-code" #qr_code></div>
+    <!-- <qrcode
       [qrdata]="transaction_ref()"
       [errorCorrectionLevel]="'M'"
       [width]="210"
-    ></qrcode>
+    ></qrcode> -->
 
     <div class="mt-5 text-[14px]"><span>&commat;</span>lp10juniorchurch</div>
   </section>
 </div>
 
 <div class="h-[70dvh] flex-col justify-center items-center">
-  <h1 #text_to_display>One moment please...</h1>
+  <h1 class="text-center" #text_to_display>One moment please...</h1>
   <div
     class="mt-7 flex justify-center items-center"
   >

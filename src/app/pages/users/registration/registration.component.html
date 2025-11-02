@@ -59,13 +59,13 @@
   </section>
 
   <div class="carousel-wrapper">
-    <div class="carousel-container px-5 phone-screen:px-2" #pagesContainer>
+    <div class="carousel-container px-5 max-[465px]:px-2" #pagesContainer>
       <div [className]="current_step() === 1 ? 'page page-active' : 'page'">
-        <section class="form w-4/6 non-laptop-screen:w-full mx-auto">
+        <section class="form w-4/6 max-md:w-full mx-auto">
           <div class="origin-group-container">
             <h3 class="capitalize subtitle-heading">Origin</h3>
             <article
-              class="origin-container w-full flex-center justify-between px-[10px] phone-screen:flex-col phone-screen:items-start phone-screen:gap-2 mb-2"
+              class="origin-container w-full flex items-center justify-between px-2.5 max-[465px]:flex-col max-[465px]:items-start max-[465px]:gap-2 mb-2"
             >
               <label for="lp10" class="flex-center cursor-pointer">
                 <input
@@ -211,7 +211,7 @@
                 (deactivate_registration_breakdown
                   ? 'opacity-50 pointer-events-none'
                   : '') +
-                'registration-breakdown-group flex-center justify-between px-[10px]'
+                'registration-breakdown-group flex-center justify-between px-2.5'
               "
             >
               <section class="number-gui">
@@ -348,7 +348,7 @@
             </section>
             <button
               type="submit"
-              class="block w-full py-3 border-[2px] btn mt-5 font-black"
+              class="block w-full py-3 border-2 btn mt-5 font-black"
               [disabled]="!allFieldsChanged"
             >
               {{ total_number_registering() > 1 ? "Save Data" : "Submit" }}
@@ -388,7 +388,7 @@
         >
           <button
             type="button"
-            class="flex-center gap-[5px] px-5 py-2 border-[2px] btn-secondary"
+            class="flex-center gap-[5px] px-5 py-2 border-2 btn-secondary"
             (click)="previousStep()"
           >
             <svg
@@ -407,7 +407,7 @@
           </button>
           <button
             type="button"
-            class="flex-center px-5 py-2 border-[2px] btn"
+            class="flex-center px-5 py-2 border-2 btn"
             (click)="goToMakePaymentStep()"
           >
             Proceed To Payment

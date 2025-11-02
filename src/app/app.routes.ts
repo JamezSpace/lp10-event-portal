@@ -4,7 +4,7 @@ import { HelpComponent } from './pages/users/help/help.component';
 import { PaymentStatusComponent } from './pages/users/payment-status/payment-status.component';
 import { EventTicketComponent } from './pages/users/event-ticket/event-ticket.component';
 import { authGuard } from './guards/auth.guard';
-import { AuthComponent } from './pages/users/auth/auth.component';
+import { AuthComponent } from './pages/admin/auth/auth.component';
 import { IndexComponent } from './pages/users/index/index.component';
 
 export const routes: Routes = [
@@ -43,6 +43,10 @@ export const routes: Routes = [
         {
             path: 'events',
             loadComponent: () => import('./pages/admin/events/events.component').then(page => page.EventsComponent),
+        },
+        {
+            path: 'events-reg',
+            loadComponent: () => import('./pages/admin/events-reg/events-reg.component').then(page => page.EventsRegComponent)
         }
     ],
   },

@@ -49,7 +49,17 @@ html {
     @include mat.option-overrides((selected-state-layer-color: var(--primary-tint-30),
             hover-state-layer-color: var(--primary-tint-30),
             selected-state-label-text-color: '#000',
-        ))
+        ));
+
+    // slide toggle
+    @include mat.slide-toggle-overrides((
+        selected-track-color: var(--primary),
+        selected-focus-track-color: var(--primary),
+        selected-hover-track-color: var(--primary),
+        selected-icon-color: var(--primary),
+        selected-hover-state-layer-color: var(--primary),
+        selected-focus-state-layer-color: var(--primary)
+    ))
 }
 
 

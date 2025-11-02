@@ -2,14 +2,13 @@
     width: 100%;
     position: sticky;
     top: 0;
-    background-color: var(--white);
 
     & nav {
         padding-inline: 20px;
     }
 
-    & nav a {
-        padding-block: 1.25rem 0.75rem;
+    & nav p {
+        padding-block: 1rem 0.5rem;
         cursor: pointer;
         width: 100%;
         white-space: nowrap;
@@ -20,8 +19,8 @@
         opacity: 0.85;
 
         &.active {
-            color: var(--neutral-foreground);
-            border-bottom: 2.5px solid var(--neutral-foreground);
+            color: var(--color-black);
+            border-bottom: 2.5px solid var(--color-gray-600);
             opacity: 1;
         }
 

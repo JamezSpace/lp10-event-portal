@@ -16,3 +16,11 @@ export interface Person {
 }
 
 export interface PersonEntity extends Omit<Person, 'id'> {}
+export interface PersonEntityWithPayer extends PersonEntity {
+    payer: {
+        _id: string;
+        name: string;
+        email: string;
+        transaction_ref? : string;
+    }
+}

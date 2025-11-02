@@ -4,6 +4,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 import { routes } from './app.routes';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,7 +13,11 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: { appearance: 'outline' }
-    }
-  ]
+      useValue: { appearance: 'outline' },
+    },
+    { 
+        provide: MAT_DIALOG_DEFAULT_OPTIONS, 
+        useValue: { hasBackdrop: true }
+    },
+  ],
 };

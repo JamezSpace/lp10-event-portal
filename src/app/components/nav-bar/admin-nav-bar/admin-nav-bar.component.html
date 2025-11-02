@@ -1,9 +1,10 @@
 <header class="flex-center justify-between">
-  <a href="/" class="logo h-10">
+  <a href="/" class="logo h-10 flex-center">
     <img src="logo.svg" alt="LP10 Logo" />
+    <span>lp10</span>
   </a>
 
-  <div class="right my-flex gap-3.5">
+  <div class="right flex-center gap-3.5">
     <button>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -53,12 +54,12 @@
   </div>
 </header>
 
-<div class="side-nav min-md:border-b min-md:border-black-tint-1" #expandedNavBar>
+<div class="side-nav md:shadow" #expandedNavBar>
     <nav class="inline-flex gap-5 max-md:flex max-md:flex-col max-md:mx-auto max-md:w-3/5">
         @for (nav of sub_navbar_menus; track $index) {
-        <a href="" [routerLink]="nav.route" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-            class="capitalize"
-            (click)="toggleNavBarVisibility()">{{ nav.label }}</a>
+        <p [routerLink]="nav.route" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+            class="capitalize text-[90%]"
+            (click)="toggleNavBarVisibility()">{{ nav.label }}</p>
         }
     </nav>
 </div>

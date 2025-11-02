@@ -1,0 +1,57 @@
+<section class="p-2.5 shadow-md rounded-xl">
+  <div class="img-container">
+    <img
+      src="https://iplaceholder.com/600x200/eee/969696/png?font=Verdana"
+      alt="image placeholder"
+    />
+  </div>
+  @if (!event_tag) { 
+    @if (event.type === 'one-time') {
+    <article>
+        <p class="font-bold mt-5">{{ event.name }}</p>
+        <p class="text-gray-800 mt-1.5">
+        @if (event.start_date) {
+        <span>{{ format_date_range(event.start_date, event.duration) }}</span>
+        } @else{
+        <span>{{ event.month }}</span>
+        } |
+        <span>{{ event.venue }}</span>
+        </p>
+    </article>
+    <div class="actions flex-center gap-2 mt-3.5">
+        <button class="w-full my-button secondary">
+        view
+        </button>
+    </div>
+    } @else if(event.type === 'recurring') {
+    <article>
+        <p class="font-bold mt-5">{{ event.name }}</p>
+        <p class="text-gray-800 mt-1.5">
+        <span>{{ event.month }}</span>
+        |
+        <span>{{ event.venue }}</span>
+        </p>
+    </article>
+    <div class="actions flex-center gap-2 mt-3.5">
+        <button class="my-button secondary">edit</button>
+    </div>
+    }
+  } @else {
+    <article>
+        <p class="font-bold mt-5">{{ event.name }}</p>
+        <p class="text-gray-800 mt-1.5">
+        <span>{{ event.month }}</span>
+        |
+        <span>{{ event.venue }}</span>
+        </p>
+    </article>
+    <div class="actions flex-center gap-2 mt-3.5">
+        <button class="my-button secondary">
+            start registrations
+        </button>
+        <button class="my-button secondary red">
+        delete
+        </button>
+    </div>
+  }
+</section>

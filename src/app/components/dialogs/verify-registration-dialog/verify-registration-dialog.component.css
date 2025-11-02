@@ -1,0 +1,9 @@
+.article-container {
+    & p {
+        margin-bottom: 10px;
+    }
+
+    & p span {
+        font-weight: 500;
+    }
+}

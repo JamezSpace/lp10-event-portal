@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Component, inject, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthService } from '../../../services/auth/auth.service';
+import { AuthService } from '../../../services/admin/auth/auth.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
