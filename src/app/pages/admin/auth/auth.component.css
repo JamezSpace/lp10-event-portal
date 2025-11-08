@@ -13,26 +13,5 @@
     &:not(:first-of-type) {
         margin-top: 1rem;
     }
-    & > label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-    }
 
-    & > input {
-        border: 1px solid var(--black-tint-20);
-        width: 100%;
-        padding: 10px;
-        border-radius: 0.5rem;
-        background-color: rgb(from var(--form-field-placeholder-color) r g b/0.05) ;
-    }
-
-    & > input::placeholder {
-        font-size: 90%;
-        color: rgb(from var(--black-2) r g b);
-    }
-
-    & > input:focus {
-        border-color: var(--color-black);
-    }
 }

@@ -1,0 +1,116 @@
+<section class="px-5 py-7">
+  <header class="mb-5">
+    <h2>Create a New Event</h2>
+    <p>Fill in the details to create a new event</p>
+  </header>
+
+  <form>
+    <div class="row">
+      <div class="field">
+        <label for="event_name_field" class="custom-form-label"
+          >event name</label
+        >
+        <input
+          type="text"
+          name="event_name"
+          id="event_name_field"
+          class="custom-form-input"
+          placeholder="enter the name of the event"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="" class="custom-form-label">event type</label>
+        <div class="flex gap-4">
+          <div class="selectable">
+            <span>recurring</span>
+            <input
+              type="radio"
+              name="event-type"
+              data-type="recurring"
+              (change)="onChangeEventType($event)"
+            />
+          </div>
+          <div class="selectable">
+            <span>one-time</span>
+            <input
+              type="radio"
+              name="event-type"
+              data-type="one-time"
+              (change)="onChangeEventType($event)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    @if (event_type() === 'one-time') {
+    <div class="row">
+      <div class="field">
+        <label for="" class="custom-form-label">platform</label>
+        <div class="flex gap-4">
+          <div class="selectable">
+            <span>online</span>
+            <input type="radio" name="event-platform" id="" />
+          </div>
+          <div class="selectable">
+            <span>on-site</span>
+            <input type="radio" name="event-platform" id="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+    <div class="row">
+      <div class="field">
+        <label for="event_date_field" class="custom-form-label"
+          >Date of Event</label
+        >
+        <input
+          type="date"
+          name="event_date"
+          id="event_date_field"
+          class="custom-form-input"
+        />
+      </div>
+      @if (event_type() === 'one-time') {
+      <div class="field">
+        <label for="event_time_field" class="custom-form-label"
+          >Time of event</label
+        >
+        <input
+          type="time"
+          name="event_time"
+          id="event_time_field"
+          class="custom-form-input"
+        />
+      </div>
+      } @else if (event_type() === 'recurring') {
+      <div class="field">
+        <label for="recurring_event_type_field" class="custom-form-label">Recurring event</label>
+        <select name="recurring_event_type" id="recurring_event_type_field" class="custom-form-select">
+          @for (r_event of recurring_events(); track $index) {
+          <option [value]="r_event._id">{{ r_event.name }}</option>
+          }
+        </select>
+      </div>
+      }
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="event_desciption_field" class="custom-form-label"
+          >description (optional)</label
+        >
+        <textarea
+          name="event_desciption"
+          id="event_desciption_field"
+          class="custom-form-input min-h-20 max-h-32"
+          placeholder="add a short description for the event"
+        ></textarea>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <button class="my-button ml-auto">create event</button>
+    </div>
+  </form>
+</section>

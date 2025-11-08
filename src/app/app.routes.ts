@@ -3,7 +3,7 @@ import { RegistrationComponent } from './pages/users/registration/registration.c
 import { HelpComponent } from './pages/users/help/help.component';
 import { PaymentStatusComponent } from './pages/users/payment-status/payment-status.component';
 import { EventTicketComponent } from './pages/users/event-ticket/event-ticket.component';
-import { authGuard } from './guards/auth.guard';
+import { AuthGuard } from './guards/auth.guard';
 import { AuthComponent } from './pages/admin/auth/auth.component';
 import { IndexComponent } from './pages/users/index/index.component';
 
@@ -34,20 +34,34 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    canActivate: [authGuard],
+    canActivateChild: [AuthGuard],
     children: [
-        {
-            path: 'dashboard',
-            loadComponent: () => import('./pages/admin/overview/overview.component').then(page => page.OverviewComponent),
-        },
-        {
-            path: 'events',
-            loadComponent: () => import('./pages/admin/events/events.component').then(page => page.EventsComponent),
-        },
-        {
-            path: 'events-reg',
-            loadComponent: () => import('./pages/admin/events-reg/events-reg.component').then(page => page.EventsRegComponent)
-        }
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./pages/admin/overview/overview.component').then(
+            (page) => page.OverviewComponent
+          ),
+      },
+      {
+        path: 'events',
+        loadComponent: () =>
+          import('./pages/admin/events/events.component').then(
+            (page) => page.EventsComponent
+          ),
+      },
+      {
+        path: 'events-reg',
+        loadComponent: () =>
+          import('./pages/admin/events-reg/events-reg.component').then(
+            (page) => page.EventsRegComponent
+          ),
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'dashboard'
+      },
     ],
   },
 ];

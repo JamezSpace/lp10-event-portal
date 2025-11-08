@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Event } from '../../interfaces/event.interfaces';
+import { UnifiedEvent } from '../../interfaces/event.interfaces';
 import { formatDateRange } from '../../../utils/date.utils';
 
 @Component({
@@ -10,10 +10,10 @@ import { formatDateRange } from '../../../utils/date.utils';
 })
 export class EventComponent {
   @Input({ required: true, alias: 'event' })
-  event!: Event;
+  event!: UnifiedEvent;
 
-  @Input()
-  event_tag!: string | undefined;
+  @Input() 
+  event_tag?: 'upcoming' | 'past' | 'recurring';
 
   format_date_range(date: string, duration: number) {
     return formatDateRange(date, duration);

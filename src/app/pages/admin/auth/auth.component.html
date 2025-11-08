@@ -2,14 +2,14 @@
     <p class="mb-5 text-2xl font-bold">Log in as Admin</p>
     <form class="w-[40%] max-md:w-3/5 max-sm:w-4/5">
         <div class="field">
-            <label for="">Email Address</label>
-            <input type="text" matInput placeholder="Type in your email..." [(ngModel)]="email" name="email">
+            <label for="email_field" class="custom-form-label">Email Address</label>
+            <input type="text" matInput placeholder="Type in your email..." [(ngModel)]="email" name="email" id="email_field" class="custom-form-input">
         </div>
 
 
         <div class="field">
-            <label for="">Password</label>
-            <input type="password" placeholder="Type in your password..." [(ngModel)]="password" name="password">
+            <label for="password_field" class="custom-form-label">Password</label>
+            <input type="password" placeholder="Type in your password..." [(ngModel)]="password" name="password" id="password_field" class="custom-form-input">
         </div>
 
         <div class="mt-2">

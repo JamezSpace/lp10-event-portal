@@ -1,8 +1,15 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Event } from '../../../interfaces/event.interfaces';
+import {
+  Event,
+  RecurringEvent,
+  UnifiedEvent,
+} from '../../../interfaces/event.interfaces';
 import { DashboardService } from '../../../services/admin/dashboard/dashboard.service';
 import { EventComponent } from '../../../components/event/event.component';
+import { MatDialog } from '@angular/material/dialog';
+import { NewEventDialogComponent } from '../../../components/dialogs/new-event-dialog/new-event-dialog.component';
+import { NewRecurringEventDialogComponent } from '../../../components/dialogs/new-recurring-event-dialog/new-recurring-event-dialog.component';
 
 @Component({
   selector: 'app-events',
@@ -12,73 +19,95 @@ import { EventComponent } from '../../../components/event/event.component';
 })
 export class EventsComponent implements OnInit {
   private dashboard_service = inject(DashboardService);
-  events = signal<Event[]>([
-    {
-      _id: '1',
-      name: 'Annual Youth Conference',
-      description:
-        'A 3-day event focused on youth empowerment, workshops, and worship sessions.',
-      type: 'recurring',
-      venue: 'Lagos City Hall',
-      duration: 3,
-      month: 'August',
-      start_date: '2025-08-12',
-      created_at: '2025-07-01T10:30:00Z',
-      modified_at: '2025-07-15T08:45:00Z',
-    },
-    {
-      _id: '2',
-      name: 'Leaders Retreat',
-      description: 'A one-day leadership retreat for all regional leaders.',
-      type: 'one-time',
-      venue: 'Obudu Mountain Resort',
-      duration: 1,
-      start_date: '2025-11-05',
-      created_at: '2025-09-20T14:00:00Z',
-      modified_at: '2025-09-25T09:15:00Z',
-    },
-    {
-      _id: '3',
-      name: 'Monthly Prayer Meeting',
-      description:
-        'A recurring monthly meeting focused on intercessory prayer.',
-      type: 'recurring',
-      venue: 'Church Auditorium',
-      duration: 1,
-      month: 'Every month',
-      start_date: '2025-10-01',
-      created_at: '2025-08-10T11:20:00Z',
-      modified_at: '2025-09-01T17:00:00Z',
-    },
-    {
-      _id: '4',
-      name: 'Christmas Outreach',
-      description:
-        'Community outreach with carols, gift distribution, and evangelism.',
-      type: 'one-time',
-      venue: 'Community Park',
-      duration: 2,
-      month: 'December',
-      start_date: '2025-12-23',
-      created_at: '2025-10-10T12:00:00Z',
-      modified_at: '2025-10-25T09:30:00Z',
-    },
-    {
-      _id: '5',
-      name: 'Mid-Year Thanksgiving',
-      description:
-        'A celebration service marking the halfway point of the year.',
-      type: 'one-time',
-      venue: 'Main Auditorium',
-      duration: 1,
-      month: 'June',
-      start_date: '2025-06-30',
-      created_at: '2025-05-10T10:00:00Z',
-      modified_at: '2025-05-12T13:45:00Z',
-    },
-  ]);
+  private dialog_ref = inject(MatDialog);
+
+  events = signal<UnifiedEvent[]>([]);
+
+  // 💡 Computed signals for filtering
+  upcoming_events = computed(() =>
+    this.events().filter(
+      (e) => e.type !== 'recurring' && this.isUpcoming(e.start_date)
+    )
+  );
+
+  past_events = computed(() =>
+    this.events().filter(
+      (e) => e.type !== 'recurring' && this.isPast(e.start_date)
+    )
+  );
+
+  recurring_events = computed(() =>
+    this.events().filter((e) => e.type === 'recurring')
+  );
 
   async ngOnInit(): Promise<void> {
-    // this.events.set(await this.dashboard_service.fetchEvents())
+    try {
+      if (this.dashboard_service.events().length === 0) {
+        await this.dashboard_service.fetchEvents();
+      }
+      if (this.dashboard_service.recurring_events().length === 0) {
+        await this.dashboard_service.fetchRecurringEvents();
+      }
+
+      const events = this.dashboard_service.events,
+        recurring = this.dashboard_service.recurring_events;
+
+      this.events.set(this.normalizeEvents(events(), recurring()));
+    } catch (error) {
+      console.error('Failed to fetch dashboard events:', error);
+    }
+  }
+
+  normalizeEvents(
+    events: Event[],
+    recurringEvents: RecurringEvent[]
+  ): UnifiedEvent[] {
+    return events.map((e) => {
+      const recurring = e.recurring_event_id
+        ? recurringEvents.find((r) => r._id === e.recurring_event_id)
+        : undefined;
+
+      return {
+        _id: e._id,
+        name: recurring?.name ?? e.name,
+        description: recurring?.description,
+        type: e.type,
+        venue: e.venue,
+        duration_in_days: recurring?.duration_in_days,
+        month: recurring?.month,
+        start_date: e.start_date,
+        created_at: e.created_at,
+        modified_at: e.modified_at,
+      };
+    });
+  }
+
+  isUpcoming(date?: string): boolean {
+    if (!date) return false;
+    const today = new Date();
+    return new Date(date) >= today;
+  }
+
+  isPast(date?: string): boolean {
+    if (!date) return false;
+    const today = new Date();
+    return new Date(date) < today;
+  }
+
+  openNewEventDialog() {
+    const new_event_dialog = this.dialog_ref.open(NewEventDialogComponent, {
+      hasBackdrop: true,
+      panelClass: 'dialog-responsive',
+    });
+  }
+
+  openNewRecurringeventDialog() {
+    const recurring_event_dialog = this.dialog_ref.open(
+      NewRecurringEventDialogComponent,
+      {
+        hasBackdrop: true,
+        panelClass: 'dialog-responsive',
+      }
+    );
   }
 }

@@ -1,1 +1,24 @@
-<p>overview works!</p>
+<header class="pt-3 mb-6">
+  <h1>Welcome Samuel!</h1>
+  <p class="-mt-3">Here's a snapshot of al events performance</p>
+</header>
+
+<div class="stat-container">
+  <app-stat [stat]="statistics" />
+</div>
+
+<section class="my-12">
+  <h2>Registrations Trend</h2>
+  <div class="mt-10 flex flex-col justify-center max-w-1/2 max-md:max-w-full p-5 custom-box-shadow">
+    <div class="chart max-h-[50vh]">
+      <canvas
+        baseChart
+        [data]="chartData"
+        [options]="chartOptions"
+        [type]="'line'"
+      >
+      </canvas>
+    </div>
+    <h4 class="text-center mt-4">Persons registered in 1 month</h4>
+  </div>
+</section>

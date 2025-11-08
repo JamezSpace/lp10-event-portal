@@ -1,6 +1,6 @@
 <div class="flex gap-5 flex-wrap">
   @for (statistic of statistics; track $index) {
-  <section class="p-2.5 rounded-xl shadow min-w-36">
+  <section class="p-2.5 rounded-xl custom-box-shadow min-w-36">
     <p class="capitalize text-[90%] text-gray-600">{{ statistic.label }}</p>
     @if (statistic.type === 'currency') {
     <h2 class="my-2">

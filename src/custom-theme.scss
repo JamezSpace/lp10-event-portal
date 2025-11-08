@@ -1,72 +1,104 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 html {
-    @include mat.theme((color: (theme-type: light,
-                primary: mat.$azure-palette,
-                tertiary: mat.$blue-palette,
-            ),
-            typography: "DM Sans",
-            density: 0,
-        ));
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: "DM Sans",
+      density: 0,
+    )
+  );
 
-    // form field
-    @include mat.form-field-overrides((outlined-caret-color: var(--black),
-            outlined-input-text-color: var(--black),
-            outlined-focus-outline-color: var(--primary),
-            outlined-focus-label-text-color: var(--primary),
-            outlined-input-text-placeholder-color: var(--black-tint-20),
-            container-height: '40px',
-            container-vertical-padding: '8px'
-        ));
+  // form field
+  @include mat.form-field-overrides(
+    (
+      outlined-caret-color: var(--black),
+      outlined-input-text-color: var(--black),
+      outlined-focus-outline-color: var(--primary),
+      outlined-focus-label-text-color: var(--primary),
+      outlined-input-text-placeholder-color: var(--black-tint-20),
+      container-height: "40px",
+      container-vertical-padding: "8px",
+    )
+  );
 
-    // progress bar
-    @include mat.progress-bar-overrides((active-indicator-color: var(--black),
-            track-color: var(--black-tint-20),
-        ));
+  // progress bar
+  @include mat.progress-bar-overrides(
+    (
+      active-indicator-color: var(--black),
+      track-color: var(--black-tint-20),
+    )
+  );
 
-    // spinner (loader)
-    @include mat.progress-spinner-overrides((active-indicator-color: var(--primary),
-        ));
+  // spinner (loader)
+  @include mat.progress-spinner-overrides(
+    (
+      active-indicator-color: var(--primary),
+    )
+  );
 
-    // radio button
-    @include mat.radio-overrides((label-text-weight: 400,
-            selected-icon-color: var(--primary),
-            selected-hover-icon-color: var(--primary),
-            selected-focus-icon-color: var(--primary),
-            unselected-icon-color: var(--primary),
-            unselected-focus-icon-color: var(--primary),
-            state-layer-size: '30px',
-            checked-ripple-color: var(--primary)));
+  // radio button
+  @include mat.radio-overrides(
+    (
+      label-text-weight: 400,
+      selected-icon-color: var(--primary),
+      selected-hover-icon-color: var(--primary),
+      selected-focus-icon-color: var(--primary),
+      unselected-icon-color: var(--primary),
+      unselected-focus-icon-color: var(--primary),
+      state-layer-size: "30px",
+      checked-ripple-color: var(--primary),
+    )
+  );
 
-    // select
-    @include mat.select-overrides((panel-background-color: var(--primary-tint-50),
-            // enabled-trigger-text-color: green,
-            focused-arrow-color: var(--primary),
-        ));
+  // select
+  @include mat.select-overrides(
+    (
+      panel-background-color: var(--primary-tint-50),
+      // enabled-trigger-text-color: green,
+      focused-arrow-color: var(--primary),
+    )
+  );
 
-    @include mat.option-overrides((selected-state-layer-color: var(--primary-tint-30),
-            hover-state-layer-color: var(--primary-tint-30),
-            selected-state-label-text-color: '#000',
-        ));
+  @include mat.option-overrides(
+    (
+      selected-state-layer-color: var(--primary-tint-30),
+      hover-state-layer-color: var(--primary-tint-30),
+      selected-state-label-text-color: "#000",
+    )
+  );
 
-    // slide toggle
-    @include mat.slide-toggle-overrides((
+  // slide toggle
+  @include mat.slide-toggle-overrides(
+      (
         selected-track-color: var(--primary),
         selected-focus-track-color: var(--primary),
         selected-hover-track-color: var(--primary),
         selected-icon-color: var(--primary),
         selected-hover-state-layer-color: var(--primary),
-        selected-focus-state-layer-color: var(--primary)
-    ))
+        selected-focus-state-layer-color: var(--primary),
+      )
+    );
+
+    // tab bar
+    @include mat.tabs-overrides(
+      (
+        active-indicator-color: var(--primary),
+        active-focus-indicator-color: var(--primary),
+      )
+    );
 }
 
-
 .mdc-notched-outline__notch {
-    border-style: none;
+  border-style: none;
 }
 
 .mat-mdc-option.mat-mdc-option {
-    min-height: 40px;
+  min-height: 40px;
 }

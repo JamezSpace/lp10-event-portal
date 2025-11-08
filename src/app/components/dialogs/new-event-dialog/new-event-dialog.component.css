@@ -1,0 +1,27 @@
+.selectable {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--black-tint-20);
+  border-radius: 0.5rem;
+  text-transform: capitalize;
+  position: relative;
+
+  & > input[type="radio"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    appearance: none;
+  }
+
+  &:where(:has(input[type="radio"]:checked)) {
+    border-width: 2px;
+    border-color: var(--color-black);
+  }
+}

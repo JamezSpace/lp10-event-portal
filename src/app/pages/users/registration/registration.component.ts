@@ -310,9 +310,7 @@ export class RegistrationComponent implements OnInit {
     )
       this.reg_data_service.update_person_record(person);
     else
-      this.persons_ids.push(
-        this.reg_data_service.add_persons_record(person)
-      );
+      this.persons_ids.push(this.reg_data_service.add_persons_record(person));
 
     // in other words, if registration is more than a single person
     if (this.current_registration() !== this.total_number_registering()) {
@@ -441,10 +439,10 @@ export class RegistrationComponent implements OnInit {
             this.reg_data_service.get_total_fee_of_all_registration()
           );
 
+    // hide loader
+    toggleLoader(this.loader);
+    
     if (!transaction_response.success) {
-      // hide loader
-      toggleLoader(this.loader);
-
       this.openSnackBar(transaction_response.error, '', 3000);
       return;
     }

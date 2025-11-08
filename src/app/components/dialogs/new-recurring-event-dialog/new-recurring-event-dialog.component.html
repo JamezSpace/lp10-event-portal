@@ -1,0 +1,77 @@
+<section class="px-5 py-7">
+  <header class="mb-5">
+    <h2>Create a New Recurring Event</h2>
+    <p>
+      Recurring events are yearly programmes that occur in a specific month for
+      a specific duration. Fill in the appropriate details for programmes as
+      this, please be explicit as possible.
+    </p>
+  </header>
+
+  <form>
+    <div class="row">
+      <div class="field">
+        <label for="event_name_field" class="custom-form-label"
+          >Event Name</label
+        >
+        <input
+          type="text"
+          name="event_name"
+          id="event_name_field"
+          class="custom-form-input"
+          placeholder="e.g. Lillies Among Thorns (LAT)"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="event_month_field" class="custom-form-label"
+          >Month of Event</label
+        >
+        <select
+          name="event_month"
+          id="event_month_field"
+          class="custom-form-select"
+        >
+          @for (month of months; track $index) {
+            <option [value]="month" class="capitalize">{{month}}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label for="event_duration_field" class="custom-form-label"
+          >Duration of Event</label
+        >
+        <select
+          name="event_duration_select_field"
+          id="event_duration_field"
+          class="custom-form-select"
+        >
+          @for (event_duration of event_duration_options; track $index) {
+          <option [value]="event_duration.value">
+            {{ event_duration.label }}
+          </option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="event_desciption_field" class="custom-form-label"
+          >description</label
+        >
+        <textarea
+          name="event_desciption"
+          id="event_desciption_field"
+          class="custom-form-input min-h-20 max-h-32"
+          placeholder="e.g. Three days programme targeted at empowering teenagers on purpose..."
+        ></textarea>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <button class="my-button ml-auto" (click)="submitEvent()">
+        create event
+      </button>
+    </div>
+  </form>
+</section>

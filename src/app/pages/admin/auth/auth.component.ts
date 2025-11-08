@@ -28,15 +28,15 @@ export class AuthComponent {
     async login() {
         this.loading.set(true);
 
-        const success_status = await this.authService.login({
+        const response = await this.authService.login({
             email: this.email.toLowerCase(),
             password: this.password
         })
 
         this.loading.set(false);
-        if (success_status == 1) {
+        if (response.success == 1) {
           this.router.navigateByUrl('/admin/dashboard')
-        } else if (success_status == 0) {
+        } else if (response.success == 0 && new String(response.reason).includes("invalid-credential")) {
           this.snackBar.open("Invalid Email and Password Combination", "", {
               duration: 3000
           })
