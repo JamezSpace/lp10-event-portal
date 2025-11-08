@@ -23,9 +23,8 @@ export class PaymentStatusComponent implements OnInit {
     else this.router.navigateByUrl('/');
 
     // pass the transaction_ref to the event ticket component to be hashed as a qr code as a query param
-    if (ref)
-      this.transaction_ref.set(
-        `${environment.base_backend.url}/registrations?ref=${ref}`
-      );
+    if (ref) {
+      localStorage.setItem('reference', `${environment.base_backend.url}/registrations?ref=${ref}`);
+    }
   }
 }

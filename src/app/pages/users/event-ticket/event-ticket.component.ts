@@ -23,7 +23,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 })
 export class EventTicketComponent implements OnInit, AfterViewInit {
   private reg_service!: RegistrationService;
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
   transaction_ref = signal<string>('');
   event!: EventTicket;
@@ -47,10 +46,10 @@ export class EventTicketComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const ref = this.route.snapshot.queryParamMap.get('reference') || '';
+    const ref = localStorage.getItem('reference') || '';
 
     // redirect to homepage if ref doesnt exist
-    ref ? this.transaction_ref.set(ref) : this.router.navigateByUrl('/');
+    ref === '' ? this.transaction_ref.set(ref) : this.router.navigateByUrl('/');
 
     this.event = {
       _id: 'w2s',
@@ -69,6 +68,7 @@ export class EventTicketComponent implements OnInit, AfterViewInit {
     // Generate the ticket PDF after a short delay
     setTimeout(() => this.generatePdf(), 1000);
     this.router.navigateByUrl('/');
+    localStorage.removeItem('reference');
   }
 
   private renderQrCode() {
