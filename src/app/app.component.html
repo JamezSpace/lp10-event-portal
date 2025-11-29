@@ -1,11 +1,15 @@
 @if (user_type() === 'user') {
-    <app-user-nav-bar />
+<div class="sticky top-0 left-0 z-2">
+  <app-user-nav-bar />
+</div>
 
-    <router-outlet />
+<router-outlet />
 } @else {
-    <app-admin-nav-bar />
+<div class="sticky top-0 left-0 z-2">
+  <app-admin-nav-bar />
+</div>
 
-    <div class="mx-auto max-md:max-w-full px-5 pt-2 pb-10 max-sm:px-2.5">
-       <router-outlet />
-    </div>
+<div class="mx-auto max-md:max-w-full px-5 pt-2 pb-10 max-sm:px-2.5">
+  <router-outlet />
+</div>
 }

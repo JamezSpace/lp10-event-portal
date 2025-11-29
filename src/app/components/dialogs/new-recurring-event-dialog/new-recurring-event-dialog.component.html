@@ -1,6 +1,6 @@
 <section class="px-5 py-7">
   <header class="mb-5">
-    <h2>Create a New Recurring Event</h2>
+    <h2 class="text-left">Create a New Recurring Event</h2>
     <p>
       Recurring events are yearly programmes that occur in a specific month for
       a specific duration. Fill in the appropriate details for programmes as
@@ -8,7 +8,7 @@
     </p>
   </header>
 
-  <form>
+  <form [formGroup]="recurring_event">
     <div class="row">
       <div class="field">
         <label for="event_name_field" class="custom-form-label"
@@ -20,6 +20,7 @@
           id="event_name_field"
           class="custom-form-input"
           placeholder="e.g. Lillies Among Thorns (LAT)"
+          formControlName="name"
         />
       </div>
     </div>
@@ -32,6 +33,7 @@
           name="event_month"
           id="event_month_field"
           class="custom-form-select"
+          formControlName="month"
         >
           @for (month of months; track $index) {
             <option [value]="month" class="capitalize">{{month}}</option>
@@ -46,6 +48,7 @@
           name="event_duration_select_field"
           id="event_duration_field"
           class="custom-form-select"
+          formControlName="duration_in_days"
         >
           @for (event_duration of event_duration_options; track $index) {
           <option [value]="event_duration.value">
@@ -65,11 +68,12 @@
           id="event_desciption_field"
           class="custom-form-input min-h-20 max-h-32"
           placeholder="e.g. Three days programme targeted at empowering teenagers on purpose..."
+          formControlName="description"
         ></textarea>
       </div>
     </div>
     <div class="row mt-4">
-      <button class="my-button ml-auto" (click)="submitEvent()">
+      <button class="my-button ml-auto" (click)="submitEvent($event)">
         create event
       </button>
     </div>

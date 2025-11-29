@@ -4,21 +4,7 @@
     <p>Fill in the details to create a new event</p>
   </header>
 
-  <form>
-    <div class="row">
-      <div class="field">
-        <label for="event_name_field" class="custom-form-label"
-          >event name</label
-        >
-        <input
-          type="text"
-          name="event_name"
-          id="event_name_field"
-          class="custom-form-input"
-          placeholder="enter the name of the event"
-        />
-      </div>
-    </div>
+  <form [formGroup]="new_event_form_data" autocomplete="off">
     <div class="row">
       <div class="field">
         <label for="" class="custom-form-label">event type</label>
@@ -29,6 +15,7 @@
               type="radio"
               name="event-type"
               data-type="recurring"
+              checked
               (change)="onChangeEventType($event)"
             />
           </div>
@@ -47,21 +34,22 @@
     @if (event_type() === 'one-time') {
     <div class="row">
       <div class="field">
-        <label for="" class="custom-form-label">platform</label>
-        <div class="flex gap-4">
-          <div class="selectable">
-            <span>online</span>
-            <input type="radio" name="event-platform" id="" />
-          </div>
-          <div class="selectable">
-            <span>on-site</span>
-            <input type="radio" name="event-platform" id="" />
-          </div>
-        </div>
+        <label for="event_name_field" class="custom-form-label"
+          >event name</label
+        >
+        <input
+          type="text"
+          name="event_name"
+          id="event_name_field"
+          class="custom-form-input"
+          placeholder="enter the name of the event"
+          formControlName="event_name"
+        />
       </div>
     </div>
     }
     <div class="row">
+      @if (event_type() === 'one-time') {
       <div class="field">
         <label for="event_date_field" class="custom-form-label"
           >Date of Event</label
@@ -70,10 +58,12 @@
           type="date"
           name="event_date"
           id="event_date_field"
-          class="custom-form-input"
+          class="custom-form-input red"
+          formControlName="date_of_event"
+          (change)="onInput($event)"
+          [class.red]="!is_date_selected_valid()"
         />
       </div>
-      @if (event_type() === 'one-time') {
       <div class="field">
         <label for="event_time_field" class="custom-form-label"
           >Time of event</label
@@ -83,19 +73,69 @@
           name="event_time"
           id="event_time_field"
           class="custom-form-input"
+          formControlName="time_of_event"
         />
       </div>
       } @else if (event_type() === 'recurring') {
       <div class="field">
-        <label for="recurring_event_type_field" class="custom-form-label">Recurring event</label>
-        <select name="recurring_event_type" id="recurring_event_type_field" class="custom-form-select">
+        <label for="recurring_event_type_field" class="custom-form-label"
+          >Recurring event</label
+        >
+        <select
+          name="recurring_event_type"
+          id="recurring_event_type_field"
+          class="custom-form-select"
+          formControlName="recurring_event_selected"
+        >
           @for (r_event of recurring_events(); track $index) {
-          <option [value]="r_event._id">{{ r_event.name }}</option>
+          <option [ngValue]="r_event">{{ r_event.name }}</option>
           }
         </select>
       </div>
       }
     </div>
+    <div class="row">
+      <div class="field">
+        <label for="" class="custom-form-label">platform</label>
+        <div class="flex gap-4">
+          <div class="selectable">
+            <span>online</span>
+            <input
+              type="radio"
+              name="event-platform"
+              id=""
+              (change)="onSelectPlatform('online')"
+            />
+          </div>
+          <div class="selectable">
+            <span>on-site</span>
+            <input
+              type="radio"
+              name="event-platform"
+              id=""
+              (change)="onSelectPlatform('on-site')"
+              checked
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    @if(platform_selected() === 'on-site'){
+    <div class="row">
+      <div class="field">
+        <label for="event_time_field" class="custom-form-label"
+          >Venue of event</label
+        >
+        <input
+          type="text"
+          name="event_venue"
+          id="event_venue_field"
+          class="custom-form-input"
+          formControlName="venue"
+        />
+      </div>
+    </div>
+    } @if (event_type() === 'one-time') {
     <div class="row">
       <div class="field">
         <label for="event_desciption_field" class="custom-form-label"
@@ -106,11 +146,100 @@
           id="event_desciption_field"
           class="custom-form-input min-h-20 max-h-32"
           placeholder="add a short description for the event"
+          formControlName="description"
         ></textarea>
       </div>
     </div>
-    <div class="row mt-4">
-      <button class="my-button ml-auto">create event</button>
+    }
+
+    <div class="row">
+      <div class="field">
+        <label for="" class="custom-form-label">Is it a paid event?</label>
+        <div class="flex gap-4">
+          <div class="selectable">
+            <span>yes</span>
+            <input
+              type="radio"
+              name="paid-event"
+              (change)="is_paid_event.set(!is_paid_event())"
+            />
+          </div>
+          <div class="selectable">
+            <span>no</span>
+            <input
+              type="radio"
+              name="paid-event"
+              checked
+              (change)="is_paid_event.set(!is_paid_event())"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if (is_paid_event()) {
+    <div class="row">
+      <div class="field">
+        <label for="event_teachers_fee__field" class="custom-form-label"
+          >Teacher's Fee</label
+        >
+        <input
+          type="number"
+          id="event_teachers_fee__field"
+          class="custom-form-input"
+          placeholder="0.00"
+          min="1000"
+          max="10000"
+          step="500"
+          formControlName="teachers_fee"
+        />
+      </div>
+      <div class="field">
+        <label for="event_teens_fee__field" class="custom-form-label"
+          >Teenager's Fee</label
+        >
+        <input
+          type="number"
+          id="event_teens_fee__field"
+          class="custom-form-input"
+          placeholder="0.00"
+          min="1000"
+          max="10000"
+          step="500"
+          formControlName="teens_fee"
+        />
+      </div>
+      <div class="field">
+        <label for="event_children_fee__field" class="custom-form-label"
+          >Children's Fee</label
+        >
+        <input
+          type="number"
+          id="event_children_fee__field"
+          class="custom-form-input"
+          placeholder="0.00"
+          min="1000"
+          max="10000"
+          step="500"
+          formControlName="children_fee"
+        />
+      </div>
+    </div>
+    }
+
+    <div class="row mt-7">
+      <p class="capitalize">
+        <mat-slide-toggle labelPosition="before" (toggleChange)="toggleLiveEventStatus()"
+          >do you want to start receiving registrations for this
+          event?</mat-slide-toggle
+        >
+      </p>
+    </div>
+    <div class="row mt-7.5">
+      <button class="my-button ml-auto" (click)="submitEvent()">
+        @if (!isLiveEvent()) { create event } 
+        @else { start registrations }
+      </button>
     </div>
   </form>
 </section>

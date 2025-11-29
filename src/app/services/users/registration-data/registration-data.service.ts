@@ -1,6 +1,7 @@
 import { computed, Injectable, Signal, signal } from '@angular/core';
-import { Person, PersonEntity } from '../../../interfaces/person.interface';
-import { BulkRegistrationData } from '../../../interfaces/registration-data.interface';
+import { PersonDTO } from '../../../models/dtos/person.dto';
+import { PersonUiModel } from '../../../models/ui-models/person.ui-model';
+import { BulkRegistrationData } from '../../../models/ui-models/registration-data.ui-model';
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +20,7 @@ export class RegistrationDataService {
         teacher: 5000
     })
 
-    private registered_persons = signal<Person[]>([])
+    private registered_persons = signal<PersonUiModel[]>([])
 
     view_registration_data(): BulkRegistrationData {
         return this.registration_data()
@@ -69,13 +70,13 @@ export class RegistrationDataService {
         return;
     }
 
-    fetch_all_registered_persons_records(): PersonEntity[] {
+    fetch_all_registered_persons_records(): PersonDTO[] {
         const registered_persons_without_id = this.registered_persons().map(({ id, ...person_without_id }) => person_without_id);
         
         return registered_persons_without_id;
     }
 
-    editedPersonId(person: Person): Person {
+    editedPersonId(person: PersonUiModel): PersonUiModel {
         const registeredPersons = this.registered_persons();
         const lastId = registeredPersons.length > 0
             ? registeredPersons[registeredPersons.length - 1].id
@@ -84,7 +85,7 @@ export class RegistrationDataService {
         return { ...person, id: lastId + 1 };
     }
 
-    add_persons_record(person: Person): number {
+    add_persons_record(person: PersonUiModel): number {
         const new_person = this.editedPersonId(person);
 
         this.registered_persons.update(prev => [...prev, new_person]);
@@ -92,7 +93,7 @@ export class RegistrationDataService {
         return new_person.id;
     }
 
-    update_person_record(person_to_update: Person) {
+    update_person_record(person_to_update: PersonUiModel) {
         this.registered_persons.update(prev =>
             prev.map(person =>
                 person.id === person_to_update.id ? { ...person, ...person_to_update } : person

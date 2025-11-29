@@ -132,6 +132,10 @@ h6 {
   padding: 10px;
   border-radius: 0.5rem;
   background-color: rgb(from var(--form-field-placeholder-color) r g b/0.05);
+
+  &.red {
+    border-color: var(--error);
+  }
 }
 
 .custom-form-input::placeholder {
@@ -180,13 +184,15 @@ h6 {
   }
 
   &.red {
-    background-color: var(--secondary);
-    border-color: var(--secondary);
+    background-color: var(--color-red-700);
+    border-color: var(--color-red-700);
     color: white;
+    font-size: 85%;
+    font-weight: 500;
   }
 
   &.red:hover {
-    background-color: hsl(from var(--secondary) h s calc(l - 10));
+    background-color: hsl(from var(--error) h s calc(l - 10));
   }
 }
 
@@ -199,12 +205,14 @@ h6 {
   }
 
   &.red {
-    border-color: var(--error);
-    color: var(--error);
+    border-color: var(--color-red-700);
+    color: var(--color-red-700);
   }
 
   &.red:hover {
-    outline-color: var(--error);
+    border-color: var(--color-red-400);
+    background-color: var(--color-red-400);
+    color: var(--white);
   }
 }
 
@@ -223,6 +231,7 @@ table {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
+    line-height: 1.25;
   }
 }
 

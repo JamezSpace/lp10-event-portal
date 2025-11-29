@@ -24,7 +24,7 @@ export class PaymentStatusComponent implements OnInit {
 
     // pass the transaction_ref to the event ticket component to be hashed as a qr code as a query param
     if (ref) {
-      localStorage.setItem('reference', `${environment.base_backend.url}/registrations?ref=${ref}`);
+      localStorage.setItem('reference', `${environment.base_backend.url}/registrations/ref/${ref}`);
     }
   }
 }

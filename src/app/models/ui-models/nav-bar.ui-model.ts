@@ -1,4 +1,4 @@
-export interface NavBarMenu {
+export interface NavBarMenuUiModel {
     route: string;
     label: string;
 }

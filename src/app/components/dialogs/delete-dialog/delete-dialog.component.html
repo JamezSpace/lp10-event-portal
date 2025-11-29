@@ -1,1 +1,10 @@
-<p>delete-dialog works!</p>
+<section class="px-4 py-5 flex flex-col items-center">
+    <div class=""></div>
+    <h2 class="capitalize text-center font-semibold">Delete??</h2>
+    <p class="text-center  -mt-2">Confirm if you want to delete this resource</p>
+
+    <div class="flex-center w-full justify-between mt-6">
+        <button class="my-button secondary red" (click)="emitChoice(false)">No, don't delete</button>
+        <button class="my-button red" (click)="emitChoice(true)">Yes, delete!</button>
+    </div>
+</section>

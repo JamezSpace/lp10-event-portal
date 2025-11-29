@@ -2,13 +2,13 @@
   <section
     class="content-container p-5 rounded-xl max-w-md flex flex-col items-center"
   >
-    <p class="text-center leading-7 font-bold text-xl">{{ event.name }}</p>
-    <p class="mt-3.5 mb-0">
-      <span>{{ event.date.toLocaleDateString("en-US") }}</span>
-      |
-      <span>{{ event.date.toLocaleTimeString("en-US") }}</span>
+    <p class="text-center leading-7 font-bold text-xl">{{ event().name }}</p>
+    <p class="mt-3.5 mb-0 text-center">
+      <span>{{ event().start_date }}</span>
+      <!-- |
+      <span>{{ event().start_date.toLocaleTimeString("en-US") }}</span> -->
     </p>
-    <p class="mb-5">{{ event.venue }}</p>
+    <p class="mb-5 text-center">{{ event().venue }}</p>
 
     <!-- qr code to scan for event registration validation -->
      <div class="qr-code" #qr_code></div>

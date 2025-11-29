@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Statistics } from '../../interfaces/registration.interfaces';
+import { Component, Input, Signal } from '@angular/core';
+import { Statistics } from '../../models/ui-models/statistics.ui-model';
 
 @Component({
   selector: 'app-stat',
@@ -8,6 +8,6 @@ import { Statistics } from '../../interfaces/registration.interfaces';
   styleUrl: './stat.component.css',
 })
 export class StatComponent {
-    @Input({required: true, alias: 'stat'})
-    statistics!: Statistics[]
+    @Input({required: true, alias: 'statistic'})
+    statistics!: Signal<Statistics[]>;
 }

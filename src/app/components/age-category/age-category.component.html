@@ -1,4 +1,4 @@
-<article label="age category or role">
+<article label="age category or role" class="flex items-center min-[420px]:flex-col max-[420px]:gap-10">
     <h4 class="mb-[5px] text-black-2 capitalize font-medium">{{ category }}</h4>
     <span class="flex-center">
         <button class="operation" aria-label="minus one participant" (click)="subtractOne()"><svg
@@ -7,7 +7,7 @@
                 <path fill="currentColor" d="M6.502 11h11v2h-11z" />
             </svg></button>
 
-        <span class="num ms-[10px] me-[10px]">{{ category_number() }}</span>
+        <span class="num mx-2.5">{{ category_number() }}</span>
 
         <button class="operation" aria-label="plus one participant" (click)="addOne()"><svg
                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">

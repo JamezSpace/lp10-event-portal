@@ -26,10 +26,11 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AgeCategoryComponent } from '../../../components/age-category/age-category.component';
 import { PaymentDialogComponent } from '../../../components/dialogs/payment-dialog/payment-dialog.component';
-import { Person, PersonEntity } from '../../../interfaces/person.interface';
 import { RegistrationDataService } from '../../../services/users/registration-data/registration-data.service';
 import { RegistrationService } from '../../../services/users/registration/registration.service';
 import { toggleLoader } from '../../../../utils/components.utils';
+import { PersonUiModel } from '../../../models/ui-models/person.ui-model';
+import { PersonDTO } from '../../../models/dtos/person.dto';
 
 @Component({
   selector: 'app-registration',
@@ -246,7 +247,7 @@ export class RegistrationComponent implements OnInit {
       this.openSnackBar(
         'Almost there! Please fill out all required fields in the Origin section.',
         '',
-        3000
+        5000
       );
     return valid;
   }
@@ -270,7 +271,7 @@ export class RegistrationComponent implements OnInit {
 
     if (!this.allNecessaryFieldsValid()) return;
 
-    const person: Person = {
+    const person: PersonUiModel = {
       id: this.persons_ids[this.persons_ids.length - 1],
       first_name: new String(
         this.registration_data.value.first_name
@@ -291,7 +292,7 @@ export class RegistrationComponent implements OnInit {
       province:
         (this.origin === 'non-lp10' &&
           this.nonlp10_origin_data.value.province) ||
-        undefined,
+        this.origin,
       denomination:
         (this.origin === 'non-rccg' &&
           this.nonrccg_origin_data.value.denomination) ||
@@ -299,8 +300,7 @@ export class RegistrationComponent implements OnInit {
       details:
         (this.origin === 'non-rccg' &&
           this.nonrccg_origin_data.value.details) ||
-        undefined,
-      hasPaid: false,
+        undefined
     };
 
     // that is, if the length of the array (number of saved data) is more than 1
@@ -400,7 +400,7 @@ export class RegistrationComponent implements OnInit {
         this.payers_email.update((data) => result.payers_email);
       }
 
-      this.makePaymentWithPaystack();
+      this.initPayment();
     });
   }
 
@@ -410,15 +410,15 @@ export class RegistrationComponent implements OnInit {
     ) {
       // show loader
       toggleLoader(this.loader);
-      this.makePaymentWithPaystack();
+      this.initPayment();
       return;
     }
 
     this.openDialogToMakePaymentForMultiplePersons();
   }
 
-  async makePaymentWithPaystack() {
-    const persons: PersonEntity[] =
+  async initPayment() {
+    const persons: PersonDTO[] = 
       this.reg_data_service.fetch_all_registered_persons_records();
 
     console.log(
@@ -428,22 +428,25 @@ export class RegistrationComponent implements OnInit {
 
     const transaction_response =
       persons.length > 1
-        ? await this.reg_service.makePaymentWithPaystack(
+        ? await this.reg_service.makePaymentWithCredo(
             this.payers_name(),
             this.payers_email(),
-            this.reg_data_service.get_total_fee_of_all_registration()
+            this.reg_data_service.get_total_fee_of_all_registration(),
+            this.database_saved_ids
           )
-        : await this.reg_service.makePaymentWithPaystack(
+        : await this.reg_service.makePaymentWithCredo(
             persons[0].last_name,
             persons[0].email,
-            this.reg_data_service.get_total_fee_of_all_registration()
+            this.reg_data_service.get_total_fee_of_all_registration(),
+            this.database_saved_ids
           );
 
     // hide loader
     toggleLoader(this.loader);
+    if(!transaction_response) return 
     
     if (!transaction_response.success) {
-      this.openSnackBar(transaction_response.error, '', 3000);
+      this.openSnackBar(transaction_response.error, '', 5000);
       return;
     }
 

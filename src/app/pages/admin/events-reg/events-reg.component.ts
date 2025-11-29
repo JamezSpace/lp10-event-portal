@@ -1,20 +1,17 @@
 import {
   Component,
-  ElementRef,
   inject,
+  OnInit,
   signal,
-  ViewChild,
 } from '@angular/core';
 import { StatComponent } from '../../../components/stat/stat.component';
-import { Statistics } from '../../../interfaces/registration.interfaces';
+import { Statistics } from '../../../models/ui-models/statistics.ui-model';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DashboardService } from '../../../services/admin/dashboard/dashboard.service';
-import { PersonEntityWithPayer } from '../../../interfaces/person.interface';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
 import { computeAgeFromDob } from '../../../../utils/date.utils';
 import { MatDialog } from '@angular/material/dialog';
 import { VerifyRegistrationDialogComponent } from '../../../components/dialogs/verify-registration-dialog/verify-registration-dialog.component';
+import { VerifyRegistrationUiModel } from '../../../models/ui-models/registration.ui-model';
 
 @Component({
   selector: 'app-events-reg',
@@ -22,42 +19,27 @@ import { VerifyRegistrationDialogComponent } from '../../../components/dialogs/v
   templateUrl: './events-reg.component.html',
   styleUrl: './events-reg.component.css',
 })
-export class EventsRegComponent {
+export class EventsRegComponent implements OnInit {
   private dashboard_service = inject(DashboardService);
   private dialog = inject(MatDialog);
+  registrations = this.dashboard_service.registrations
+  statistics = this.dashboard_service.statistics
 
-  statistics: Statistics[] = [
-    {
-      label: 'total registrations',
-      value: 1204,
-      type: 'others',
-    },
-    {
-      label: 'total revenue',
-      value: 240800,
-      type: 'currency',
-    },
-    {
-      label: 'checked-in attendance',
-      value: 94,
-      type: 'others',
-    },
-  ];
+  loading = signal(true)
 
-  persons = signal<PersonEntityWithPayer[]>([]);
-  pagination = this.dashboard_service.pagination;
-  async fetchPersonsCheckedIn(page: number = 1, limit: number = 10): Promise<void> {
-    try {
-      this.persons.set(await this.dashboard_service.fetchPersonsCheckedIn(page, limit));
-    } catch (error) {
-      console.error('Failed to fetch Persons in component:', error);
-    }
+  async ngOnInit(): Promise<void> {
+      if(this.registrations().length === 0)
+        await this.dashboard_service.fetchEventRegistrations()
   }
+
+  persons_checked_in = this.dashboard_service.persons_checked_in
+  persons_details = signal<VerifyRegistrationUiModel[]>([]);
+  pagination = this.dashboard_service.pagination;
 
   onPageChange(event: PageEvent) {
     const page = event.pageIndex + 1;
     const limit = event.pageSize;
-    this.fetchPersonsCheckedIn(page, limit);
+    this.dashboard_service.fetchPersonsCheckedIn(page, limit);
   }
 
   constructFullName(first_name: string, last_name: string) {

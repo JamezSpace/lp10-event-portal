@@ -8,6 +8,10 @@ interface AuthResponse {
     reason?: string;
 }
 
+export enum UserType {
+    ADMIN, USER
+}
+
 export type {
     Admin, AuthResponse
 }

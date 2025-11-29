@@ -11,11 +11,12 @@ import { BrowserMultiFormatReader, IScannerControls } from '@zxing/browser';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { toggleLoader } from '../../../../utils/components.utils';
-import { DashboardService } from '../../../services/admin/dashboard/dashboard.service';
-import { PersonEntityWithPayer } from '../../../interfaces/person.interface';
+import { DashboardService } from '../../../services/admin/dashboard/dashboard.service'; 
 import { computeAgeFromDob } from '../../../../utils/date.utils';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { VerifyRegistrationUiModel } from '../../../models/ui-models/registration.ui-model';
+import { VerifyRegistrationApiModel } from '../../../models/api-models/registration.api-model';
 
 @Component({
   selector: 'app-verify-registration-dialog',
@@ -67,14 +68,55 @@ export class VerifyRegistrationDialogComponent implements OnInit, OnDestroy {
   }
 
   scanned = signal(false);
-  persons = signal<PersonEntityWithPayer[]>([]);
+  persons_details = signal<VerifyRegistrationUiModel[]>([]);
+  transformVerifyRegistration(
+    reg_details?: VerifyRegistrationApiModel[]
+  ): VerifyRegistrationUiModel[] {
+    if (!reg_details) return [];
+
+    const result: VerifyRegistrationUiModel[] = [];
+
+    for (const detail of reg_details) {
+      for (const person of detail.people) {
+        // find that person's registration
+        const reg = detail.registrations.find(
+          (r) => r.person_id === person._id
+        );
+
+        result.push({
+          // person fields
+          first_name: person.first_name,
+          last_name: person.last_name,
+          gender: person.gender,
+          year_of_birth: person.year_of_birth,
+          origin: person.origin,
+
+          // payer fields
+          name: detail.payer.name,
+          email: detail.payer.email,
+          expected_amount: detail.payer.expected_amount,
+
+          // registration fields
+          checked_in: reg?.checked_in ?? false,
+        });
+      }
+    }
+
+    return result;
+  }
+
   async apiCall(qrText: string) {
     try {
-      const persons = await this.dashboard_service.verifyRegistration(qrText);
+      const reg_details = await this.dashboard_service.verifyRegistration(
+        qrText
+      );
 
       this.scanned.set(true);
-      if (persons) this.persons.set(persons);
-      toggleLoader(this.loader)
+      // continue here
+      if (reg_details) {
+        this.persons_details.set(this.transformVerifyRegistration(reg_details))
+      }
+      toggleLoader(this.loader);
     } catch (error: any) {
       this.snackBar.open(error.message, '', { duration: 3000 });
     }
@@ -105,5 +147,7 @@ export class VerifyRegistrationDialogComponent implements OnInit, OnDestroy {
     return qr_code_text.includes('registrations?ref=');
   }
 
-
+  async checkPersonIn(person: VerifyRegistrationUiModel) {
+    await this.dashboard_service.checkPersonIn(person)
+  }
 }

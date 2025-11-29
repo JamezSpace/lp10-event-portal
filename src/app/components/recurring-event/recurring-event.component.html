@@ -1,0 +1,28 @@
+<section class="p-2.5 custom-box-shadow rounded-xl bg-white min-w-60">
+  <div class="img-container">
+    <img
+      src="https://iplaceholder.com/600x200/eee/969696/png?font=Verdana"
+      alt="event image"
+      class="rounded-lg w-full object-cover h-32"
+    />
+  </div>
+
+  <article>
+    <p class="font-bold mt-5 text-gray-900">{{ event.name }}</p>
+
+    <p class="text-gray-700 mt-1.5 text-sm">
+      <span class="capitalize">Month: {{ event.month }}</span>
+    </p>
+    <p class="text-gray-700 mt-1 text-sm">
+      <span class="capitalize">Duration: {{ event.duration_in_days }} days</span>
+    </p>
+  </article>
+
+  <div class="actions flex-center gap-2 mt-3.5">
+    <button class="my-button secondary w-full">edit icon</button>
+    
+    <button class="my-button secondary red" (click)="openDeleteDialog()">
+      delete
+    </button>
+  </div>
+</section>

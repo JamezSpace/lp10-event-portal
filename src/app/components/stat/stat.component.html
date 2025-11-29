@@ -1,18 +1,18 @@
 <div class="flex gap-5 flex-wrap">
-  @for (statistic of statistics; track $index) {
+  @for (stat of statistics(); track $index) {
   <section class="p-2.5 rounded-xl custom-box-shadow min-w-36">
-    <p class="capitalize text-[90%] text-gray-600">{{ statistic.label }}</p>
-    @if (statistic.type === 'currency') {
+    <p class="capitalize text-[90%] text-gray-600">{{ stat.label }}</p>
+    @if (stat.type === 'currency') {
     <h2 class="my-2">
       {{
-        statistic.value.toLocaleString("en-US", {
+        stat.value.toLocaleString("en-US", {
           style: "currency",
           currency: "NGN"
         })
       }}
     </h2>
     } @else {
-    <h2 class="my-2">{{ statistic.value.toLocaleString() }}</h2>
+    <h2 class="my-2">{{ stat.value.toLocaleString() }}</h2>
     }
   </section>
   }

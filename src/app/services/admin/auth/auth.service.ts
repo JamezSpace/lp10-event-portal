@@ -1,7 +1,6 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { Admin } from '../../../interfaces/admin.interfaces';
-import { environment } from '../../../../environments/environment';
-import { UserType } from '../../../interfaces/auth.interfaces';
+import { Injectable, signal } from '@angular/core';
+import { Admin } from '../../../models/api-models/admin-auth.api-model';
+import { UserType } from '../../../models/api-models/admin-auth.api-model';
 import { firebase_app } from '../../../app.config';
 import {
   getAuth,
@@ -28,9 +27,9 @@ export class AuthService {
   async login(admin_credentials: Admin) {
     try {
     //   REMOVE! This is only used for local testing
-    //     return {
-    //     success: 1
-    //   };
+        return {
+        success: 1
+      };
 
       const user_credential = await signInWithEmailAndPassword(
         this.auth,

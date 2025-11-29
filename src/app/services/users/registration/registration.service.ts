@@ -1,15 +1,22 @@
-import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { RegistrationDataService } from '../registration-data/registration-data.service';
-import { PaystackInit } from '../../../interfaces/payment.interfaces';
+import {
+  PaystackInit,
+  CredoInit,
+} from '../../../models/api-models/payment-gateways.api-model';
 import { fetchJson } from '../../../../utils/service.utils';
-import { ApiResponse } from '../../../interfaces/api-response.interfaces';
+import { ApiResponse } from '../../../models/api-models/response.api-model';
+import { DashboardService } from '../../admin/dashboard/dashboard.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegistrationService {
-  constructor(private regDataService: RegistrationDataService) {}
+  constructor(
+    private reg_data_service: RegistrationDataService,
+    private dashboard_service: DashboardService
+  ) {}
 
   async fetchZones(): Promise<string[]> {
     try {
@@ -35,24 +42,19 @@ export class RegistrationService {
 
   async sendPersonDataToDatabase(): Promise<void | string[]> {
     try {
-      const response_data = await fetchJson<ApiResponse<{ ids: string[] }>>(
-        `${environment.base_backend.url}/persons`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          mode: 'cors',
-          body: JSON.stringify(
-            this.regDataService.fetch_all_registered_persons_records()
-          ),
-        }
-      );
+      const response_data = await fetchJson<
+        ApiResponse<{ person_ids: string[]; church_detail_ids: string[] }>
+      >(`${environment.base_backend.url}/persons`, {
+        method: 'POST',
+        mode: 'cors',
+        body: JSON.stringify(
+          this.reg_data_service.fetch_all_registered_persons_records()
+        ),
+      });
 
       if (!response_data.data) throw new Error(response_data.error);
 
-      return Object.values(response_data.data.ids);
+      return Object.values(response_data.data.person_ids);
     } catch (error: any) {
       console.error(error.message);
       return;
@@ -69,10 +71,6 @@ export class RegistrationService {
         `${environment.base_backend.url}/payments/paystack`,
         {
           method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
           mode: 'cors',
           body: JSON.stringify({
             name: payers_name,
@@ -83,16 +81,61 @@ export class RegistrationService {
       );
 
       if (!response_data.data) {
-        return {success: false, error: 'Please check your internet connection.'};
+        return {
+          success: false,
+          error: 'Please check your internet connection.',
+        };
       }
 
       // response_data looks like {success: boolean, message: string, data: paystack object}
       window.location.href = response_data.data.data.authorization_url;
 
-      return {success: true, ref: response_data.data.data.reference};
+      return { success: true, ref: response_data.data.data.reference };
     } catch (error: any) {
       console.error(error.message);
-      return {success: false, error: error.message}
+      return { success: false, error: error.message };
+    }
+  }
+
+  async makePaymentWithCredo(
+    payers_name: string,
+    payers_email: string,
+    total_amount_to_be_paid: number,
+    payment_for: string[]
+  ) {
+    try {
+      if (!localStorage.getItem('live_event_id')) return;
+      const response_data = await fetchJson<ApiResponse<CredoInit>>(
+        `${environment.base_backend.url}/payments/credo`,
+        {
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify({
+            last_name: payers_name,
+            email: payers_email,
+            amount: total_amount_to_be_paid,
+            event_id: localStorage.getItem('live_event_id'),
+            payment_for,
+          }),
+        }
+      );
+
+      if (!response_data.data) {
+        return {
+          success: false,
+          error: 'Please check your internet connection.',
+        };
+      }
+
+      console.log(response_data.data);
+
+      // response_data looks like {success: boolean, message: string, data: paystack object}
+      window.location.href = response_data.data.data.authorizationUrl;
+
+      return { success: true, ref: response_data.data.data.reference };
+    } catch (error: any) {
+      console.error(error.message);
+      return { success: false, error: error.message };
     }
   }
 
@@ -196,5 +239,5 @@ export class RegistrationService {
     }
   }
 
-  transaction_reference = signal<string>('bd8w0k1c6n')
+  transaction_reference = signal<string>('bd8w0k1c6n');
 }

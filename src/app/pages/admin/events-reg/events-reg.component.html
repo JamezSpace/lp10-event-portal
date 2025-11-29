@@ -1,6 +1,6 @@
 <h2 class="pt-5 mb-4">December Campout Registrations Ongoing!</h2>
 
-<app-stat [stat]="statistics" />
+<app-stat [statistic]="statistics" />
 
 <h4 class="my-7 mb-2.5">Persons Checked In</h4>
 <button class="my-button mb-5" (click)="verifyRegistration()">
@@ -17,14 +17,14 @@
       <th>payer</th>
     </thead>
     <tbody>
-      @for (person of persons(); track $index) {
+      @for (person of persons_details(); track $index) {
       <tr>
         <td>{{ $index + 1 }}</td>
         <td>{{ person.last_name + " " + person.first_name }}</td>
         <td>{{ person.gender }}</td>
         <td>{{ getAge(person.year_of_birth) }}</td>
-        <td>{{ person.zone }}</td>
-        <td>{{ person.payer.name }}</td>
+        <td>{{ person.origin }}</td>
+        <td>{{ person.name }}</td>
       </tr>
       } @empty {
       <tr>

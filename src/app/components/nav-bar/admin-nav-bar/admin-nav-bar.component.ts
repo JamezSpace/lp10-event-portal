@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
-import { NavBarMenu } from '../../../interfaces/nav-bar-menu.interfaces';
+import { NavBarMenuUiModel } from '../../../models/ui-models/nav-bar.ui-model';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/admin/auth/auth.service';
 import { UserNavBarComponent } from '../user-nav-bar/user-nav-bar.component';
@@ -49,7 +49,7 @@ export class AdminNavBarComponent {
     return this.currentUrl().includes("/admin/auth")
   })
 
-  sub_navbar_menus: NavBarMenu[] = [
+  sub_navbar_menus: NavBarMenuUiModel[] = [
     {
       label: 'overview',
       route: '/admin/dashboard',

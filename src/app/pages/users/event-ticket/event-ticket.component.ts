@@ -2,18 +2,20 @@ import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BrowserQRCodeSvgWriter } from '@zxing/browser';
-import { EventTicket } from '../../../interfaces/event.interfaces';
 import {
   AfterViewInit,
   Component,
+  computed,
   ElementRef,
   inject,
   OnInit,
+  Signal,
   signal,
   ViewChild,
 } from '@angular/core';
-import { RegistrationService } from '../../../services/users/registration/registration.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { BaseEventModel } from '../../../models/api-models/event.api-model';
+import { DashboardService } from '../../../services/admin/dashboard/dashboard.service';
 
 @Component({
   selector: 'app-event-ticket',
@@ -22,15 +24,34 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   styleUrl: './event-ticket.component.css',
 })
 export class EventTicketComponent implements OnInit, AfterViewInit {
-  private reg_service!: RegistrationService;
   private router = inject(Router);
   transaction_ref = signal<string>('');
-  event!: EventTicket;
+  private dashboard_service = inject(DashboardService);
+  event: Signal<{name: string, start_date: string, venue: string}> = computed(() => {
+    const event = this.dashboard_service.live_event()!;
+    const start = new Date(event.start_date || '');
+    const formatted_start_date = isNaN(start.getTime())
+      ? 'null'
+      : start
+          .toLocaleDateString(undefined, {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          })
+            .toString();
+
+    return {
+      name: event.name,
+      start_date: formatted_start_date,
+      venue: event.venue || 'null',
+    };
+});
 
   @ViewChild('ticket')
   event_ticket!: ElementRef<HTMLDivElement>;
 
-  @ViewChild('qr_code') 
+  @ViewChild('qr_code')
   qrCodeRef!: ElementRef<HTMLDivElement>;
 
   heading_texts = [
@@ -41,22 +62,11 @@ export class EventTicketComponent implements OnInit, AfterViewInit {
   @ViewChild('text_to_display')
   display_text_during_download!: ElementRef<HTMLHeadingElement>;
 
-  constructor(reg_service: RegistrationService) {
-    this.reg_service = reg_service;
-  }
-
   async ngOnInit(): Promise<void> {
     const ref = localStorage.getItem('reference') || '';
 
     // redirect to homepage if ref doesnt exist
-    ref === '' ? this.transaction_ref.set(ref) : this.router.navigateByUrl('/');
-
-    this.event = {
-      _id: 'w2s',
-      date: new Date(),
-      name: 'December Campout',
-      venue: 'RCCG Campground',
-    };
+    ref !== '' ? this.transaction_ref.set(ref) : this.router.navigateByUrl('/');
 
     this.shuffleTexts();
   }
@@ -67,7 +77,7 @@ export class EventTicketComponent implements OnInit, AfterViewInit {
 
     // Generate the ticket PDF after a short delay
     setTimeout(() => this.generatePdf(), 1000);
-    this.router.navigateByUrl('/');
+
     localStorage.removeItem('reference');
   }
 
@@ -112,7 +122,9 @@ export class EventTicketComponent implements OnInit, AfterViewInit {
 
       pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
       pdf.save('campout_ticket_2025.pdf');
+
       clearInterval(this.shuffleInterval);
+      this.router.navigateByUrl('/');
     });
   }
 }

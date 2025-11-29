@@ -1,4 +1,11 @@
-<section class="p-2.5 custom-box-shadow rounded-xl w-72 bg-white">
+<section class="p-2.5 custom-box-shadow rounded-xl bg-white min-w-60 relative">
+    <p class="absolute top-2 right-2 font-medium px-2 py-1 text-xs rounded-xl bg-(--primary) text-white inline-block">
+        @if (event.paid_event) {
+            paid
+        } @else {
+            unpaid
+        }
+    </p>
   <div class="img-container">
     <img
       src="https://iplaceholder.com/600x200/eee/969696/png?font=Verdana"
@@ -11,23 +18,32 @@
     <p class="font-bold mt-5 text-gray-900">{{ event.name }}</p>
 
     <p class="text-gray-700 mt-1.5 text-sm">
-      @if (event.type === 'one-time' && event.start_date) {
-        <span>{{ format_date_range(event.start_date, event.duration_in_days!) }}</span>
-      } @else if (event.type === 'recurring') {
-        <span>{{ event.month }}</span>
+      <!--  0 corresponds to 'recurring' and event type of 1 corresponds to 'one-time' -->
+      @if (event.type === 1 && event.start_date) {
+      <span>{{
+        format_date_range(event.start_date, event.duration_in_days!)
+      }}</span>
       }
-      | <span>{{ event.venue }}</span>
     </p>
+    <p class="text-gray-700 mt-0.5 text-sm">
+        <span class="capitalize">Venue: {{ event.venue ?? "not set" }}</span>
+    </p>
+    @if (event_tag === 'upcoming') {
+    <p class="text-gray-700 mt-0.5 text-sm">
+      <span class="capitalize">Duration: {{ event.duration_in_days }} days</span>
+    </p>
+    }
   </article>
 
   <div class="actions flex-center gap-2 mt-3.5">
-    @if (event_tag === 'upcoming') {
-      <button class="my-button secondary w-full">start registrations</button>
-      <button class="my-button secondary red">delete</button>
-    } @else if (event.type === 'recurring') {
-      <button class="my-button secondary w-full">edit</button>
+    @if (event_tag === 'upcoming') { @if (isRegistrationComplete()) {
+    <button class="my-button secondary w-full">view event</button>
     } @else {
-      <button class="my-button secondary w-full">view</button>
+    <button class="my-button secondary w-full">complete registration</button>
+    }
+    <button class="my-button secondary red" (click)="openDeleteDialog()">
+      delete
+    </button>
     }
   </div>
 </section>
