@@ -25,8 +25,8 @@
 
     .image-container-1 {
         grid-area: down;
-        background-image: linear-gradient(rgb(255, 255, 255, 0.4), rgb(255, 255, 255, 0.4)), url('/presido_et_prayoo.webp');
-        background-position: 40% 50%;
+        background-image: linear-gradient(rgb(255, 255, 255, 0.4), rgb(255, 255, 255, 0.4)), url('/teens.webp');
+        background-position: 40% 80%;
     }
 }
 

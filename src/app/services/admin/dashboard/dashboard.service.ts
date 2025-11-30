@@ -27,7 +27,6 @@ export class DashboardService {
   recurring_events = signal<RecurringEventUiModel[]>([]);
   persons_checked_in = signal<EventRegistrationApiModel[]>([]);
   registrations = signal<EventRegistrationUiModel[]>([]);
-  live_event = signal<EventApiModel | null>(null);
   pagination = signal({ page: 1, limit: 10, total: 0, pages: 0 });
   statistics: Signal<Statistics[]> = computed(() => [
     {
@@ -59,33 +58,6 @@ export class DashboardService {
       if (!response_data.success || !response_data.data) return;
 
       this.events.set(this.transformEventApiArrayToUi(response_data.data));
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async fetchLiveEvent() {
-    try {
-      const response_data = await fetchJson<ApiResponse<EventApiModel>>(
-        `${environment.base_backend.url}/events/live`,
-        {
-          mode: 'cors',
-        }
-      );
-
-      // continue here to fetch the live event
-      if (!response_data.success || !response_data.data) return;
-
-      localStorage.setItem('live_event_id', response_data.data._id!);
-        this.live_event.set(response_data.data);
-    //   // convert EventApiModel to EventDTO first by stripping timestamps and _id property
-    //   const stripped_timestamps = this.stripApiTimestamps(response_data.data);
-
-    //   const { _id, ...event_dto } = stripped_timestamps;
-
-    //   this.live_event.set(
-    //     this.transformEventDTOToUiReadyData(response_data.data._id, event_dto)
-    //   );
     } catch (error) {
       console.error(error);
     }

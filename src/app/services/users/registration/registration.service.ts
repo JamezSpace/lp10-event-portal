@@ -7,15 +7,13 @@ import {
 } from '../../../models/api-models/payment-gateways.api-model';
 import { fetchJson } from '../../../../utils/service.utils';
 import { ApiResponse } from '../../../models/api-models/response.api-model';
-import { DashboardService } from '../../admin/dashboard/dashboard.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegistrationService {
   constructor(
-    private reg_data_service: RegistrationDataService,
-    private dashboard_service: DashboardService
+    private reg_data_service: RegistrationDataService
   ) {}
 
   async fetchZones(): Promise<string[]> {

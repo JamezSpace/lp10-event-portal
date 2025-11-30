@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { DashboardService } from '../../../services/admin/dashboard/dashboard.service';
 import { RouterLink, RouterModule } from "@angular/router";
+import { RegistrationDataService } from '../../../services/users/registration-data/registration-data.service';
 
 @Component({
   selector: 'app-index',
@@ -9,9 +9,9 @@ import { RouterLink, RouterModule } from "@angular/router";
   styleUrl: './index.component.css'
 })
 export class IndexComponent {
-    private dashboard_service = inject(DashboardService);
+    private registration_data_service = inject(RegistrationDataService);
 
     async navigateToRegistration(){
-        await this.dashboard_service.fetchLiveEvent();
+        await this.registration_data_service.fetchLiveEvent();
     }
 }

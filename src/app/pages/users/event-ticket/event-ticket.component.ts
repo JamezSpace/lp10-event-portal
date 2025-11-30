@@ -16,6 +16,8 @@ import {
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { BaseEventModel } from '../../../models/api-models/event.api-model';
 import { DashboardService } from '../../../services/admin/dashboard/dashboard.service';
+import { RegistrationService } from '../../../services/users/registration/registration.service';
+import { RegistrationDataService } from '../../../services/users/registration-data/registration-data.service';
 
 @Component({
   selector: 'app-event-ticket',
@@ -26,9 +28,9 @@ import { DashboardService } from '../../../services/admin/dashboard/dashboard.se
 export class EventTicketComponent implements OnInit, AfterViewInit {
   private router = inject(Router);
   transaction_ref = signal<string>('');
-  private dashboard_service = inject(DashboardService);
+  private reg_data_service = inject(RegistrationDataService);
   event: Signal<{name: string, start_date: string, venue: string}> = computed(() => {
-    const event = this.dashboard_service.live_event()!;
+    const event = this.reg_data_service.live_event()!;
     const start = new Date(event.start_date || '');
     const formatted_start_date = isNaN(start.getTime())
       ? 'null'

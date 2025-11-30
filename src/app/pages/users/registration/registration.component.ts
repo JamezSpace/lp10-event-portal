@@ -119,7 +119,7 @@ export class RegistrationComponent implements OnInit {
     email: new FormControl(null, [Validators.email, Validators.required]),
     age: new FormControl<number | null>(null, [
       Validators.min(5),
-      Validators.max(25),
+      Validators.max(70),
       Validators.required,
     ]),
   });

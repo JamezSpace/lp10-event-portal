@@ -316,8 +316,8 @@
                 />
                 @if (registration_data.controls.age.value &&
                 (registration_data.controls.age.value < 5 ||
-                registration_data.controls.age.value > 25)) {
-                <mat-error aria-live="polite">Age must be between 5 and 25.</mat-error>
+                registration_data.controls.age.value > 70)) {
+                <mat-error aria-live="polite">Age must be between 5 and 70.</mat-error>
                 } @else if (registration_data.controls.email.dirty &&
                 registration_data.controls.email.invalid &&
                 !registration_data.controls.age.value) {

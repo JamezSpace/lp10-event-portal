@@ -26,10 +26,10 @@ export class AuthService {
 
   async login(admin_credentials: Admin) {
     try {
-    //   REMOVE! This is only used for local testing
-        return {
-        success: 1
-      };
+    // //   REMOVE! This is only used for local testing
+    //     return {
+    //     success: 1
+    //   };
 
       const user_credential = await signInWithEmailAndPassword(
         this.auth,
