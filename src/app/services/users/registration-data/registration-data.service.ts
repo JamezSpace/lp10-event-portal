@@ -25,7 +25,8 @@ export class RegistrationDataService {
       // continue here to fetch the live event
       if (!response_data.success || !response_data.data) return;
 
-      localStorage.setItem('live_event_id', response_data.data._id!);
+      
+      localStorage.setItem('event', JSON.stringify(response_data.data));
       this.live_event.set(response_data.data);
       //   // convert EventApiModel to EventDTO first by stripping timestamps and _id property
       //   const stripped_timestamps = this.stripApiTimestamps(response_data.data);

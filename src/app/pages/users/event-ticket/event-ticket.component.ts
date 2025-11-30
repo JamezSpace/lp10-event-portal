@@ -29,8 +29,15 @@ export class EventTicketComponent implements OnInit, AfterViewInit {
   private router = inject(Router);
   transaction_ref = signal<string>('');
   private reg_data_service = inject(RegistrationDataService);
-  event: Signal<{name: string, start_date: string, venue: string}> = computed(() => {
-    const event = this.reg_data_service.live_event()!;
+
+  event: Signal<
+    { name: string; start_date: string; venue: string } | undefined
+  > = computed(() => {
+    let live_event = localStorage.getItem('event');
+    if (!live_event) return;
+
+    let event = JSON.parse(live_event);
+
     const start = new Date(event.start_date || '');
     const formatted_start_date = isNaN(start.getTime())
       ? 'null'
@@ -41,14 +48,14 @@ export class EventTicketComponent implements OnInit, AfterViewInit {
             day: 'numeric',
             year: 'numeric',
           })
-            .toString();
+          .toString();
 
     return {
       name: event.name,
       start_date: formatted_start_date,
       venue: event.venue || 'null',
     };
-});
+  });
 
   @ViewChild('ticket')
   event_ticket!: ElementRef<HTMLDivElement>;
@@ -106,27 +113,54 @@ export class EventTicketComponent implements OnInit, AfterViewInit {
 
   async generatePdf() {
     const ticket = this.event_ticket.nativeElement;
+    
+    // Assuming you are using 'hidden-print' now and showing the element
+    ticket.classList.remove('hidden-print'); 
 
     html2canvas(ticket, {
-      scale: window.devicePixelRatio, // preserves crispness on all devices
-      useCORS: true, // allows external images (like your background) to load
+      scale: 2,
+      useCORS: true,
       scrollX: 0,
       scrollY: 0,
-      windowWidth: document.documentElement.scrollWidth, // ensures responsiveness
-      windowHeight: document.documentElement.scrollHeight,
     }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
+
       const pdf = new jspdf({
         orientation: 'portrait',
-        unit: 'px',
-        format: [canvas.width, canvas.height], // exact visual dimensions
+        unit: 'pt',
+        format: 'a4',
       });
 
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      // --- SCALING LOGIC FOR FULL-BLEED (COVER) ---
+
+      // 1. Use Math.max to force the image to cover the entire page
+      // This ensures the shortest dimension of the page is filled by the image
+      const ratio = Math.max(
+        pageWidth / canvas.width,
+        pageHeight / canvas.height
+      ); 
+
+      // 2. Calculate new dimensions that fully cover the page
+      const imgWidth = canvas.width * ratio;
+      const imgHeight = canvas.height * ratio;
+
+      // 3. Center the image (the overflowing parts will be clipped by the PDF)
+      const x = (pageWidth - imgWidth) / 2;
+      const y = (pageHeight - imgHeight) / 2;
+
+      // ---------------------------------------------
+
+      pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
       pdf.save('campout_ticket_2025.pdf');
+
+      // Restore the hiding class
+      ticket.classList.add('hidden-print'); 
 
       clearInterval(this.shuffleInterval);
       this.router.navigateByUrl('/');
     });
-  }
+}
 }

@@ -12,9 +12,7 @@ import { ApiResponse } from '../../../models/api-models/response.api-model';
   providedIn: 'root',
 })
 export class RegistrationService {
-  constructor(
-    private reg_data_service: RegistrationDataService
-  ) {}
+  constructor(private reg_data_service: RegistrationDataService) {}
 
   async fetchZones(): Promise<string[]> {
     try {
@@ -102,8 +100,11 @@ export class RegistrationService {
     payment_for: string[]
   ) {
     try {
-      if (!localStorage.getItem('live_event_id')) return;
-      const response_data = await fetchJson<ApiResponse<CredoInit>>(
+      const live_event = localStorage.getItem('event');
+      if (!live_event) return;
+
+      const live_event_id = JSON.parse(live_event)._id,
+      response_data = await fetchJson<ApiResponse<CredoInit>>(
         `${environment.base_backend.url}/payments/credo`,
         {
           method: 'POST',
@@ -112,7 +113,7 @@ export class RegistrationService {
             last_name: payers_name,
             email: payers_email,
             amount: total_amount_to_be_paid,
-            event_id: localStorage.getItem('live_event_id'),
+            event_id: live_event_id,
             payment_for,
           }),
         }
